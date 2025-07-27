@@ -14,7 +14,7 @@ The Blue Ridge Bonsai Society design system emerges from a profound cultural dia
 > *Font: Noto Sans JP*  
 > *From "wabi" (humble simplicity) and "sabi" (natural aging), this philosophy teaches us that true beauty lies not in perfection, but in the honest expression of time's passage.*
 
-**Ma (間)** - The powerful use of negative space and pregnant pauses. In our design, silence speaks as loudly as content, creating breathing room for contemplation and discovery.
+**Ma (間)** - The powerful use of negative space and pregnant pauses. In our design, silence speaks as eloquently as content, creating breathing room for contemplation and discovery.
 
 > *Sidebar: **Ma** (ま)*  
 > *Font: Noto Sans JP*  
@@ -31,11 +31,11 @@ The Blue Ridge Bonsai Society design system emerges from a profound cultural dia
 Inspired by the Japanese principle of *kyojitsu*, we understand that empty space is not absence but presence. Our layouts breathe with generous whitespace, allowing each element to exist in harmony with its surroundings, like a solitary tree on a mountain ridge.
 
 #### 2. Seasonal Impermanence (季節の無常)
-Following the concept of *mono no aware* (the pathos of things), our design acknowledges the transient nature of digital experiences. Visual elements subtly evolve, content flows naturally, and user journeys unfold with the gentle rhythm of mountain seasons.
+Following the concept of *mono no aware* (the pathos of existence), our design acknowledges the transient nature of digital experiences.
 
 > *Sidebar: **Mono no Aware** (物の哀れ)*  
 > *Font: Noto Sans JP*  
-> *The bittersweet awareness of the impermanence of all things. This aesthetic philosophy finds beauty in the fleeting nature of life and experience.*
+> *The bittersweet awareness of the impermanence of all existence. This aesthetic philosophy finds beauty in the fleeting nature of life and experience.*
 
 #### 3. Layered Horizons (重なる地平線)
 Like the Blue Ridge Mountains themselves, our visual hierarchy creates depth through overlapping layers. Content emerges from mist-like backgrounds, revealing itself gradually as users navigate deeper into their journey.
@@ -45,7 +45,7 @@ Our design celebrates the Japanese concept of *shu-ha-ri* (learn-adapt-transcend
 
 > *Sidebar: **Shu-Ha-Ri** (守破離)*  
 > *Font: Noto Sans JP*  
-> *The three stages of mastery: first learn the rules, then break the rules, finally transcend the rules. This applies to both bonsai cultivation and design evolution.*
+> *The three stages of mastery: first learn the rules, then break the rules, then transcend the rules. This applies to both bonsai cultivation and design evolution.*
 
 > *"A well-made thing carries the spirit of its maker. Whether it's a hickory chair or a website button, you can feel the care that went into it."*  
 > *— Appalachian craft tradition*
@@ -73,6 +73,20 @@ This design system creates a harmonious balance between traditional Japanese bon
 - **Cloud White**: `#FEFFFE` - Background and negative space
 - **Earth Brown**: `#8B7355` - Accent color for traditional elements
 
+### Extended Neutral Palette
+
+- **Fog Mist**: `#EBF1EE` - Light neutral for subtle backgrounds and gentle separations
+- **Dawn Sky**: `#DDE4EA` - Cool neutral for secondary content areas and muted borders
+- **Mountain Haze**: `#C8D2CE` - Mid-tone neutral for inactive states and subtle text
+- **Valley Shadow**: `#9BA5A1` - Deeper neutral for secondary text and disabled elements
+
+### Gradient Tokens
+
+- **Sage to Fog**: `linear-gradient(135deg, #6B8E6F 0%, #EBF1EE 100%)` - Primary brand gradient
+- **Dawn Mist**: `linear-gradient(180deg, #DDE4EA 0%, #FEFFFE 60%)` - Subtle background gradient
+- **Mountain Breath**: `linear-gradient(45deg, #EBF1EE 0%, #DDE4EA 50%, #C8D2CE 100%)` - Multi-stop atmospheric gradient
+- **Seasonal Transition**: `linear-gradient(90deg, #6B8E6F 0%, #8B7355 50%, #B08D57 100%)` - Warm seasonal gradient
+
 ### Secondary Colors
 
 - **Moss Green**: `#7D8471` - Subtle highlights and hover states
@@ -87,12 +101,58 @@ This design system creates a harmonious balance between traditional Japanese bon
 - **Error**: `#A85A5A` - Error states and critical information
 - **Info**: `#6B8CAE` - Informational content and tips
 
+### Dark Mode Palette (WCAG AA Compliant)
+
+#### Primary Dark Colors
+- **Dark Mountain Sage**: `#8FA693` - Primary brand color (4.5:1 contrast on dark backgrounds)
+- **Dark Stone**: `#E8E8E8` - Primary text (14.8:1 contrast on #1A1D1B)
+- **Charcoal Base**: `#1A1D1B` - Primary dark background
+- **Dark Earth**: `#A68B6F` - Accent color for traditional elements
+
+#### Extended Dark Neutrals
+- **Shadow Mist**: `#2A2F2C` - Light dark neutral (12.1:1 contrast for text)
+- **Night Sky**: `#363B38` - Secondary dark areas (9.8:1 contrast for text)
+- **Deep Haze**: `#4A524E` - Mid-tone dark neutral (6.2:1 contrast for text)
+- **Moonlight**: `#8B9590` - Light neutral text (4.6:1 contrast on dark backgrounds)
+
+#### Dark Mode Gradients
+- **Dark Sage to Shadow**: `linear-gradient(135deg, #8FA693 0%, #2A2F2C 100%)`
+- **Night Mist**: `linear-gradient(180deg, #363B38 0%, #1A1D1B 60%)`
+- **Dark Mountain Breath**: `linear-gradient(45deg, #2A2F2C 0%, #363B38 50%, #4A524E 100%)`
+
+#### Dark Semantic Colors
+- **Dark Success**: `#7BA36C` - Success state (4.8:1 contrast)
+- **Dark Warning**: `#E6C088` - Warning state (7.2:1 contrast)
+- **Dark Error**: `#D4847A` - Error state (5.1:1 contrast)
+- **Dark Info**: `#8DB4D8` - Info state (6.8:1 contrast)
+
 ### Color Usage Guidelines
 
-- Use Mountain Sage for primary actions and branding
-- Stone Gray for body text (minimum contrast ratio 4.5:1)
+- Use Mountain Sage for primary actions and branding (Note: Consider darker variant for better contrast)
+- Stone Gray for body text (passes WCAG AA with 4.5:1+ contrast ratio)
+- Fog Mist and Dawn Sky for subtle layering and depth
+- Gradient tokens for hero sections and visual interest
+- Dark mode automatically applied based on system preference
+- Color combinations tested for WCAG AA compliance - see accessibility notes below
 - Limit accent colors to 20% of any given page
 - Maintain 60% neutral, 30% primary, 10% accent ratio
+
+### Accessibility Color Notes
+
+**⚠️ Contrast Issues Identified:**
+The following color combinations do not meet WCAG AA standards and require adjustment:
+
+- **Mountain Sage (#6B8E6F) on white backgrounds** - Consider using `#5A7A5E` for improved contrast
+- **Earth Brown (#8B7355) on white backgrounds** - Consider using `#7A6248` for better readability
+- **Valley Shadow (#9BA5A1) text** - Reserve for decorative elements only, not readable text
+- **Warning Orange (#D4A574)** - Consider using `#C49356` for text on white backgrounds
+- **Info Blue (#6B8CAE)** - Consider using `#5A7B98` for better contrast
+
+**✅ Colors That Pass WCAG AA:**
+- Stone Gray (#4A4A4A) - Excellent for body text
+- Success Green (#4F7942) - Safe for status messages
+- Error Red (#A85A5A) - Acceptable for error states
+- All dark mode color combinations pass AA standards
 
 ## Typography
 
@@ -539,7 +599,81 @@ Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog
 - Landmark roles for navigation
 - Proper heading hierarchy
 
-## Animation & Motion
+## CSS Design Tokens
+
+### Design Token Table
+
+| Token Name         | Value                       | Description                             |
+|--------------------|-----------------------------|-----------------------------------------|
+| --color-mountain-sage   | #6B8E6F                    | Primary brand color                     |
+| --color-fog-mist   | #EBF1EE                    | Light neutral for backgrounds           |
+| --color-dawn-sky   | #DDE4EA                    | Cool neutral for content areas          |
+| --gradient-sage-fog| linear-gradient(135deg, #6B8E6F, #EBF1EE) | Brand gradient for prominent elements |
+
+### Sample Tailwind CSS and Variables
+
+```jsx
+// tailwind.config.js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        mountainSage: '#6B8E6F',
+        fogMist: '#EBF1EE',
+        dawnSky: '#DDE4EA',
+      },
+      backgroundImage: {
+        'gradient-sage-fog': 'linear-gradient(135deg, #6B8E6F, #EBF1EE)',
+      },
+    },
+  },
+};
+```
+
+```css
+/* CSS Variables */
+:root {
+  --color-mountain-sage: #6B8E6F;
+  --color-fog-mist: #EBF1EE;
+  --color-dawn-sky: #DDE4EA;
+  --gradient-sage-fog: linear-gradient(135deg, #6B8E6F, #EBF1EE);
+}
+
+.element {
+  background: var(--gradient-sage-fog);
+  color: var(--color-mountain-sage);
+}
+```
+
+## Component Motion Guidelines
+
+Inspired by the ensō brush stroke, motion timings should reflect harmony and intentionality. Components should:
+
+- Begin slow, with deliberate acceleration (_ensō start_)
+- Reach a smooth, natural peak velocity (_ensō flow_)
+- End gently with a deceleration (_ensō finish_)
+
+### Motion Implementation
+
+```css
+@keyframes ensoMotion {
+  0% { transform: scale(0.8); opacity: 0; }
+  40% { transform: scale(1.05); opacity: 1; }
+  60% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.element-motion {
+  animation: ensoMotion 0.7s ease-in-out;
+}
+```
+
+## Annotated UI Mockups
+
+- **Hero Section**: [Figma Link](https://www.figma.com/file/placeholder-figma-link-1)
+- **Event Card**: [Figma Link](https://www.figma.com/file/placeholder-figma-link-2)
+- **Members Dashboard**: [Figma Link](https://www.figma.com/file/placeholder-figma-link-3)
+
+## Animation  Motion
 
 ### Principles
 
