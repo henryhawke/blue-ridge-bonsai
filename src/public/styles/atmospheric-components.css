@@ -1,0 +1,697 @@
+/**
+ * ==========================================================================
+ * ATMOSPHERIC UI COMPONENTS
+ * Blue Ridge Bonsai Society - Glass Morphism & Atmospheric Design
+ * ==========================================================================
+ */
+
+/**
+ * ==========================================================================
+ * GLASS CARD COMPONENTS
+ * ==========================================================================
+ */
+
+.glass-card {
+  background: var(--glass-white);
+  backdrop-filter: var(--backdrop-atmospheric);
+  -webkit-backdrop-filter: var(--backdrop-atmospheric);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-glass);
+  transition: all var(--duration-300) var(--ease-glass);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    transparent
+  );
+  z-index: 1;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glass-lg);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.glass-card:hover::before {
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    transparent
+  );
+}
+
+/* Glass Card Variants */
+.glass-card--sage {
+  background: var(--glass-sage);
+  border-color: rgba(107, 142, 111, 0.3);
+}
+
+.glass-card--dark {
+  background: var(--glass-dark);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--cloud-white);
+}
+
+.glass-card--strong {
+  background: var(--glass-white-strong);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC HERO SECTIONS
+ * ==========================================================================
+ */
+
+.hero-atmospheric {
+  position: relative;
+  background: linear-gradient(135deg, 
+    var(--cloud-white) 0%, 
+    var(--mountain-haze) 50%, 
+    var(--valley-mist) 100%
+  );
+  padding: var(--space-32) var(--space-4);
+  overflow: hidden;
+}
+
+.hero-atmospheric::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffffff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  pointer-events: none;
+}
+
+.hero-atmospheric .hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: var(--container-4xl);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero-floating-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.floating-orb {
+  position: absolute;
+  border-radius: var(--radius-full);
+  background: radial-gradient(circle, 
+    rgba(107, 142, 111, 0.1) 0%, 
+    rgba(107, 142, 111, 0.05) 50%, 
+    transparent 100%
+  );
+  animation: float 8s ease-in-out infinite;
+}
+
+.floating-orb:nth-child(1) {
+  width: 120px;
+  height: 120px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.floating-orb:nth-child(2) {
+  width: 80px;
+  height: 80px;
+  top: 20%;
+  right: 15%;
+  animation-delay: 2s;
+}
+
+.floating-orb:nth-child(3) {
+  width: 100px;
+  height: 100px;
+  bottom: 15%;
+  left: 20%;
+  animation-delay: 4s;
+}
+
+.floating-orb:nth-child(4) {
+  width: 60px;
+  height: 60px;
+  bottom: 25%;
+  right: 10%;
+  animation-delay: 6s;
+}
+
+/**
+ * ==========================================================================
+ * GLASS NAVIGATION COMPONENTS
+ * ==========================================================================
+ */
+
+.nav-glass-item {
+  background: var(--glass-white);
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-4);
+  transition: all var(--duration-200) var(--ease-glass);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-glass-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent
+  );
+  transition: left var(--duration-300) var(--ease-out);
+}
+
+.nav-glass-item:hover::before {
+  left: 100%;
+}
+
+.nav-glass-item:hover {
+  background: var(--glass-white-strong);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-atmospheric);
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC BUTTONS
+ * ==========================================================================
+ */
+
+.btn-atmospheric {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--glass-sage);
+  backdrop-filter: var(--backdrop-atmospheric);
+  -webkit-backdrop-filter: var(--backdrop-atmospheric);
+  border: 1px solid rgba(107, 142, 111, 0.3);
+  border-radius: var(--radius-lg);
+  color: var(--mountain-sage);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-base);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--duration-200) var(--ease-glass);
+  overflow: hidden;
+}
+
+.btn-atmospheric::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    transparent
+  );
+}
+
+.btn-atmospheric::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  border-radius: var(--radius-full);
+  transform: translate(-50%, -50%);
+  transition: all var(--duration-300) var(--ease-out);
+}
+
+.btn-atmospheric:hover {
+  background: var(--glass-sage-strong);
+  border-color: rgba(107, 142, 111, 0.5);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-atmospheric);
+  color: var(--mountain-sage-dark);
+}
+
+.btn-atmospheric:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-atmospheric:active {
+  transform: translateY(0);
+}
+
+/* Button Variants */
+.btn-atmospheric--primary {
+  background: var(--mountain-sage);
+  color: var(--cloud-white);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-atmospheric--primary:hover {
+  background: var(--mountain-sage-dark);
+  color: var(--cloud-white);
+}
+
+.btn-atmospheric--outline {
+  background: transparent;
+  border: 2px solid var(--mountain-sage);
+  color: var(--mountain-sage);
+}
+
+.btn-atmospheric--outline:hover {
+  background: var(--glass-sage);
+  border-color: var(--mountain-sage-dark);
+}
+
+.btn-atmospheric--ghost {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--mountain-sage);
+}
+
+.btn-atmospheric--ghost:hover {
+  background: var(--glass-sage);
+  border-color: rgba(107, 142, 111, 0.2);
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC FORM COMPONENTS
+ * ==========================================================================
+ */
+
+.form-glass {
+  background: var(--glass-white);
+  backdrop-filter: var(--backdrop-atmospheric);
+  -webkit-backdrop-filter: var(--backdrop-atmospheric);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-glass);
+}
+
+.input-atmospheric {
+  width: 100%;
+  padding: var(--space-4);
+  background: var(--glass-white-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  color: var(--stone-gray);
+  transition: all var(--duration-200) var(--ease-glass);
+  position: relative;
+}
+
+.input-atmospheric::placeholder {
+  color: var(--valley-shadow);
+  opacity: 0.7;
+}
+
+.input-atmospheric:focus {
+  outline: none;
+  border-color: var(--mountain-sage);
+  box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.input-atmospheric:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.label-atmospheric {
+  display: block;
+  margin-bottom: var(--space-2);
+  color: var(--mountain-sage);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-sm);
+}
+
+.textarea-atmospheric {
+  width: 100%;
+  min-height: 120px;
+  padding: var(--space-4);
+  background: var(--glass-white-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-primary);
+  font-size: var(--text-base);
+  color: var(--stone-gray);
+  resize: vertical;
+  transition: all var(--duration-200) var(--ease-glass);
+}
+
+.textarea-atmospheric:focus {
+  outline: none;
+  border-color: var(--mountain-sage);
+  box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC MODAL COMPONENTS
+ * ==========================================================================
+ */
+
+.modal-atmospheric {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 29, 27, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity var(--duration-300) var(--ease-out);
+}
+
+.modal-atmospheric.active .modal-backdrop {
+  opacity: 1;
+}
+
+.modal-content {
+  position: relative;
+  background: var(--glass-white-strong);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  max-width: var(--container-lg);
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  transition: all var(--duration-300) var(--ease-glass);
+}
+
+.modal-atmospheric.active .modal-content {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.modal-header {
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+  padding: var(--space-6);
+}
+
+.modal-footer {
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC NOTIFICATION COMPONENTS
+ * ==========================================================================
+ */
+
+.notification-atmospheric {
+  position: fixed;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: var(--z-notification);
+  background: var(--glass-white-strong);
+  backdrop-filter: var(--backdrop-atmospheric);
+  -webkit-backdrop-filter: var(--backdrop-atmospheric);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-6);
+  box-shadow: var(--shadow-floating);
+  max-width: 400px;
+  transform: translateX(100%);
+  transition: transform var(--duration-300) var(--ease-glass);
+}
+
+.notification-atmospheric.show {
+  transform: translateX(0);
+}
+
+.notification-atmospheric::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--mountain-sage);
+  border-radius: var(--radius-full) 0 0 var(--radius-full);
+}
+
+.notification-success::before {
+  background: var(--success-green);
+}
+
+.notification-warning::before {
+  background: var(--warning-amber);
+}
+
+.notification-error::before {
+  background: var(--error-red);
+}
+
+.notification-info::before {
+  background: var(--info-blue);
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC TOOLTIPS
+ * ==========================================================================
+ */
+
+.tooltip-atmospheric {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-atmospheric::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  background: var(--glass-dark-strong);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--cloud-white);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--duration-200) var(--ease-glass);
+  z-index: var(--z-tooltip);
+}
+
+.tooltip-atmospheric::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-2px);
+  border: 4px solid transparent;
+  border-top-color: rgba(26, 29, 27, 0.8);
+  opacity: 0;
+  transition: opacity var(--duration-200) var(--ease-glass);
+  z-index: var(--z-tooltip);
+}
+
+.tooltip-atmospheric:hover::before,
+.tooltip-atmospheric:hover::after {
+  opacity: 1;
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC PROGRESS INDICATORS
+ * ==========================================================================
+ */
+
+.progress-atmospheric {
+  width: 100%;
+  height: var(--space-2);
+  background: var(--glass-white);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, 
+    var(--mountain-sage), 
+    var(--mountain-sage-light)
+  );
+  border-radius: var(--radius-full);
+  transition: width var(--duration-300) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.4), 
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC LOADING COMPONENTS
+ * ==========================================================================
+ */
+
+.loading-atmospheric {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.loading-dot {
+  width: var(--space-2);
+  height: var(--space-2);
+  background: var(--mountain-sage);
+  border-radius: var(--radius-full);
+  animation: atmospheric-pulse 1.4s ease-in-out infinite both;
+}
+
+.loading-dot:nth-child(1) { animation-delay: -0.32s; }
+.loading-dot:nth-child(2) { animation-delay: -0.16s; }
+.loading-dot:nth-child(3) { animation-delay: 0s; }
+
+.spinner-atmospheric {
+  width: var(--space-8);
+  height: var(--space-8);
+  border: 2px solid var(--glass-sage);
+  border-top: 2px solid var(--mountain-sage);
+  border-radius: var(--radius-full);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/**
+ * ==========================================================================
+ * RESPONSIVE ATMOSPHERIC COMPONENTS
+ * ==========================================================================
+ */
+
+@media (max-width: 768px) {
+  .glass-card {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .hero-atmospheric {
+    padding: var(--space-16) var(--space-4);
+  }
+  
+  .floating-orb {
+    display: none;
+  }
+  
+  .modal-content {
+    margin: var(--space-4);
+    border-radius: var(--radius-xl);
+  }
+  
+  .notification-atmospheric {
+    left: var(--space-4);
+    right: var(--space-4);
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-orb,
+  .progress-bar::before,
+  .loading-dot,
+  .spinner-atmospheric {
+    animation: none;
+  }
+  
+  .glass-card:hover,
+  .btn-atmospheric:hover,
+  .nav-glass-item:hover {
+    transform: none;
+  }
+}

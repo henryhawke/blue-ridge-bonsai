@@ -1,0 +1,895 @@
+<!--
+  ==========================================================================
+  ATMOSPHERIC CARD COMPONENTS
+  Blue Ridge Bonsai Society - Card Component Library
+  ==========================================================================
+-->
+
+<!-- Base Glass Card -->
+<div class="glass-card" data-component="card" data-hoverable="true">
+  <div class="glass-card-header">
+    <h3 class="glass-card-title">Card Title</h3>
+    <p class="glass-card-subtitle">Optional subtitle</p>
+  </div>
+  <div class="glass-card-content">
+    <p>Card content goes here. This is the main body of the card with atmospheric glass effects.</p>
+  </div>
+  <div class="glass-card-footer">
+    <button class="btn-atmospheric btn-atmospheric--ghost">Action</button>
+  </div>
+</div>
+
+<!-- Feature Card -->
+<div class="glass-card glass-card--feature" data-component="card" data-parallax="true" data-glow="true">
+  <div class="glass-card-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+    </svg>
+  </div>
+  <div class="glass-card-header">
+    <h3 class="glass-card-title">Feature Title</h3>
+  </div>
+  <div class="glass-card-content">
+    <p>Highlight key features with this enhanced card design that includes icons and enhanced visual effects.</p>
+  </div>
+  <div class="glass-card-metrics">
+    <div class="metric">
+      <span class="metric-value">150+</span>
+      <span class="metric-label">Members</span>
+    </div>
+    <div class="metric">
+      <span class="metric-value">25</span>
+      <span class="metric-label">Years</span>
+    </div>
+  </div>
+</div>
+
+<!-- Image Card -->
+<div class="glass-card glass-card--image" data-component="card" data-hover="image">
+  <div class="glass-card-image">
+    <img src="/images/bonsai-sample.jpg" alt="Beautiful bonsai tree" loading="lazy">
+    <div class="glass-card-overlay">
+      <button class="btn-atmospheric btn-atmospheric--primary">View Gallery</button>
+    </div>
+  </div>
+  <div class="glass-card-content">
+    <h3 class="glass-card-title">Stunning Japanese Maple</h3>
+    <p class="glass-card-description">
+      A 15-year-old Japanese Maple showcasing the beauty of autumn colors in miniature form.
+    </p>
+    <div class="glass-card-tags">
+      <span class="tag">Deciduous</span>
+      <span class="tag">Advanced</span>
+      <span class="tag">Outdoor</span>
+    </div>
+  </div>
+</div>
+
+<!-- Article Card -->
+<div class="glass-card glass-card--article" data-component="card" data-clickable="true">
+  <div class="glass-card-badge">
+    <span class="badge badge--new">New</span>
+  </div>
+  <div class="glass-card-header">
+    <h3 class="glass-card-title">Monthly Care Tips for Winter</h3>
+    <div class="glass-card-meta">
+      <span class="meta-author">By Sarah Chen</span>
+      <span class="meta-date">December 15, 2024</span>
+      <span class="meta-read-time">5 min read</span>
+    </div>
+  </div>
+  <div class="glass-card-content">
+    <p>Learn essential winter care techniques to keep your bonsai healthy during the coldest months of the year.</p>
+  </div>
+  <div class="glass-card-footer">
+    <div class="card-actions">
+      <button class="btn-atmospheric btn-atmospheric--ghost">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
+        </svg>
+        Like
+      </button>
+      <button class="btn-atmospheric btn-atmospheric--ghost">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16,6 12,2 8,6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+        Share
+      </button>
+    </div>
+    <div class="reading-progress">
+      <div class="progress-bar" style="width: 0%"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Event Card -->
+<div class="glass-card glass-card--event" data-component="card" data-animate-on-scroll="fadeInUp">
+  <div class="glass-card-date">
+    <span class="date-month">Jan</span>
+    <span class="date-day">28</span>
+    <span class="date-year">2025</span>
+  </div>
+  <div class="glass-card-content">
+    <h3 class="glass-card-title">Winter Styling Workshop</h3>
+    <div class="glass-card-location">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+      NC Arboretum Education Center
+    </div>
+    <div class="glass-card-time">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12,6 12,12 16,14"/>
+      </svg>
+      2:00 PM - 5:00 PM
+    </div>
+    <p class="glass-card-description">
+      Learn advanced styling techniques for your winter trees with master artist John Williams.
+    </p>
+  </div>
+  <div class="glass-card-footer">
+    <div class="event-info">
+      <span class="event-price">$45</span>
+      <span class="event-spots">8 spots left</span>
+    </div>
+    <button class="btn-atmospheric btn-atmospheric--primary">Register Now</button>
+  </div>
+</div>
+
+<!-- Product Card -->
+<div class="glass-card glass-card--product" data-component="card" data-magnetic="true">
+  <div class="glass-card-image">
+    <img src="/images/bonsai-tools.jpg" alt="Professional bonsai tool set" loading="lazy">
+    <div class="glass-card-wishlist">
+      <button class="btn-atmospheric btn-atmospheric--ghost wishlist-btn" aria-label="Add to wishlist">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="glass-card-content">
+    <h3 class="glass-card-title">Professional Tool Set</h3>
+    <div class="glass-card-rating">
+      <div class="stars">
+        <span class="star filled">★</span>
+        <span class="star filled">★</span>
+        <span class="star filled">★</span>
+        <span class="star filled">★</span>
+        <span class="star">★</span>
+      </div>
+      <span class="rating-count">(127 reviews)</span>
+    </div>
+    <p class="glass-card-description">
+      Complete professional-grade tool set including concave cutters, wire cutters, and trimming shears.
+    </p>
+    <div class="glass-card-price">
+      <span class="price-current">$189.99</span>
+      <span class="price-original">$229.99</span>
+      <span class="price-discount">18% off</span>
+    </div>
+  </div>
+  <div class="glass-card-footer">
+    <button class="btn-atmospheric btn-atmospheric--primary card-add-to-cart">
+      Add to Cart
+    </button>
+  </div>
+</div>
+
+<!-- Profile Card -->
+<div class="glass-card glass-card--profile" data-component="card" data-hover="profile">
+  <div class="glass-card-avatar">
+    <img src="/images/master-artist.jpg" alt="Master Bonsai Artist" loading="lazy">
+    <div class="avatar-status online"></div>
+  </div>
+  <div class="glass-card-content">
+    <h3 class="glass-card-title">Master Kenji Nakamura</h3>
+    <p class="glass-card-role">Lead Instructor & Artist</p>
+    <p class="glass-card-bio">
+      With over 30 years of experience, Master Nakamura brings authentic Japanese techniques to our community.
+    </p>
+    <div class="glass-card-stats">
+      <div class="stat">
+        <span class="stat-value">150+</span>
+        <span class="stat-label">Students</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">25</span>
+        <span class="stat-label">Awards</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">30+</span>
+        <span class="stat-label">Years</span>
+      </div>
+    </div>
+  </div>
+  <div class="glass-card-footer">
+    <button class="btn-atmospheric btn-atmospheric--outline">View Profile</button>
+    <button class="btn-atmospheric btn-atmospheric--primary">Contact</button>
+  </div>
+</div>
+
+<!-- Progress Card -->
+<div class="glass-card glass-card--progress" data-component="card">
+  <div class="glass-card-header">
+    <h3 class="glass-card-title">Your Bonsai Journey</h3>
+    <div class="progress-percentage">67%</div>
+  </div>
+  <div class="glass-card-content">
+    <div class="progress-item">
+      <div class="progress-icon completed">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+      </div>
+      <div class="progress-details">
+        <h4>Basic Care Mastery</h4>
+        <p>Completed 3 months ago</p>
+      </div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-icon completed">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+      </div>
+      <div class="progress-details">
+        <h4>Wiring Techniques</h4>
+        <p>Completed 1 month ago</p>
+      </div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-icon current">
+        <span>3</span>
+      </div>
+      <div class="progress-details">
+        <h4>Advanced Styling</h4>
+        <p>In progress - 2 of 5 lessons</p>
+      </div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-icon pending">
+        <span>4</span>
+      </div>
+      <div class="progress-details">
+        <h4>Exhibition Preparation</h4>
+        <p>Locked - Complete previous level</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Newsletter Card -->
+<div class="glass-card glass-card--newsletter" data-component="card" data-glow="true">
+  <div class="glass-card-header">
+    <div class="newsletter-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    </div>
+    <h3 class="glass-card-title">Stay Inspired</h3>
+    <p class="glass-card-subtitle">Get monthly bonsai tips and inspiration</p>
+  </div>
+  <div class="glass-card-content">
+    <form class="newsletter-form" data-component="form">
+      <div class="form-group">
+        <label for="newsletter-email" class="visually-hidden">Email address</label>
+        <input 
+          type="email" 
+          id="newsletter-email"
+          class="input-atmospheric newsletter-input" 
+          placeholder="Enter your email address"
+          required
+        >
+      </div>
+      <button type="submit" class="btn-atmospheric btn-atmospheric--primary newsletter-submit">
+        Subscribe
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12,5 19,12 12,19"/>
+        </svg>
+      </button>
+    </form>
+    <p class="newsletter-disclaimer">
+      Join 2,500+ bonsai enthusiasts. Unsubscribe anytime.
+    </p>
+  </div>
+</div>
+
+<!-- Testimonial Card -->
+<div class="glass-card glass-card--testimonial" data-component="card" data-animate-on-scroll="scaleIn">
+  <div class="testimonial-quote">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+      <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/>
+      <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"/>
+    </svg>
+  </div>
+  <div class="glass-card-content">
+    <p class="testimonial-text">
+      "The Blue Ridge Bonsai Society has transformed my understanding of this ancient art. The community support and expert guidance have been invaluable in my journey."
+    </p>
+  </div>
+  <div class="glass-card-footer">
+    <div class="testimonial-author">
+      <img src="/images/testimonial-author.jpg" alt="Maria Rodriguez" loading="lazy">
+      <div class="author-details">
+        <h4>Maria Rodriguez</h4>
+        <p>Member since 2019</p>
+      </div>
+    </div>
+    <div class="testimonial-rating">
+      <div class="stars">
+        <span class="star filled">★</span>
+        <span class="star filled">★</span>
+        <span class="star filled">★</span>
+        <span class="star filled">★</span>
+        <span class="star filled">★</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pricing Card -->
+<div class="glass-card glass-card--pricing" data-component="card" data-hover="pricing">
+  <div class="pricing-badge">
+    <span class="badge badge--popular">Most Popular</span>
+  </div>
+  <div class="glass-card-header">
+    <h3 class="glass-card-title">Premium Membership</h3>
+    <div class="pricing-amount">
+      <span class="currency">$</span>
+      <span class="price">89</span>
+      <span class="period">/year</span>
+    </div>
+    <p class="pricing-description">Perfect for serious bonsai enthusiasts</p>
+  </div>
+  <div class="glass-card-content">
+    <ul class="pricing-features">
+      <li class="feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+        Access to all workshops and events
+      </li>
+      <li class="feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+        Exclusive member-only content
+      </li>
+      <li class="feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+        Expert consultation sessions
+      </li>
+      <li class="feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+        Annual society dinner invitation
+      </li>
+      <li class="feature">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20,6 9,17 4,12"/>
+        </svg>
+        Tree health monitoring service
+      </li>
+    </ul>
+  </div>
+  <div class="glass-card-footer">
+    <button class="btn-atmospheric btn-atmospheric--primary pricing-cta">
+      Choose Premium
+    </button>
+    <p class="pricing-note">Cancel anytime. 30-day money-back guarantee.</p>
+  </div>
+</div>
+
+<!-- CTA Card -->
+<div class="glass-card glass-card--cta" data-component="card" data-parallax="0.3">
+  <div class="glass-card-background">
+    <div class="cta-pattern"></div>
+  </div>
+  <div class="glass-card-content">
+    <h2 class="glass-card-title">Ready to Begin Your Bonsai Journey?</h2>
+    <p class="glass-card-description">
+      Join our community of passionate bonsai artists and discover the meditative art of miniature tree cultivation.
+    </p>
+    <div class="cta-actions">
+      <button class="btn-atmospheric btn-atmospheric--primary btn-large">
+        Join Our Society
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12,5 19,12 12,19"/>
+        </svg>
+      </button>
+      <button class="btn-atmospheric btn-atmospheric--outline btn-large">
+        Attend a Workshop
+      </button>
+    </div>
+    <div class="cta-benefits">
+      <div class="benefit">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11H1v9h8v-9z"/>
+          <path d="M20 11h-8v9h8v-9z"/>
+          <path d="M9 11V5a4 4 0 0 1 8 0v6"/>
+        </svg>
+        <span>Expert Guidance</span>
+      </div>
+      <div class="benefit">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span>Supportive Community</span>
+      </div>
+      <div class="benefit">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+        </svg>
+        <span>Proven Results</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Additional card-specific styles */
+.glass-card-header {
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-content {
+  padding: var(--space-4) var(--space-6);
+}
+
+.glass-card-footer {
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card-title {
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--stone-gray);
+}
+
+.glass-card-subtitle {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--valley-shadow);
+}
+
+.glass-card--feature {
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.glass-card-icon {
+  width: var(--size-xl);
+  height: var(--size-xl);
+  margin: 0 auto var(--space-4);
+  background: var(--glass-sage);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mountain-sage);
+}
+
+.glass-card--image {
+  padding: 0;
+  overflow: hidden;
+}
+
+.glass-card-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform var(--duration-300) var(--ease-out);
+}
+
+.glass-card--image:hover .glass-card-image img {
+  transform: scale(1.05);
+}
+
+.glass-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 29, 27, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--duration-300) var(--ease-out);
+}
+
+.glass-card--image:hover .glass-card-overlay {
+  opacity: 1;
+}
+
+.glass-card-tags {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.tag {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  background: var(--glass-sage);
+  color: var(--mountain-sage);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-full);
+  font-weight: var(--font-weight-medium);
+}
+
+.glass-card-meta {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--valley-shadow);
+}
+
+.card-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.glass-card--event {
+  position: relative;
+  padding-left: var(--space-20);
+}
+
+.glass-card-date {
+  position: absolute;
+  left: var(--space-6);
+  top: var(--space-6);
+  text-align: center;
+  background: var(--mountain-sage);
+  color: var(--cloud-white);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.date-month {
+  display: block;
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+}
+
+.date-day {
+  display: block;
+  font-size: var(--text-2xl);
+  line-height: 1;
+}
+
+.date-year {
+  display: block;
+  font-size: var(--text-xs);
+}
+
+.glass-card-location,
+.glass-card-time {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+  font-size: var(--text-sm);
+  color: var(--valley-shadow);
+}
+
+.event-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.event-price {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--mountain-sage);
+}
+
+.event-spots {
+  font-size: var(--text-sm);
+  color: var(--valley-shadow);
+}
+
+/* Product Card Styles */
+.glass-card-wishlist {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 2;
+}
+
+.glass-card-rating {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-2) 0;
+}
+
+.stars {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.star {
+  color: var(--valley-mist);
+}
+
+.star.filled {
+  color: var(--autumn-gold);
+}
+
+.rating-count {
+  font-size: var(--text-sm);
+  color: var(--valley-shadow);
+}
+
+.glass-card-price {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.price-current {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--mountain-sage);
+}
+
+.price-original {
+  font-size: var(--text-base);
+  color: var(--valley-shadow);
+  text-decoration: line-through;
+}
+
+.price-discount {
+  font-size: var(--text-sm);
+  color: var(--success-green);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Newsletter Card */
+.newsletter-form {
+  display: flex;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+}
+
+.newsletter-input {
+  flex: 1;
+}
+
+.newsletter-disclaimer {
+  font-size: var(--text-xs);
+  color: var(--valley-shadow);
+  text-align: center;
+  margin-top: var(--space-3);
+}
+
+/* Testimonial Card */
+.testimonial-quote {
+  text-align: center;
+  margin-bottom: var(--space-4);
+  color: var(--mountain-sage);
+  opacity: 0.6;
+}
+
+.testimonial-text {
+  font-size: var(--text-lg);
+  font-style: italic;
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-4);
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.testimonial-author img {
+  width: var(--size-lg);
+  height: var(--size-lg);
+  border-radius: var(--radius-full);
+  object-fit: cover;
+}
+
+.author-details h4 {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.author-details p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--valley-shadow);
+}
+
+/* Pricing Card */
+.pricing-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  background: var(--mountain-sage);
+  color: var(--cloud-white);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge--popular {
+  background: var(--autumn-gold);
+}
+
+.pricing-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin: var(--space-4) 0;
+}
+
+.currency {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.price {
+  font-size: var(--text-6xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--mountain-sage);
+}
+
+.period {
+  font-size: var(--text-base);
+  color: var(--valley-shadow);
+}
+
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.feature:last-child {
+  border-bottom: none;
+}
+
+.feature svg {
+  color: var(--success-green);
+}
+
+.pricing-note {
+  font-size: var(--text-xs);
+  color: var(--valley-shadow);
+  text-align: center;
+  margin-top: var(--space-3);
+}
+
+/* CTA Card */
+.glass-card--cta {
+  text-align: center;
+  padding: var(--space-12);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.cta-pattern {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 20%, rgba(107, 142, 111, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(212, 165, 116, 0.1) 0%, transparent 50%);
+}
+
+.cta-actions {
+  display: flex;
+  gap: var(--space-4);
+  justify-content: center;
+  margin: var(--space-8) 0;
+}
+
+.btn-large {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-lg);
+}
+
+.cta-benefits {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+}
+
+.benefit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--mountain-sage);
+}
+
+.benefit svg {
+  color: var(--mountain-sage);
+}
+
+.benefit span {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 768px) {
+  .cta-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-benefits {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+  }
+  
+  .glass-card--event {
+    padding-left: var(--space-6);
+  }
+  
+  .glass-card-date {
+    position: relative;
+    margin-bottom: var(--space-4);
+  }
+}
+</style>

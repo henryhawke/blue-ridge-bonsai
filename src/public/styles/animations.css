@@ -1,0 +1,789 @@
+/**
+ * ==========================================================================
+ * ATMOSPHERIC ANIMATION SYSTEM
+ * Blue Ridge Bonsai Society - Performance-Optimized Animations
+ * ==========================================================================
+ */
+
+/**
+ * ==========================================================================
+ * ANIMATION PERFORMANCE OPTIMIZATIONS
+ * ==========================================================================
+ */
+
+/* Ensure hardware acceleration for key animated elements */
+.animate-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+}
+
+/* Contain layout shifts during animations */
+.animate-contained {
+  contain: layout style paint;
+}
+
+/* Optimize animations for 60fps performance */
+.animate-optimized {
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/**
+ * ==========================================================================
+ * ENTRANCE ANIMATIONS
+ * ==========================================================================
+ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/**
+ * ==========================================================================
+ * ATMOSPHERIC SPECIFIC ANIMATIONS
+ * ==========================================================================
+ */
+
+@keyframes atmosphericFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  33% {
+    transform: translateY(-10px);
+  }
+  66% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes atmosphericGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(107, 142, 111, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(107, 142, 111, 0.3);
+  }
+}
+
+@keyframes atmosphericPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes atmosphericShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes atmosphericWave {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes glassMorph {
+  0% {
+    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.2);
+  }
+  100% {
+    backdrop-filter: blur(4px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+@keyframes floatingOrb {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(10px, -15px) rotate(90deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-5px, -10px) rotate(180deg);
+    opacity: 1;
+  }
+  75% {
+    transform: translate(-15px, 5px) rotate(270deg);
+    opacity: 0.8;
+  }
+}
+
+@keyframes mist {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-20px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.2);
+  }
+}
+
+/**
+ * ==========================================================================
+ * MICRO-INTERACTIONS
+ * ==========================================================================
+ */
+
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes cardHover {
+  from {
+    transform: translateY(0) scale(1);
+    box-shadow: var(--shadow-base);
+  }
+  to {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-floating);
+  }
+}
+
+@keyframes rippleEffect {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes iconSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes iconBounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 14%, 28%, 42%, 70% {
+    transform: scale(1);
+  }
+  7%, 21%, 35% {
+    transform: scale(1.1);
+  }
+}
+
+/**
+ * ==========================================================================
+ * LOADING ANIMATIONS
+ * ==========================================================================
+ */
+
+@keyframes loadingDots {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes loadingSpinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loadingBar {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 60%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes skeletonLoading {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+/**
+ * ==========================================================================
+ * SCROLL-TRIGGERED ANIMATIONS
+ * ==========================================================================
+ */
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes revealLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes revealRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes revealScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/**
+ * ==========================================================================
+ * PARALLAX ANIMATIONS
+ * ==========================================================================
+ */
+
+@keyframes parallaxSlow {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(var(--scroll-offset, 0px));
+  }
+}
+
+@keyframes parallaxMedium {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(var(--scroll-offset, 0px) * 0.5));
+  }
+}
+
+@keyframes parallaxFast {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(var(--scroll-offset, 0px) * -0.2));
+  }
+}
+
+/**
+ * ==========================================================================
+ * UTILITY ANIMATION CLASSES
+ * ==========================================================================
+ */
+
+/* Entrance Animations */
+.animate-fade-in {
+  animation: fadeIn var(--duration-300) var(--ease-out) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-500) var(--ease-out) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--duration-500) var(--ease-out) forwards;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft var(--duration-500) var(--ease-out) forwards;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight var(--duration-500) var(--ease-out) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-300) var(--ease-out) forwards;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp var(--duration-500) var(--ease-out) forwards;
+}
+
+.animate-slide-in-down {
+  animation: slideInDown var(--duration-500) var(--ease-out) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft var(--duration-500) var(--ease-out) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight var(--duration-500) var(--ease-out) forwards;
+}
+
+/* Atmospheric Animations */
+.animate-atmospheric-float {
+  animation: atmosphericFloat 6s var(--ease-atmospheric) infinite;
+}
+
+.animate-atmospheric-glow {
+  animation: atmosphericGlow 4s var(--ease-atmospheric) infinite;
+}
+
+.animate-atmospheric-pulse {
+  animation: atmosphericPulse 2s var(--ease-atmospheric) infinite;
+}
+
+.animate-atmospheric-shimmer {
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: atmosphericShimmer 2s infinite;
+}
+
+.animate-glass-morph {
+  animation: glassMorph 8s var(--ease-atmospheric) infinite;
+}
+
+.animate-floating-orb {
+  animation: floatingOrb 12s var(--ease-atmospheric) infinite;
+}
+
+.animate-mist {
+  animation: mist 4s var(--ease-atmospheric) infinite;
+}
+
+/* Micro-interactions */
+.animate-button-press {
+  animation: buttonPress var(--duration-150) var(--ease-out);
+}
+
+.animate-card-hover {
+  animation: cardHover var(--duration-200) var(--ease-out) forwards;
+}
+
+.animate-icon-spin {
+  animation: iconSpin 1s linear infinite;
+}
+
+.animate-icon-bounce {
+  animation: iconBounce 1s var(--ease-bounce);
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* Loading Animations */
+.animate-loading-dots {
+  animation: loadingDots 1.4s ease-in-out infinite both;
+}
+
+.animate-loading-spinner {
+  animation: loadingSpinner 1s linear infinite;
+}
+
+.animate-loading-bar {
+  animation: loadingBar 2s var(--ease-out) infinite;
+}
+
+.animate-skeleton {
+  background: linear-gradient(90deg, 
+    var(--mountain-haze) 25%, 
+    var(--valley-mist) 50%, 
+    var(--mountain-haze) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.5s infinite;
+}
+
+/* Scroll-triggered Animations */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all var(--duration-700) var(--ease-out);
+}
+
+.animate-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.animate-reveal-up {
+  animation: revealUp var(--duration-700) var(--ease-out) forwards;
+}
+
+.animate-reveal-left {
+  animation: revealLeft var(--duration-700) var(--ease-out) forwards;
+}
+
+.animate-reveal-right {
+  animation: revealRight var(--duration-700) var(--ease-out) forwards;
+}
+
+.animate-reveal-scale {
+  animation: revealScale var(--duration-700) var(--ease-out) forwards;
+}
+
+/* Parallax */
+.animate-parallax-slow {
+  transform: translateY(var(--parallax-offset, 0));
+  transition: transform 0.1s linear;
+}
+
+.animate-parallax-medium {
+  transform: translateY(calc(var(--parallax-offset, 0) * 0.5));
+  transition: transform 0.1s linear;
+}
+
+.animate-parallax-fast {
+  transform: translateY(calc(var(--parallax-offset, 0) * -0.2));
+  transition: transform 0.1s linear;
+}
+
+/**
+ * ==========================================================================
+ * ANIMATION DELAYS
+ * ==========================================================================
+ */
+
+.animate-delay-75 { animation-delay: 75ms; }
+.animate-delay-100 { animation-delay: 100ms; }
+.animate-delay-150 { animation-delay: 150ms; }
+.animate-delay-200 { animation-delay: 200ms; }
+.animate-delay-300 { animation-delay: 300ms; }
+.animate-delay-500 { animation-delay: 500ms; }
+.animate-delay-700 { animation-delay: 700ms; }
+.animate-delay-1000 { animation-delay: 1000ms; }
+
+/**
+ * ==========================================================================
+ * ANIMATION DURATIONS
+ * ==========================================================================
+ */
+
+.animate-duration-75 { animation-duration: 75ms; }
+.animate-duration-100 { animation-duration: 100ms; }
+.animate-duration-150 { animation-duration: 150ms; }
+.animate-duration-200 { animation-duration: 200ms; }
+.animate-duration-300 { animation-duration: 300ms; }
+.animate-duration-500 { animation-duration: 500ms; }
+.animate-duration-700 { animation-duration: 700ms; }
+.animate-duration-1000 { animation-duration: 1000ms; }
+
+/**
+ * ==========================================================================
+ * ANIMATION STATES
+ * ==========================================================================
+ */
+
+.animate-paused { animation-play-state: paused; }
+.animate-running { animation-play-state: running; }
+
+/**
+ * ==========================================================================
+ * HOVER ANIMATIONS
+ * ==========================================================================
+ */
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  transition: transform var(--duration-200) var(--ease-out);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+  transition: transform var(--duration-200) var(--ease-out);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-atmospheric);
+  transition: box-shadow var(--duration-200) var(--ease-out);
+}
+
+.hover-shine:hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.hover-shine:hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.2), 
+    transparent
+  );
+  animation: atmosphericShimmer var(--duration-500) ease-out;
+}
+
+/**
+ * ==========================================================================
+ * PERFORMANCE OPTIMIZATIONS
+ * ==========================================================================
+ */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-atmospheric-float,
+  .animate-atmospheric-glow,
+  .animate-atmospheric-pulse,
+  .animate-atmospheric-shimmer,
+  .animate-glass-morph,
+  .animate-floating-orb,
+  .animate-mist,
+  .animate-loading-dots,
+  .animate-loading-spinner,
+  .animate-skeleton {
+    animation: none !important;
+  }
+  
+  .hover-lift:hover,
+  .hover-scale:hover {
+    transform: none !important;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  .animate-atmospheric-shimmer {
+    background: none;
+  }
+  
+  .animate-atmospheric-glow {
+    animation: none;
+  }
+  
+  .animate-glass-morph {
+    animation: none;
+    backdrop-filter: none;
+  }
+}
+
+/**
+ * ==========================================================================
+ * INTERSECTION OBSERVER CLASSES
+ * ==========================================================================
+ */
+
+.fade-in-observer {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--duration-700) var(--ease-out),
+              transform var(--duration-700) var(--ease-out);
+}
+
+.fade-in-observer.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scale-in-observer {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity var(--duration-500) var(--ease-out),
+              transform var(--duration-500) var(--ease-out);
+}
+
+.scale-in-observer.animate-in {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slide-up-observer {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity var(--duration-700) var(--ease-out),
+              transform var(--duration-700) var(--ease-out);
+}
+
+.slide-up-observer.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}

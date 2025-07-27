@@ -1,0 +1,226 @@
+/* BLUE RIDGE BONSAI DESIGN SYSTEM - Wix Compatible */
+/* Primary color palette for atmospheric mountain design */
+
+:root {
+  /* Mountain Color Palette */
+  --mountain-sage: #6B8E6F;
+  --cloud-white: #FEFFFE;
+  --mountain-haze: #E8EDE9;
+  --valley-mist: #D1DAD3;
+  --stone-gray: #4A4A4A;
+  --earth-brown: #8B7355;
+  --autumn-gold: #D4A574;
+  
+  /* Glass effect colors */
+  --glass-white: rgba(254, 255, 254, 0.25);
+  --glass-sage: rgba(107, 142, 111, 0.15);
+  
+  /* Typography */
+  --font-primary: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-traditional: "Crimson Text", Georgia, serif;
+  --font-japanese: "Noto Sans JP", sans-serif;
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* Global base styles */
+body {
+  font-family: var(--font-primary) !important;
+  background: linear-gradient(135deg, var(--cloud-white) 0%, var(--mountain-haze) 100%) !important;
+  color: var(--stone-gray) !important;
+  line-height: 1.6 !important;
+}
+
+/* Typography scale */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-primary) !important;
+  color: var(--stone-gray) !important;
+  line-height: 1.2 !important;
+}
+
+h1 { font-size: 2.5rem !important; font-weight: 700 !important; }
+h2 { font-size: 2rem !important; font-weight: 600 !important; }
+h3 { font-size: 1.5rem !important; font-weight: 600 !important; }
+h4 { font-size: 1.25rem !important; font-weight: 500 !important; }
+h5 { font-size: 1.125rem !important; font-weight: 500 !important; }
+h6 { font-size: 1rem !important; font-weight: 500 !important; }
+
+/* Traditional content styling */
+.traditional-content {
+  font-family: var(--font-traditional) !important;
+  color: var(--earth-brown) !important;
+}
+
+.japanese-text {
+  font-family: var(--font-japanese) !important;
+}
+
+/* Button Components */
+button, [role="button"], .button, .btn {
+  background: var(--glass-sage) !important;
+  border: 1px solid rgba(107, 142, 111, 0.3) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--mountain-sage) !important;
+  padding: var(--space-sm) var(--space-md) !important;
+  font-family: var(--font-primary) !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 300ms ease !important;
+  text-decoration: none !important;
+}
+
+button:hover, [role="button"]:hover, .button:hover, .btn:hover {
+  background: rgba(107, 142, 111, 0.25) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(107, 142, 111, 0.15) !important;
+}
+
+/* Primary button variant */
+.btn-primary {
+  background: var(--mountain-sage) !important;
+  color: var(--cloud-white) !important;
+  border-color: var(--mountain-sage) !important;
+}
+
+.btn-primary:hover {
+  background: var(--stone-gray) !important;
+  border-color: var(--stone-gray) !important;
+}
+
+/* Glass card components */
+.glass-card, .card {
+  background: var(--glass-white) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: var(--space-lg) !important;
+  margin: var(--space-md) !important;
+  transition: all 300ms ease !important;
+}
+
+.glass-card:hover, .card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 25px rgba(31, 38, 135, 0.15) !important;
+}
+
+/* Section styling */
+section, .section {
+  background: var(--glass-white) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: var(--space-lg) !important;
+  margin: var(--space-md) 0 !important;
+  transition: all 300ms ease !important;
+}
+
+/* Navigation styling */
+nav, .nav, .navigation {
+  background: rgba(254, 255, 254, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+nav a, .nav-link, .navigation a {
+  color: var(--stone-gray) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  padding: var(--space-sm) var(--space-md) !important;
+  border-radius: var(--radius-md) !important;
+  transition: all 300ms ease !important;
+}
+
+nav a:hover, .nav-link:hover, .navigation a:hover {
+  background: var(--glass-sage) !important;
+  color: var(--mountain-sage) !important;
+  transform: translateY(-2px) !important;
+}
+
+nav a.active, .nav-link.active, .navigation a.active {
+  background: rgba(107, 142, 111, 0.25) !important;
+  color: var(--mountain-sage) !important;
+}
+
+/* Header styling */
+header, .header {
+  background: rgba(254, 255, 254, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+}
+
+/* Footer styling */
+footer, .footer {
+  background: var(--glass-white) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+  padding: var(--space-xl) var(--space-lg) !important;
+  margin-top: var(--space-xl) !important;
+}
+
+/* Form elements */
+input, textarea, select {
+  background: var(--glass-white) !important;
+  border: 1px solid rgba(107, 142, 111, 0.3) !important;
+  border-radius: var(--radius-md) !important;
+  padding: var(--space-sm) var(--space-md) !important;
+  font-family: var(--font-primary) !important;
+  color: var(--stone-gray) !important;
+  transition: all 300ms ease !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--mountain-sage) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(107, 142, 111, 0.1) !important;
+}
+
+/* Utility classes */
+.text-center { text-align: center !important; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+
+.mb-sm { margin-bottom: var(--space-sm) !important; }
+.mb-md { margin-bottom: var(--space-md) !important; }
+.mb-lg { margin-bottom: var(--space-lg) !important; }
+
+.mt-sm { margin-top: var(--space-sm) !important; }
+.mt-md { margin-top: var(--space-md) !important; }
+.mt-lg { margin-top: var(--space-lg) !important; }
+
+.p-sm { padding: var(--space-sm) !important; }
+.p-md { padding: var(--space-md) !important; }
+.p-lg { padding: var(--space-lg) !important; }
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .glass-card, .card {
+    margin: var(--space-sm) !important;
+    padding: var(--space-md) !important;
+  }
+  
+  section, .section {
+    padding: var(--space-md) !important;
+    margin: var(--space-sm) 0 !important;
+  }
+  
+  h1 { font-size: 2rem !important; }
+  h2 { font-size: 1.75rem !important; }
+  h3 { font-size: 1.5rem !important; }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
