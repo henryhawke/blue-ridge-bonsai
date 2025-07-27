@@ -1,0 +1,712 @@
+# Blue Ridge Bonsai Society - Design System
+
+## Spirit of Blue Ridge Bonsai
+
+*"Like the ancient oak that bends in mountain winds yet never breaks, our design honors both the timeless wisdom of Japanese aesthetics and the enduring spirit of Appalachian craftsmanship."*
+
+### Fusion Philosophy
+
+The Blue Ridge Bonsai Society design system emerges from a profound cultural dialogue between East and West, mountain and tradition. Our approach weaves together three foundational elements:
+
+**Wabi-Sabi (侘寂)** - The Japanese aesthetic of finding beauty in imperfection and impermanence. Like the weathered bark of a centuries-old mountain pine, we embrace the authentic marks of time and nature.
+
+> *Sidebar: **Wabi-Sabi** (わび さび)*  
+> *Font: Noto Sans JP*  
+> *From "wabi" (humble simplicity) and "sabi" (natural aging), this philosophy teaches us that true beauty lies not in perfection, but in the honest expression of time's passage.*
+
+**Ma (間)** - The powerful use of negative space and pregnant pauses. In our design, silence speaks as loudly as content, creating breathing room for contemplation and discovery.
+
+> *Sidebar: **Ma** (ま)*  
+> *Font: Noto Sans JP*  
+> *The interval between sounds in music, the pause between words in conversation, the empty space that gives meaning to form. Ma teaches us that what is not there is as important as what is.*
+
+**Appalachian Storytelling** - The oral tradition of mountain wisdom passed down through generations. Our interface becomes a storyteller, guiding users through experiences with the unhurried pace of a front-porch conversation.
+
+> *"Granddaddy always said the mountain teaches patience - you can't rush a sunrise or hurry a stream. Same goes for growing a good bonsai."*  
+> *— Traditional Blue Ridge wisdom*
+
+### Guiding Design Tenets
+
+#### 1. Balance of Void & Form (虚実のバランス)
+Inspired by the Japanese principle of *kyojitsu*, we understand that empty space is not absence but presence. Our layouts breathe with generous whitespace, allowing each element to exist in harmony with its surroundings, like a solitary tree on a mountain ridge.
+
+#### 2. Seasonal Impermanence (季節の無常)
+Following the concept of *mono no aware* (the pathos of things), our design acknowledges the transient nature of digital experiences. Visual elements subtly evolve, content flows naturally, and user journeys unfold with the gentle rhythm of mountain seasons.
+
+> *Sidebar: **Mono no Aware** (物の哀れ)*  
+> *Font: Noto Sans JP*  
+> *The bittersweet awareness of the impermanence of all things. This aesthetic philosophy finds beauty in the fleeting nature of life and experience.*
+
+#### 3. Layered Horizons (重なる地平線)
+Like the Blue Ridge Mountains themselves, our visual hierarchy creates depth through overlapping layers. Content emerges from mist-like backgrounds, revealing itself gradually as users navigate deeper into their journey.
+
+#### 4. Crafted Naturalism (作られた自然)
+Our design celebrates the Japanese concept of *shu-ha-ri* (learn-adapt-transcend) and Appalachian craftsmanship traditions. Every element shows the hand of its maker while serving its purpose with quiet dignity.
+
+> *Sidebar: **Shu-Ha-Ri** (守破離)*  
+> *Font: Noto Sans JP*  
+> *The three stages of mastery: first learn the rules, then break the rules, finally transcend the rules. This applies to both bonsai cultivation and design evolution.*
+
+> *"A well-made thing carries the spirit of its maker. Whether it's a hickory chair or a website button, you can feel the care that went into it."*  
+> *— Appalachian craft tradition*
+
+## Overview
+
+This design system creates a harmonious balance between traditional Japanese bonsai aesthetics and modern Appalachian mountain culture, reflecting the unique character of the Blue Ridge Bonsai Society. The design emphasizes tranquility, natural beauty, and accessibility while maintaining a sophisticated, professional appearance.
+
+## Design Philosophy
+
+### Core Principles
+
+- **Zen Simplicity**: Clean, uncluttered layouts that allow content to breathe
+- **Natural Harmony**: Color palettes and imagery inspired by the Blue Ridge Mountains and bonsai traditions
+- **Respectful Tradition**: Subtle references to Japanese design principles without appropriation
+- **Accessible Excellence**: Universal design that welcomes all skill levels and abilities
+- **Organic Flow**: Natural content hierarchy that guides users intuitively
+
+## Color Palette
+
+### Primary Colors
+
+- **Mountain Sage**: `#6B8E6F` - Primary brand color, inspired by Blue Ridge mountain foliage
+- **Stone Gray**: `#4A4A4A` - Secondary text and UI elements
+- **Cloud White**: `#FEFFFE` - Background and negative space
+- **Earth Brown**: `#8B7355` - Accent color for traditional elements
+
+### Secondary Colors
+
+- **Moss Green**: `#7D8471` - Subtle highlights and hover states
+- **Slate Blue**: `#5C6B73` - Secondary buttons and links
+- **Warm Cream**: `#F9F7F4` - Alternative background for sections
+- **Copper Accent**: `#B08D57` - Call-to-action elements and pricing
+
+### Semantic Colors
+
+- **Success**: `#4F7942` - Confirmations and positive actions
+- **Warning**: `#D4A574` - Alerts and cautionary information
+- **Error**: `#A85A5A` - Error states and critical information
+- **Info**: `#6B8CAE` - Informational content and tips
+
+### Color Usage Guidelines
+
+- Use Mountain Sage for primary actions and branding
+- Stone Gray for body text (minimum contrast ratio 4.5:1)
+- Limit accent colors to 20% of any given page
+- Maintain 60% neutral, 30% primary, 10% accent ratio
+
+## Typography
+
+### Primary Typeface: Inter
+
+- **Weights**: 300 (Light), 400 (Regular), 500 (Medium), 600 (Semibold), 700 (Bold)
+- **Usage**: Body text, UI elements, modern content
+- **Characteristics**: Clean, readable, excellent for digital interfaces
+
+### Secondary Typeface: Crimson Text
+
+- **Weights**: 400 (Regular), 600 (Semibold), 700 (Bold)
+- **Usage**: Headlines, article titles, traditional content
+- **Characteristics**: Elegant serif with traditional feel
+
+### Accent Typeface: Noto Sans JP
+
+- **Weights**: 300 (Light), 400 (Regular), 500 (Medium)
+- **Usage**: Japanese terms, cultural references, special callouts
+- **Characteristics**: Respectful representation of Japanese characters
+
+### Typography Scale
+
+```css
+/* Desktop */
+h1: 3.052rem / 48.8px - Crimson Text Bold
+h2: 2.441rem / 39.1px - Crimson Text Semibold
+h3: 1.953rem / 31.2px - Inter Semibold
+h4: 1.563rem / 25px - Inter Medium
+h5: 1.25rem / 20px - Inter Medium
+h6: 1rem / 16px - Inter Medium
+body: 1rem / 16px - Inter Regular
+small: 0.8rem / 12.8px - Inter Regular
+
+/* Mobile */
+h1: 2.441rem / 39.1px - Crimson Text Bold
+h2: 1.953rem / 31.2px - Crimson Text Semibold
+h3: 1.563rem / 25px - Inter Semibold
+h4: 1.25rem / 20px - Inter Medium
+h5: 1.125rem / 18px - Inter Medium
+h6: 1rem / 16px - Inter Medium
+body: 1rem / 16px - Inter Regular
+small: 0.875rem / 14px - Inter Regular
+```
+
+### Line Height & Spacing
+
+- **Body text**: 1.6 line height
+- **Headlines**: 1.2 line height
+- **Paragraph spacing**: 1.5rem bottom margin
+- **Section spacing**: 4rem desktop, 2.5rem mobile
+
+## Layout System
+
+### Grid Structure
+
+- **Desktop**: 12-column grid with 24px gutters
+- **Tablet**: 8-column grid with 20px gutters
+- **Mobile**: 4-column grid with 16px gutters
+- **Max width**: 1200px with centered alignment
+
+### Breakpoints
+
+```css
+/* Mobile First Approach */
+mobile: 320px - 767px
+tablet: 768px - 1023px
+desktop: 1024px - 1199px
+large: 1200px+
+```
+
+### Spacing System (8px base)
+
+- **xs**: 4px (0.25rem)
+- **sm**: 8px (0.5rem)
+- **md**: 16px (1rem)
+- **lg**: 24px (1.5rem)
+- **xl**: 32px (2rem)
+- **2xl**: 48px (3rem)
+- **3xl**: 64px (4rem)
+- **4xl**: 96px (6rem)
+
+### Container Styles
+
+- **Full width**: 100vw for hero sections
+- **Content width**: 1200px max-width
+- **Article width**: 800px max-width for readability
+- **Sidebar width**: 300px on desktop
+
+## Component Design
+
+### Navigation
+
+```css
+/* Header Navigation */
+.header-nav {
+  background: rgba(254, 255, 254, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e5e5e5;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-links {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #4a4a4a;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.nav-links:hover {
+  color: #6b8e6f;
+}
+```
+
+### Buttons
+
+```css
+/* Primary Button */
+.btn-primary {
+  background: #6b8e6f;
+  color: #fefffe;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #5a7a5e;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 142, 111, 0.3);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background: transparent;
+  color: #6b8e6f;
+  border: 2px solid #6b8e6f;
+  padding: 10px 22px;
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: #6b8e6f;
+  color: #fefffe;
+}
+```
+
+### Cards
+
+```css
+.card {
+  background: #fefffe;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #f0f0f0;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 1rem;
+}
+```
+
+### Forms
+
+```css
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  color: #4a4a4a;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e5e5;
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #6b8e6f;
+  box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1);
+}
+```
+
+## Imagery Guidelines
+
+### Photography Style
+
+- **Natural lighting**: Soft, warm lighting that enhances organic textures
+- **Composition**: Rule of thirds, negative space to emphasize tranquility
+- **Color treatment**: Slightly desaturated with emphasis on earth tones
+- **Subject matter**: Focus on bonsai details, hands working, natural settings
+
+### Shakkei (借景) - Borrowed Scenery Framing
+
+Inspired by the Japanese garden principle of *shakkei*, our imagery incorporates distant elements to create depth and context. Photographs should frame subjects against Blue Ridge mountain vistas, allowing the natural landscape to become part of the composition.
+
+> *Sidebar: **Shakkei** (借景)*  
+> *Font: Noto Sans JP*  
+> *"Borrowed scenery" - the practice of incorporating distant landscapes into garden design. The Blue Ridge Mountains become our eternal backdrop, connecting every image to place.*
+
+**Shakkei Implementation:**
+- Frame bonsai against mountain silhouettes during golden hour
+- Use natural archways (tree branches, rock formations) to create depth
+- Include layers: foreground subject, middle-ground context, background mountains
+- Maintain 60% subject, 40% environmental context ratio
+
+### Mist Overlay Techniques
+
+Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog, we employ subtle mist overlays to create atmospheric depth and seasonal connection.
+
+> *"Mountains breathe with the mist, and so should our designs. The fog that rolls through these hollows carries stories older than memory."*  
+> *— Blue Ridge photography tradition*
+
+**Mist Overlay Guidelines:**
+- Use semi-transparent white gradients (opacity: 0.1-0.3)
+- Apply from bottom-up or corner-diagonal directions
+- Seasonal variation: heavier mist in autumn/winter imagery
+- Preserve subject clarity while adding atmospheric mood
+
+### Image Specifications
+
+- **Hero images**: 1920x1080px minimum, WebP format preferred
+- **Card images**: 400x300px, consistent aspect ratio 4:3
+- **Profile photos**: 200x200px, circular crop
+- **Gallery images**: 800x600px minimum, responsive scaling
+- **Shakkei images**: 2400x1350px for detailed landscape integration
+
+### Image Treatments
+
+```css
+.image-natural {
+  filter: contrast(1.1) saturation(0.9) brightness(1.05);
+  border-radius: 8px;
+}
+
+.image-hero {
+  object-fit: cover;
+  width: 100%;
+  height: 60vh;
+  filter: brightness(0.8);
+}
+
+.image-card {
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Shakkei (Borrowed Scenery) Treatment */
+.image-shakkei {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-shakkei::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(transparent, rgba(254, 255, 254, 0.1));
+  pointer-events: none;
+}
+
+/* Mist Overlay Variations */
+.mist-overlay-light {
+  position: relative;
+}
+
+.mist-overlay-light::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.15));
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.mist-overlay-atmospheric {
+  position: relative;
+}
+
+.mist-overlay-atmospheric::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100%;
+  background: radial-gradient(ellipse at top right, rgba(255, 255, 255, 0.2), transparent 70%);
+  pointer-events: none;
+}
+
+/* Seasonal Mist Variations */
+.mist-autumn {
+  filter: sepia(0.1) contrast(1.05);
+}
+
+.mist-autumn::after {
+  background: linear-gradient(45deg, transparent 60%, rgba(180, 141, 87, 0.1));
+}
+
+.mist-winter {
+  filter: brightness(1.1) contrast(0.95);
+}
+
+.mist-winter::after {
+  background: linear-gradient(transparent 40%, rgba(220, 230, 240, 0.2));
+}
+```
+
+## Interactive Elements
+
+### Hover States
+
+- **Subtle elevation**: 2-4px translateY with soft shadows
+- **Color transitions**: 0.3s ease for all color changes
+- **Scale effects**: 1.02x scale for clickable images
+- **Opacity changes**: 0.8 opacity for disabled states
+
+### Loading States
+
+```css
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+```
+
+### Micro-interactions
+
+- **Page transitions**: 0.4s ease-in-out
+- **Button press**: 0.1s scale(0.98)
+- **Link hover**: 0.2s color transition
+- **Modal entrance**: 0.3s fade with slight scale
+
+## Responsive Behavior
+
+### Mobile-First Approach
+
+- Start with mobile design (320px)
+- Progressive enhancement for larger screens
+- Touch-friendly minimum 44px targets
+- Optimized typography scaling
+
+### Navigation Patterns
+
+- **Desktop**: Horizontal navigation with dropdowns
+- **Mobile**: Hamburger menu with slide-out drawer
+- **Tablet**: Hybrid approach with collapsible sections
+
+### Content Adaptations
+
+- **Hero sections**: Background images with overlay text
+- **Card grids**: 1 column mobile, 2 columns tablet, 3+ desktop
+- **Typography**: Fluid scaling between breakpoints
+- **Images**: Responsive with art direction
+
+## Accessibility Standards
+
+### WCAG 2.1 AA Compliance
+
+- **Color contrast**: Minimum 4.5:1 for normal text, 3:1 for large text
+- **Focus indicators**: Visible focus rings on all interactive elements
+- **Alt text**: Descriptive alternative text for all images
+- **Keyboard navigation**: Full keyboard accessibility
+
+### Focus Management
+
+```css
+.focus-visible {
+  outline: 2px solid #6b8e6f;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #6b8e6f;
+  color: #fefffe;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+```
+
+### Screen Reader Support
+
+- Semantic HTML structure
+- ARIA labels and descriptions
+- Landmark roles for navigation
+- Proper heading hierarchy
+
+## Animation & Motion
+
+### Principles
+
+- **Purposeful**: Animations guide attention and provide feedback
+- **Subtle**: Gentle movements that don't distract
+- **Fast**: Transitions under 300ms for UI, under 500ms for content
+- **Respectful**: Honor prefers-reduced-motion settings
+
+### Animation Library
+
+```css
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideUp 0.5s ease forwards;
+}
+
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+## Brand Elements
+
+### Logo Usage
+
+- **Primary logo**: Full color on light backgrounds
+- **Secondary logo**: Single color for small applications
+- **Minimum size**: 32px height for digital, 0.5" for print
+- **Clear space**: Logo height equal to clear space on all sides
+
+### Iconography
+
+- **Style**: Minimal line icons with 2px stroke weight
+- **Size**: 24px standard, 32px for primary actions
+- **Color**: Stone Gray (#4A4A4A) with Mountain Sage (#6B8E6F) accents
+- **Library**: Feather Icons or custom SVG set
+
+### Patterns & Textures
+
+- **Subtle paper texture**: For background sections
+- **Organic shapes**: Soft, flowing dividers between sections
+- **Botanical silhouettes**: Light watermarks for decorative elements
+
+## Content Strategy
+
+### Tone of Voice
+
+- **Knowledgeable**: Expert guidance without intimidation
+- **Welcoming**: Inclusive language for all skill levels
+- **Respectful**: Appreciation for Japanese traditions
+- **Encouraging**: Supportive of learning and growth
+
+### Content Hierarchy
+
+1. **Hero message**: Clear value proposition
+2. **Primary navigation**: Essential pathways
+3. **Featured content**: Seasonal or priority information
+4. **Secondary content**: Supporting information
+5. **Footer utilities**: Contact and legal information
+
+### Writing Guidelines
+
+- **Sentence length**: Average 15-20 words
+- **Paragraph length**: 2-4 sentences maximum
+- **Headings**: Descriptive and scannable
+- **Lists**: Bulleted for easy consumption
+
+## Performance Standards
+
+### Core Web Vitals
+
+- **LCP (Largest Contentful Paint)**: < 2.5 seconds
+- **FID (First Input Delay)**: < 100 milliseconds
+- **CLS (Cumulative Layout Shift)**: < 0.1
+
+### Optimization Techniques
+
+- **Image formats**: WebP with fallbacks
+- **Font loading**: Preload critical fonts
+- **CSS**: Critical path optimization
+- **JavaScript**: Code splitting and lazy loading
+
+### Testing Requirements
+
+- **Cross-browser**: Chrome, Firefox, Safari, Edge
+- **Device testing**: iPhone, Android, iPad, desktop
+- **Performance**: Lighthouse scores 90+
+- **Accessibility**: WAVE and axe tools validation
+
+## Implementation Guidelines
+
+### Development Standards
+
+- **Semantic HTML**: Proper element usage
+- **CSS methodology**: BEM naming convention
+- **Progressive enhancement**: Core functionality first
+- **Code quality**: Consistent formatting and commenting
+
+### Asset Organization
+
+```
+/assets
+  /images
+    /hero
+    /gallery
+    /thumbnails
+  /fonts
+    /inter
+    /crimson-text
+    /noto-sans-jp
+  /icons
+    /feather
+    /custom
+  /css
+    /components
+    /layouts
+    /utilities
+```
+
+### Quality Assurance
+
+- **Visual regression testing**: Compare design implementations
+- **Cross-browser testing**: Ensure consistent experience
+- **Performance monitoring**: Regular speed audits
+- **Accessibility audits**: Quarterly WCAG compliance checks
+
+## Future Considerations
+
+### Scalability
+
+- **Modular components**: Reusable design patterns
+- **Design tokens**: Centralized style values
+- **Documentation**: Living style guide
+- **Version control**: Design system versioning
+
+### Emerging Technologies
+
+- **Dark mode**: Alternative color palette ready
+- **Progressive Web App**: Offline-first considerations
+- **Voice interfaces**: Semantic structure preparation
+- **AR/VR**: 3D bonsai visualization possibilities
+
+---
+
+_This design system is a living document that should be updated as the Blue Ridge Bonsai Society evolves and grows. Regular reviews ensure the design continues to serve our community effectively while maintaining aesthetic excellence and accessibility standards._
