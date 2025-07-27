@@ -1,0 +1,393 @@
+<!--
+  ==========================================================================
+  LIQUID GLASS NAVIGATION COMPONENT
+  Blue Ridge Bonsai Society - Main Navigation Structure
+  ==========================================================================
+-->
+
+<nav class="liquid-glass-nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-container">
+    
+    <!-- Brand Section -->
+    <a href="/" class="nav-brand" aria-label="Blue Ridge Bonsai Society - Home">
+      <div class="nav-logo">
+        <!-- SVG Logo placeholder - replace with actual logo -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+          <path d="M12 16C12 16 7 13 7 9C7 5.69 9.69 3 13 3S19 5.69 19 9C19 13 14 16 12 16Z" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="nav-brand-text">
+        <h1 class="nav-brand-title">Blue Ridge Bonsai</h1>
+        <p class="nav-brand-subtitle">Cultivating Beauty</p>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation Menu -->
+    <ul class="nav-menu" role="menubar">
+      
+      <!-- Home -->
+      <li class="nav-item" role="none">
+        <a href="/" class="nav-link" role="menuitem" aria-current="page">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+          </svg>
+          <span>Home</span>
+        </a>
+      </li>
+
+      <!-- About Us -->
+      <li class="nav-item" role="none">
+        <a href="/about" class="nav-link" role="menuitem">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <span>About</span>
+        </a>
+      </li>
+
+      <!-- Events -->
+      <li class="nav-item" role="none">
+        <a href="/events" class="nav-link" role="menuitem">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+          </svg>
+          <span>Events</span>
+        </a>
+      </li>
+
+      <!-- Learn -->
+      <li class="nav-item" role="none">
+        <a href="/learn" class="nav-link" role="menuitem">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          </svg>
+          <span>Learn</span>
+        </a>
+      </li>
+
+      <!-- Gallery -->
+      <li class="nav-item" role="none">
+        <a href="/gallery" class="nav-link" role="menuitem">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+          </svg>
+          <span>Gallery</span>
+        </a>
+      </li>
+
+      <!-- Join Us -->
+      <li class="nav-item" role="none">
+        <a href="/join" class="nav-link nav-cta" role="menuitem">
+          <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63c-.34-1.02-1.28-1.74-2.34-1.74-.82 0-1.54.46-1.89 1.17L11.23 16H8l-2-6H4v2h1l2 6h4.5l2.59-7.59c.13-.39.5-.66.91-.66.49 0 .88.35.98.83L18.5 16H16v6h4z"/>
+          </svg>
+          <span>Join Us</span>
+        </a>
+      </li>
+
+    </ul>
+
+    <!-- Search and Mobile Controls -->
+    <div class="nav-controls">
+      <!-- Search Toggle -->
+      <button class="nav-search-toggle" aria-label="Open search" type="button">
+        <svg class="nav-search-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+      </button>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-menu" type="button">
+        <span class="nav-toggle-line"></span>
+        <span class="nav-toggle-line"></span>
+        <span class="nav-toggle-line"></span>
+      </button>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="nav-overlay" aria-hidden="true"></div>
+
+<!-- Mobile Navigation Menu -->
+<nav class="nav-mobile-menu" id="mobile-menu" aria-hidden="true" role="navigation" aria-label="Mobile navigation">
+  <ul class="nav-mobile-list" role="menubar">
+    
+    <li role="none">
+      <a href="/" class="nav-mobile-link" role="menuitem" aria-current="page">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span>Home</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/about" class="nav-mobile-link" role="menuitem">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <span>About Us</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/about/mission" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Our Mission & Vision</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/about/board" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Board Members</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/about/partnership" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">NC Arboretum Partnership</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/events" class="nav-mobile-link" role="menuitem">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/>
+        </svg>
+        <span>Events</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/events/calendar" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Event Calendar</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/events/archive" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Past Events</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/learn" class="nav-mobile-link" role="menuitem">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
+        <span>Learn</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/learn/beginners" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Beginner's Guide</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/learn/articles" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Articles & Tips</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/learn/resources" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Resources</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/gallery" class="nav-mobile-link" role="menuitem">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+        </svg>
+        <span>Gallery</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/join" class="nav-mobile-link nav-mobile-cta" role="menuitem">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63c-.34-1.02-1.28-1.74-2.34-1.74-.82 0-1.54.46-1.89 1.17L11.23 16H8l-2-6H4v2h1l2 6h4.5l2.59-7.59c.13-.39.5-.66.91-.66.49 0 .88.35.98.83L18.5 16H16v6h4z"/>
+        </svg>
+        <span>Join Us</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/join/membership" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Membership Levels</span>
+      </a>
+    </li>
+
+    <li role="none">
+      <a href="/join/benefits" class="nav-mobile-link nav-mobile-sublink" role="menuitem">
+        <span class="nav-mobile-indent">Benefits</span>
+      </a>
+    </li>
+
+    <!-- Members Section (shown when logged in) -->
+    <li role="none" class="nav-mobile-divider">
+      <hr aria-hidden="true">
+    </li>
+
+    <li role="none" class="nav-members-section" style="display: none;">
+      <a href="/members" class="nav-mobile-link" role="menuitem">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63c-.34-1.02-1.28-1.74-2.34-1.74-.82 0-1.54.46-1.89 1.17L11.23 16H8l-2-6H4v2h1l2 6h4.5l2.59-7.59c.13-.39.5-.66.91-.66.49 0 .88.35.98.83L18.5 16H16v6h4z"/>
+        </svg>
+        <span>Members Area</span>
+      </a>
+    </li>
+
+    <!-- Contact -->
+    <li role="none">
+      <a href="/contact" class="nav-mobile-link" role="menuitem">
+        <svg class="nav-mobile-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+        <span>Contact</span>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- Mobile Search -->
+  <div class="nav-mobile-search">
+    <form class="nav-mobile-search-form" role="search" aria-label="Site search">
+      <label for="mobile-search-input" class="visually-hidden">Search</label>
+      <input 
+        type="search" 
+        id="mobile-search-input"
+        class="nav-mobile-search-input" 
+        placeholder="Search bonsai knowledge..."
+        aria-label="Search the site"
+      >
+      <button type="submit" class="nav-mobile-search-button" aria-label="Submit search">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+
+</nav>
+
+<!-- Additional Navigation Styles for Mobile -->
+<style>
+  /* Mobile Navigation Enhancements */
+  .nav-mobile-divider {
+    margin: 1rem 0;
+  }
+
+  .nav-mobile-divider hr {
+    border: none;
+    height: 1px;
+    background: var(--mountain-haze);
+    margin: 0;
+  }
+
+  .nav-mobile-sublink {
+    font-size: 1rem !important;
+    color: var(--valley-shadow) !important;
+    padding-left: 3rem !important;
+  }
+
+  .nav-mobile-indent {
+    margin-left: 1rem;
+  }
+
+  .nav-mobile-cta {
+    background: var(--mountain-sage) !important;
+    color: var(--cloud-white) !important;
+    margin-top: 1rem;
+  }
+
+  .nav-mobile-search {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--mountain-haze);
+  }
+
+  .nav-mobile-search-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .nav-mobile-search-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--mountain-haze);
+    border-radius: 8px;
+    font-family: "Inter", sans-serif;
+    font-size: 1rem;
+  }
+
+  .nav-mobile-search-input:focus {
+    outline: none;
+    border-color: var(--mountain-sage);
+    box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1);
+  }
+
+  .nav-mobile-search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--mountain-sage);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--cloud-white);
+  }
+
+  .nav-mobile-search-button svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  /* Visually hidden utility for screen readers */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* CTA Button Styling */
+  .nav-cta {
+    background: var(--mountain-sage) !important;
+    color: var(--cloud-white) !important;
+    font-weight: 600 !important;
+  }
+
+  .nav-cta:hover {
+    background: #5A7A5E !important;
+    color: var(--cloud-white) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  /* Controls Container */
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .nav-controls {
+      gap: 0.25rem;
+    }
+  }
+</style>
