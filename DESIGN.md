@@ -2,11 +2,11 @@
 
 ## Spirit of Blue Ridge Bonsai
 
-*"Like the ancient oak that bends in mountain winds yet never breaks, our design honors both the timeless wisdom of Japanese aesthetics and the enduring spirit of Appalachian craftsmanship."*
+*"Like the ancient oak that bends in mountain winds yet never breaks, our design honors the timeless wisdom of Japanese aesthetics set against the natural beauty of the Blue Ridge Mountains."*
 
 ### Fusion Philosophy
 
-The Blue Ridge Bonsai Society design system emerges from a profound cultural dialogue between East and West, mountain and tradition. Our approach weaves together three foundational elements:
+The Blue Ridge Bonsai Society design system emerges from the harmonious relationship between Japanese bonsai aesthetics and the natural beauty of the Blue Ridge Mountains. Our approach weaves together these foundational elements:
 
 **Wabi-Sabi (侘寂)** - The Japanese aesthetic of finding beauty in imperfection and impermanence. Like the weathered bark of a centuries-old mountain pine, we embrace the authentic marks of time and nature.
 
@@ -20,10 +20,7 @@ The Blue Ridge Bonsai Society design system emerges from a profound cultural dia
 > *Font: Noto Sans JP*  
 > *The interval between sounds in music, the pause between words in conversation, the empty space that gives meaning to form. Ma teaches us that what is not there is as important as what is.*
 
-**Appalachian Storytelling** - The oral tradition of mountain wisdom passed down through generations. Our interface becomes a storyteller, guiding users through experiences with the unhurried pace of a front-porch conversation.
-
-> *"Granddaddy always said the mountain teaches patience - you can't rush a sunrise or hurry a stream. Same goes for growing a good bonsai."*  
-> *— Traditional Blue Ridge wisdom*
+**Natural Rhythm** - The unhurried pace of mountain seasons and natural growth cycles. Our interface reflects the patient, contemplative rhythm found in both bonsai cultivation and mountain landscapes, guiding users through experiences with gentle, organic flow.
 
 ### Guiding Design Tenets
 
@@ -41,18 +38,15 @@ Following the concept of *mono no aware* (the pathos of existence), our design a
 Like the Blue Ridge Mountains themselves, our visual hierarchy creates depth through overlapping layers. Content emerges from mist-like backgrounds, revealing itself gradually as users navigate deeper into their journey.
 
 #### 4. Crafted Naturalism (作られた自然)
-Our design celebrates the Japanese concept of *shu-ha-ri* (learn-adapt-transcend) and Appalachian craftsmanship traditions. Every element shows the hand of its maker while serving its purpose with quiet dignity.
+Our design celebrates the Japanese concept of *shu-ha-ri* (learn-adapt-transcend) and thoughtful digital craftsmanship. Every element shows intentional design while serving its purpose with quiet dignity.
 
 > *Sidebar: **Shu-Ha-Ri** (守破離)*  
 > *Font: Noto Sans JP*  
 > *The three stages of mastery: first learn the rules, then break the rules, then transcend the rules. This applies to both bonsai cultivation and design evolution.*
 
-> *"A well-made thing carries the spirit of its maker. Whether it's a hickory chair or a website button, you can feel the care that went into it."*  
-> *— Appalachian craft tradition*
-
 ## Overview
 
-This design system creates a harmonious balance between traditional Japanese bonsai aesthetics and modern Appalachian mountain culture, reflecting the unique character of the Blue Ridge Bonsai Society. The design emphasizes tranquility, natural beauty, and accessibility while maintaining a sophisticated, professional appearance.
+This design system creates a harmonious balance between traditional Japanese bonsai aesthetics and the natural beauty of the Blue Ridge Mountains, reflecting the unique character of the Blue Ridge Bonsai Society. The design emphasizes tranquility, natural beauty, and accessibility while maintaining a sophisticated, professional appearance.
 
 ## Design Philosophy
 
@@ -395,9 +389,6 @@ Inspired by the Japanese garden principle of *shakkei*, our imagery incorporates
 ### Mist Overlay Techniques
 
 Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog, we employ subtle mist overlays to create atmospheric depth and seasonal connection.
-
-> *"Mountains breathe with the mist, and so should our designs. The fog that rolls through these hollows carries stories older than memory."*  
-> *— Blue Ridge photography tradition*
 
 **Mist Overlay Guidelines:**
 - Use semi-transparent white gradients (opacity: 0.1-0.3)
