@@ -1,0 +1,378 @@
+/* BLUE RIDGE BONSAI SOCIETY - GLOBAL STYLES */
+/* Wix Velo Compatible CSS Classes */
+
+/* ===== LIQUID GLASS NAVIGATION SYSTEM ===== */
+
+/* Liquid Glass Navigation Base */
+.liquid-glass-nav {
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  background: rgba(254, 255, 254, 0.8) !important;
+  backdrop-filter: blur(20px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
+  border-bottom: 1px solid rgba(107, 142, 111, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 32px rgba(107, 142, 111, 0.08) !important;
+}
+
+/* Liquid Glass Reflection Effect */
+.liquid-glass-nav::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 20px !important;
+  background: linear-gradient(180deg, rgba(254, 255, 254, 0.4) 0%, transparent 100%) !important;
+  filter: blur(8px) !important;
+  transform: scaleY(-1) !important;
+  opacity: 0.6 !important;
+  pointer-events: none !important;
+}
+
+/* Enhanced Navigation Links */
+.nav-enhanced {
+  position: relative !important;
+  padding: 1rem 1.5rem !important;
+  border-radius: 12px !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden !important;
+  color: #4A4A4A !important;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+/* Liquid Glass Sweep Effect */
+.nav-enhanced::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(107, 142, 111, 0.1), transparent) !important;
+  transition: left 0.6s ease !important;
+  pointer-events: none !important;
+}
+
+.nav-enhanced:hover::before {
+  left: 100% !important;
+}
+
+.nav-enhanced:hover {
+  background: rgba(107, 142, 111, 0.08) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 32px rgba(107, 142, 111, 0.12) !important;
+  color: #6B8E6F !important;
+}
+
+/* Adaptive Navigation States */
+.nav-light {
+  background: rgba(254, 255, 254, 0.9) !important;
+  backdrop-filter: blur(30px) saturate(1.8) !important;
+}
+
+.nav-dark {
+  background: rgba(26, 29, 27, 0.85) !important;
+  backdrop-filter: blur(25px) saturate(1.5) !important;
+  border-bottom-color: rgba(143, 166, 147, 0.3) !important;
+}
+
+/* ===== DESIGN SYSTEM COMPONENTS ===== */
+
+/* Enhanced Buttons */
+.btn-enhanced {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 500 !important;
+  border-radius: 8px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 12px 24px !important;
+  background: #6B8E6F !important;
+  color: #FEFFFE !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.btn-enhanced:hover {
+  background: #5A7A5E !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 32px rgba(107, 142, 111, 0.25) !important;
+}
+
+.btn-secondary {
+  background: transparent !important;
+  color: #6B8E6F !important;
+  border: 2px solid #6B8E6F !important;
+  padding: 10px 22px !important;
+}
+
+.btn-secondary:hover {
+  background: #6B8E6F !important;
+  color: #FEFFFE !important;
+}
+
+/* Enhanced Cards */
+.card-enhanced {
+  background: #FEFFFE !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.3s ease !important;
+  border: 1px solid #EBF1EE !important;
+  padding: 2rem !important;
+}
+
+.card-enhanced:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 16px 48px rgba(107, 142, 111, 0.15) !important;
+}
+
+/* Enhanced Text Elements */
+.text-enhanced {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #4A4A4A !important;
+  line-height: 1.6 !important;
+}
+
+.heading-enhanced {
+  font-family: "Crimson Text", Georgia, serif !important;
+  color: #4A4A4A !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
+}
+
+/* Enhanced Input Elements */
+.input-enhanced {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  padding: 12px 16px !important;
+  border: 2px solid #DDE4EA !important;
+  border-radius: 8px !important;
+  background: #FEFFFE !important;
+  color: #4A4A4A !important;
+  transition: border-color 0.3s ease !important;
+  font-size: 1rem !important;
+}
+
+.input-enhanced:focus {
+  outline: none !important;
+  border-color: #6B8E6F !important;
+  box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1) !important;
+}
+
+.input-success {
+  border-color: #4F7942 !important;
+}
+
+/* Enhanced Containers */
+.container-enhanced {
+  background: rgba(254, 255, 254, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 12px !important;
+  padding: 2rem !important;
+  margin: 1.5rem 0 !important;
+}
+
+/* ===== ATMOSPHERIC EFFECTS ===== */
+
+/* Atmospheric Background */
+.atmospheric-bg {
+  position: relative !important;
+  background: linear-gradient(180deg, #DDE4EA 0%, #FEFFFE 60%) !important;
+}
+
+.atmospheric-bg::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, rgba(107, 142, 111, 0.1), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(107, 142, 111, 0.08), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(107, 142, 111, 0.06), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(107, 142, 111, 0.04), transparent) !important;
+  background-repeat: repeat !important;
+  background-size: 200px 100px !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  animation: float 20s ease-in-out infinite !important;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  25% { transform: translateY(-10px) translateX(5px); }
+  50% { transform: translateY(-5px) translateX(-5px); }
+  75% { transform: translateY(-15px) translateX(3px); }
+}
+
+/* Hero Section Enhancement */
+.hero-enhanced {
+  background: linear-gradient(135deg, #6B8E6F 0%, #EBF1EE 100%) !important;
+  color: #FEFFFE !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.hero-enhanced::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 40% !important;
+  background: linear-gradient(transparent, rgba(254, 255, 254, 0.1)) !important;
+  pointer-events: none !important;
+}
+
+/* Section Enhancements */
+.section-enhanced {
+  position: relative !important;
+  background: rgba(254, 255, 254, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 12px !important;
+  margin: 1.5rem 0 !important;
+  padding: 2rem !important;
+}
+
+/* ===== ANIMATIONS ===== */
+
+/* Fade in animations */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* Slide up animations */
+.slide-up {
+  transform: translateY(20px);
+  opacity: 0;
+  animation: slideUp 0.5s ease forwards;
+}
+
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Scale in animations */
+.scale-in {
+  transform: scale(0.9);
+  opacity: 0;
+  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes scaleIn {
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Enhanced hover states */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(107, 142, 111, 0.2);
+}
+
+/* Pulse animation for interactive elements */
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ===== SEASONAL THEMES ===== */
+
+.spring-theme {
+  --primary-accent: #7BA05B;
+}
+
+.summer-theme {
+  --primary-accent: #6B8E6F;
+}
+
+.autumn-theme {
+  --primary-accent: #D4A574;
+}
+
+.winter-theme {
+  --primary-accent: #8DA2AA;
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+
+@media (max-width: 768px) {
+  .liquid-glass-nav {
+    backdrop-filter: blur(15px) saturate(1.1) !important;
+  }
+  
+  .nav-enhanced {
+    padding: 0.8rem 1.2rem !important;
+  }
+  
+  .card-enhanced, .container-enhanced {
+    padding: 1.5rem !important;
+    margin: 1rem 0 !important;
+  }
+  
+  .section-enhanced {
+    padding: 1.5rem !important;
+    margin: 1rem 0 !important;
+  }
+  
+  .btn-enhanced {
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+*:focus-visible {
+  outline: 2px solid #6B8E6F !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .liquid-glass-nav {
+    background: rgba(26, 29, 27, 0.85) !important;
+    border-bottom-color: rgba(143, 166, 147, 0.3) !important;
+  }
+  
+  .card-enhanced, .container-enhanced {
+    background: rgba(26, 29, 27, 0.8) !important;
+    border-color: rgba(143, 166, 147, 0.3) !important;
+  }
+  
+  .text-enhanced, .heading-enhanced {
+    color: #E8E8E8 !important;
+  }
+} 
