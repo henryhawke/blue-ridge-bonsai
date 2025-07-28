@@ -81,6 +81,25 @@
   border-bottom-color: rgba(143, 166, 147, 0.3) !important;
 }
 
+/* Scroll-Based Navigation States */
+.nav-scrolled {
+  background: rgba(254, 255, 254, 0.95) !important;
+  backdrop-filter: blur(25px) saturate(1.4) !important;
+  box-shadow: 0 4px 32px rgba(107, 142, 111, 0.12) !important;
+  border-bottom: 1px solid rgba(107, 142, 111, 0.3) !important;
+}
+
+.nav-hidden {
+  transform: translateY(-100%) !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Navigation Visible State */
+.liquid-glass-nav:not(.nav-hidden) {
+  transform: translateY(0) !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 /* ===== DESIGN SYSTEM COMPONENTS ===== */
 
 /* Enhanced Buttons */

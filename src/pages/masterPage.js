@@ -1,14 +1,19 @@
 // @ts-nocheck
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 // Blue Ridge Bonsai Society - Master Page Implementation
-// Wix Velo Compatible Implementation - Phases 1-3 Applied
+// Wix Studio Compatible Implementation with CSS Panel Integration
 
 import { currentMember } from "wix-members";
 import wixLocationFrontend from "wix-location-frontend";
 import wixUsers from "wix-users";
 
 $w.onReady(function () {
-  console.log("🌸 Blue Ridge Bonsai Society - Master Page Loaded (Phases 1-3)");
+  console.log(
+    "🌸 Blue Ridge Bonsai Society - Master Page Loaded (Wix Studio CSS)"
+  );
+
+  // Verify CSS is loaded from Wix Studio CSS panel
+  verifyCSSLoaded();
 
   // Phase 1: Initialize Liquid Glass Navigation
   try {
@@ -17,7 +22,7 @@ $w.onReady(function () {
     console.error("Error initializing liquid glass navigation:", error);
   }
 
-  // Phase 2: Apply Design System Styling
+  // Phase 2: Apply Design System Styling via CSS Classes
   try {
     applyDesignSystemStyling();
   } catch (error) {
@@ -34,14 +39,46 @@ $w.onReady(function () {
 });
 
 /**
+ * Verify that CSS has been loaded from Wix Studio CSS panel
+ */
+function verifyCSSLoaded() {
+  try {
+    // Check if our CSS classes are available in the document
+    const testElement = document.createElement("div");
+    testElement.className = "liquid-glass-nav";
+    document.body.appendChild(testElement);
+
+    const computedStyle = getComputedStyle(testElement);
+    const hasBackdropFilter =
+      computedStyle.backdropFilter !== "none" &&
+      computedStyle.backdropFilter !== "";
+
+    document.body.removeChild(testElement);
+
+    if (hasBackdropFilter) {
+      console.log("✅ CSS loaded successfully from Wix Studio CSS panel");
+    } else {
+      console.warn(
+        "⚠️ CSS not loaded. Please add global.css to Wix Studio CSS panel"
+      );
+      console.warn(
+        "📋 Instructions: Open Code panel → CSS → global.css → paste CSS content"
+      );
+    }
+  } catch (error) {
+    console.log("Could not verify CSS loading:", error);
+  }
+}
+
+/**
  * Phase 1: Initialize Liquid Glass Navigation System
- * Implements the liquid glass navigation with backdrop-filter effects
+ * Applies CSS classes to achieve liquid glass effects
  */
 function initializeLiquidGlassNavigation() {
   console.log("🌊 Initializing Liquid Glass Navigation System");
 
   try {
-    // Apply the liquid glass CSS classes to Wix elements
+    // Apply liquid glass CSS classes to Wix elements
     applyLiquidGlassClasses();
 
     // Initialize dynamic navigation adaptation
@@ -58,59 +95,86 @@ function initializeLiquidGlassNavigation() {
 
 /**
  * Apply Liquid Glass CSS Classes to Navigation Elements
+ * Uses Wix Studio's CSS class system
  */
 function applyLiquidGlassClasses() {
   try {
-    // Apply liquid glass navigation class to Wix header elements
-    const headerSelectors = ["#SITE_HEADER", "#header", "#wixHeader"];
+    // Apply to header/navigation elements - try multiple common IDs
+    const headerSelectors = [
+      "#SITE_HEADER",
+      "#header",
+      "#wixHeader",
+      "#masterHeader",
+      "#siteHeader",
+    ];
 
+    let headerFound = false;
     headerSelectors.forEach((selector) => {
       try {
         const headerElement = $w(selector);
         if (headerElement && headerElement.length > 0) {
           headerElement.customClassList.add("liquid-glass-nav");
           console.log(`✅ Applied liquid-glass-nav to ${selector}`);
+          headerFound = true;
         }
       } catch (e) {
         // Element not found, continue
       }
     });
 
-    // Apply enhanced nav styles to navigation links
-    const navLinkSelectors = ["#navBar", "#navigation", ".nav-link"];
-
-    navLinkSelectors.forEach((selector) => {
-      try {
-        const navElements = $w(selector);
-        if (navElements && navElements.length > 0) {
-          navElements.forEach((element) => {
-            try {
-              element.customClassList.add("nav-enhanced");
-            } catch (e) {
-              console.log("Could not add nav-enhanced class");
-            }
-          });
-        }
-      } catch (e) {
-        // Element not found, continue
-      }
-    });
-
-    // Apply atmospheric background to body/main containers
-    try {
-      const mainContainers = $w("#SITE_CONTAINER, #main, #mainContainer");
-      if (mainContainers && mainContainers.length > 0) {
-        mainContainers.forEach((container) => {
-          try {
-            container.customClassList.add("atmospheric-bg");
-          } catch (e) {
-            console.log("Could not add atmospheric-bg class");
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Could not access main containers");
+    if (!headerFound) {
+      console.log("ℹ️ No header elements found with standard IDs");
     }
+
+    // Apply enhanced nav styles to navigation elements
+    const navSelectors = [
+      "#navBar",
+      "#navigation",
+      "#menuContainer",
+      "#horizontalMenuContainer",
+    ];
+
+    navSelectors.forEach((selector) => {
+      try {
+        const navElement = $w(selector);
+        if (navElement && navElement.length > 0) {
+          if (Array.isArray(navElement)) {
+            navElement.forEach((element) => {
+              try {
+                element.customClassList.add("nav-enhanced");
+              } catch (e) {
+                console.log("Could not add nav-enhanced class to element");
+              }
+            });
+          } else {
+            navElement.customClassList.add("nav-enhanced");
+          }
+          console.log(`✅ Applied nav-enhanced to ${selector}`);
+        }
+      } catch (e) {
+        // Element not found, continue
+      }
+    });
+
+    // Apply atmospheric background to main containers
+    const containerSelectors = [
+      "#SITE_CONTAINER",
+      "#main",
+      "#mainContainer",
+      "#pageContainer",
+    ];
+
+    containerSelectors.forEach((selector) => {
+      try {
+        const container = $w(selector);
+        if (container && container.length > 0) {
+          container.customClassList.add("atmospheric-bg");
+          console.log(`✅ Applied atmospheric-bg to ${selector}`);
+        }
+      } catch (e) {
+        // Element not found, continue
+      }
+    });
   } catch (error) {
     console.log("Error applying liquid glass classes:", error);
   }
@@ -122,91 +186,42 @@ function applyLiquidGlassClasses() {
 function initializeNavigationAdaptation() {
   if (typeof window === "undefined") return;
 
-  // Add liquid glass class to navigation elements
-  const addLiquidGlassClass = () => {
-    const navElements = [
-      document.querySelector(".wix-header"),
-      document.querySelector("header"),
-      document.querySelector('[data-testid="header.container"]'),
-    ].filter(Boolean);
+  // Add adaptive classes based on scroll and content
+  const addAdaptiveClasses = () => {
+    try {
+      const headerSelectors = ["#SITE_HEADER", "#header", "#wixHeader"];
 
-    navElements.forEach((nav) => {
-      if (nav) {
-        nav.classList.add("liquid-glass-nav");
-      }
-    });
-  };
+      headerSelectors.forEach((selector) => {
+        try {
+          const headerElement = $w(selector);
+          if (headerElement && headerElement.length > 0) {
+            // Add base navigation enhancement
+            headerElement.customClassList.add("liquid-glass-nav");
 
-  // Run immediately and on DOM changes
-  addLiquidGlassClass();
-
-  // Observe DOM changes for dynamic content
-  if (typeof MutationObserver !== "undefined") {
-    const observer = new MutationObserver(addLiquidGlassClass);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-  }
-
-  // Content contrast detection
-  setupContentContrastDetection();
-}
-
-/**
- * Setup Content Contrast Detection for Adaptive Navigation
- */
-function setupContentContrastDetection() {
-  if (typeof IntersectionObserver === "undefined") return;
-
-  const navElements = document.querySelectorAll(".liquid-glass-nav");
-  if (navElements.length === 0) return;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const element = entry.target;
-          const styles = getComputedStyle(element);
-          const bgColor = styles.backgroundColor;
-
-          // Simple luminance calculation
-          const isLight = isColorLight(bgColor);
-
-          navElements.forEach((nav) => {
-            nav.classList.toggle("content-light", isLight);
-            nav.classList.toggle("content-dark", !isLight);
-          });
+            // Add adaptive state based on scroll position
+            const scrollY = window.scrollY;
+            if (scrollY > 50) {
+              headerElement.customClassList.add("nav-scrolled");
+            } else {
+              headerElement.customClassList.remove("nav-scrolled");
+            }
+          }
+        } catch (e) {
+          // Element not found, continue
         }
       });
-    },
-    {
-      rootMargin: "-80px 0px 0px 0px",
+    } catch (error) {
+      console.log("Error in navigation adaptation:", error);
     }
-  );
+  };
 
-  // Observe all major content sections
-  document
-    .querySelectorAll(
-      'section, .hero, .content-block, [data-testid*="section"]'
-    )
-    .forEach((section) => {
-      observer.observe(section);
-    });
-}
+  // Run immediately and on scroll
+  addAdaptiveClasses();
 
-/**
- * Determine if a color is light or dark
- */
-function isColorLight(color) {
-  if (!color || color === "transparent") return true;
-
-  const rgb = color.match(/\d+/g);
-  if (!rgb) return true;
-
-  const [r, g, b] = rgb.map(Number);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5;
+  // Listen for scroll events
+  if (typeof window !== "undefined") {
+    window.addEventListener("scroll", addAdaptiveClasses, { passive: true });
+  }
 }
 
 /**
@@ -220,32 +235,34 @@ function setupScrollBasedNavigation() {
 
   const updateNavigation = () => {
     const currentScrollY = window.scrollY;
-    const navElements = document.querySelectorAll(".liquid-glass-nav");
 
-    navElements.forEach((nav) => {
-      if (!nav || !nav.style) return; // Safety check
+    try {
+      const headerSelectors = ["#SITE_HEADER", "#header", "#wixHeader"];
 
-      // Hide/show navigation based on scroll direction
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        nav.style.transform = "translateY(-100%)";
-      } else {
-        nav.style.transform = "translateY(0)";
-      }
+      headerSelectors.forEach((selector) => {
+        try {
+          const headerElement = $w(selector);
+          if (headerElement && headerElement.length > 0) {
+            // Add/remove scroll-based classes
+            if (currentScrollY > lastScrollY && currentScrollY > 100) {
+              headerElement.customClassList.add("nav-hidden");
+            } else {
+              headerElement.customClassList.remove("nav-hidden");
+            }
 
-      // Adjust blur and opacity based on scroll position
-      const scrollProgress = Math.min(currentScrollY / 300, 1);
-      const blurAmount = 20 + scrollProgress * 15;
-      const opacity = 0.8 + scrollProgress * 0.15;
-
-      nav.style.backdropFilter = `blur(${blurAmount}px) saturate(1.2)`;
-
-      // Update background opacity
-      const currentBg = nav.style.background || "rgba(254, 255, 254, 0.8)";
-      nav.style.background = currentBg.replace(
-        /rgba\([^)]+\)/,
-        `rgba(254, 255, 254, ${opacity})`
-      );
-    });
+            if (currentScrollY > 50) {
+              headerElement.customClassList.add("nav-scrolled");
+            } else {
+              headerElement.customClassList.remove("nav-scrolled");
+            }
+          }
+        } catch (e) {
+          // Element not found, continue
+        }
+      });
+    } catch (error) {
+      console.log("Error in scroll navigation:", error);
+    }
 
     lastScrollY = currentScrollY;
     ticking = false;
@@ -263,19 +280,19 @@ function setupScrollBasedNavigation() {
 
 /**
  * Phase 2: Apply Design System Styling
- * Implements the atmospheric UI and CSS custom properties from DESIGN.md
+ * Uses Wix Studio CSS classes for consistent styling
  */
 function applyDesignSystemStyling() {
-  console.log("🎨 Applying Design System Styling (Phase 2)");
+  console.log("🎨 Applying Design System Styling (Wix Studio CSS)");
 
   try {
     // Apply Design System CSS classes to Wix elements
     applyDesignSystemClasses();
 
-    // Apply Wix element styling
+    // Apply Wix element styling using style properties
     applyWixElementStyling();
 
-    // Setup atmospheric effects
+    // Setup atmospheric effects using CSS classes
     setupAtmosphericEffects();
 
     console.log("✅ Design System styling applied successfully");
@@ -286,6 +303,7 @@ function applyDesignSystemStyling() {
 
 /**
  * Apply Design System CSS Classes to Wix Elements
+ * Uses classes defined in Wix Studio CSS panel
  */
 function applyDesignSystemClasses() {
   try {
@@ -314,7 +332,7 @@ function applyDesignSystemClasses() {
       });
     }
 
-    // Apply enhanced classes to headings
+    // Apply enhanced classes to headings/titles
     const headings = $w("Title");
     if (headings && headings.length > 0) {
       headings.forEach((heading) => {
@@ -396,21 +414,18 @@ function applyDesignSystemClasses() {
     }
 
     // Apply seasonal class to main container
-    try {
-      const mainContainers = $w("#SITE_CONTAINER, #main, #mainContainer");
-      if (mainContainers && mainContainers.length > 0) {
-        mainContainers.forEach((container) => {
-          try {
-            container.customClassList.add(seasonalClass);
-            console.log(`✅ Applied ${seasonalClass} to main container`);
-          } catch (e) {
-            console.log("Could not add seasonal class");
-          }
-        });
+    const containerSelectors = ["#SITE_CONTAINER", "#main", "#mainContainer"];
+    containerSelectors.forEach((selector) => {
+      try {
+        const container = $w(selector);
+        if (container && container.length > 0) {
+          container.customClassList.add(seasonalClass);
+          console.log(`✅ Applied ${seasonalClass} to ${selector}`);
+        }
+      } catch (e) {
+        // Element not found, continue
       }
-    } catch (e) {
-      console.log("Could not access main containers for seasonal theming");
-    }
+    });
 
     console.log("✅ Design system CSS classes applied successfully");
   } catch (error) {
