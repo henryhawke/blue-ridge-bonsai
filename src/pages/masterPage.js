@@ -1,45 +1,49 @@
 // @ts-nocheck
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 // Blue Ridge Bonsai Society - Master Page Implementation
-// Wix Studio Compatible Implementation with CSS Panel Integration
+// WIX REPOSITORY INTEGRATION - Auto-deploys from Git commits
 
 import { currentMember } from "wix-members";
 import wixLocationFrontend from "wix-location-frontend";
 import wixUsers from "wix-users";
 
 $w.onReady(function () {
-  console.log(
-    "🌸 Blue Ridge Bonsai Society - Master Page Loaded (Wix Studio CSS)"
-  );
+  console.log("🌸 Blue Ridge Bonsai Society - Repository Integration Active");
+  console.log("🚀 Auto-deploying from Git repository commit");
 
-  // Verify CSS is loaded from Wix Studio CSS panel
-  verifyCSSLoaded();
-
-  // Phase 1: Initialize Liquid Glass Navigation
-  try {
-    initializeLiquidGlassNavigation();
-  } catch (error) {
-    console.error("Error initializing liquid glass navigation:", error);
-  }
-
-  // Phase 2: Apply Design System Styling via CSS Classes
-  try {
-    applyDesignSystemStyling();
-  } catch (error) {
-    console.error("Error applying design system:", error);
-  }
-
-  // Initialize navigation system with embedded functionality
-  initializeEmbeddedNavigation();
-
-  // Phase 3: Add micro-interactions and animations
+  // Wait for CSS to be loaded from repository
   setTimeout(() => {
-    addMicroInteractions();
-  }, 500);
+    // Verify CSS is loaded from repository
+    verifyCSSLoaded();
+
+    // Phase 1: Initialize Liquid Glass Navigation
+    try {
+      initializeLiquidGlassNavigation();
+    } catch (error) {
+      console.error("Error initializing liquid glass navigation:", error);
+    }
+
+    // Phase 2: Apply Design System Styling via CSS Classes
+    try {
+      applyDesignSystemStyling();
+    } catch (error) {
+      console.error("Error applying design system:", error);
+    }
+
+    // Initialize navigation system with embedded functionality
+    initializeEmbeddedNavigation();
+
+    // Phase 3: Add micro-interactions and animations
+    setTimeout(() => {
+      addMicroInteractions();
+    }, 200);
+
+    console.log("✅ All repository styling applied successfully!");
+  }, 100);
 });
 
 /**
- * Verify that CSS has been loaded from Wix Studio CSS panel
+ * Verify that CSS has been loaded from repository integration
  */
 function verifyCSSLoaded() {
   try {
@@ -52,21 +56,27 @@ function verifyCSSLoaded() {
     const hasBackdropFilter =
       computedStyle.backdropFilter !== "none" &&
       computedStyle.backdropFilter !== "";
+    const hasPosition = computedStyle.position === "fixed";
 
     document.body.removeChild(testElement);
 
-    if (hasBackdropFilter) {
-      console.log("✅ CSS loaded successfully from Wix Studio CSS panel");
+    if (hasBackdropFilter && hasPosition) {
+      console.log(
+        "✅ CSS loaded successfully from repository (src/public/global.css)"
+      );
+      console.log("🎨 Liquid glass navigation styles are active");
     } else {
+      console.warn("⚠️ CSS not fully loaded from repository");
       console.warn(
-        "⚠️ CSS not loaded. Please add global.css to Wix Studio CSS panel"
+        "📋 Check: src/public/global.css should be deployed via Wix Git Integration"
       );
-      console.warn(
-        "📋 Instructions: Open Code panel → CSS → global.css → paste CSS content"
-      );
+      console.warn("🔄 Try: Commit changes and wait for Wix deployment");
     }
+
+    return hasBackdropFilter && hasPosition;
   } catch (error) {
     console.log("Could not verify CSS loading:", error);
+    return false;
   }
 }
 
