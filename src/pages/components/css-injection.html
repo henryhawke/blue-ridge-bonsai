@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Blue Ridge Bonsai Society - CSS Injection Component</title>
+    <style>
+      /* Hidden component for CSS injection */
+      .css-injection-container {
+        position: absolute;
+        left: -9999px;
+        top: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="css-injection-container" id="cssInjectionContainer">
+      CSS Injection Component
+    </div>
+
+    <script>
+      console.log("🔧 CSS Injection Component Loaded");
+
+      // Listen for messages from Wix Velo
+      window.addEventListener("message", function (event) {
+        try {
+          const data = event.data;
+
+          if (data && data.type === "INJECT_CSS") {
+            injectCSS(data.css);
+          } else if (data && data.type === "BRBS_INJECT_CSS") {
+            injectCSS(data.css);
+          }
+        } catch (error) {
+          console.log("Error processing message:", error);
+        }
+      });
+
+      // CSS Injection Function
+      function injectCSS(cssContent) {
+        try {
+          // Remove existing injected styles
+          const existingStyle = document.getElementById("brbs-injected-styles");
+          if (existingStyle) {
+            existingStyle.remove();
+          }
+
+          // Create new style element
+          const styleElement = document.createElement("style");
+          styleElement.id = "brbs-injected-styles";
+          styleElement.textContent = cssContent;
+
+          // Inject into head
+          document.head.appendChild(styleElement);
+
+          console.log("✅ CSS injected successfully via HTML component");
+
+          // Notify parent of successful injection
+          window.parent.postMessage(
+            {
+              type: "CSS_INJECTION_SUCCESS",
+              timestamp: new Date().toISOString(),
+            },
+            "*"
+          );
+        } catch (error) {
+          console.error("❌ Error injecting CSS:", error);
+
+          // Notify parent of failed injection
+          window.parent.postMessage(
+            {
+              type: "CSS_INJECTION_ERROR",
+              error: error.message,
+              timestamp: new Date().toISOString(),
+            },
+            "*"
+          );
+        }
+      }
+
+      // Auto-inject default styles
+      const defaultCSS = `
+            /* Blue Ridge Bonsai Society - Auto-Injected Styles */
+            .liquid-glass-nav {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 9999 !important;
+                background: rgba(254, 255, 254, 0.85) !important;
+                backdrop-filter: blur(20px) !important;
+                -webkit-backdrop-filter: blur(20px) !important;
+                border-bottom: 1px solid rgba(107, 142, 111, 0.2) !important;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            }
+
+            .nav-enhanced {
+                padding: 0.75rem 1.5rem !important;
+                background: transparent !important;
+            }
+
+            .nav-scrolled {
+                background: rgba(254, 255, 254, 0.95) !important;
+                backdrop-filter: blur(25px) !important;
+                box-shadow: 0 1px 20px rgba(0, 0, 0, 0.08) !important;
+            }
+
+            .nav-hidden {
+                transform: translateY(-100%) !important;
+            }
+
+            .btn-enhanced {
+                background: linear-gradient(135deg, #6B8E6F 0%, #5A7A5E 100%) !important;
+                color: #FEFFFE !important;
+                border: none !important;
+                border-radius: 8px !important;
+                padding: 12px 24px !important;
+                font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                font-weight: 500 !important;
+                cursor: pointer !important;
+                transition: all 0.2s ease !important;
+                box-shadow: 0 2px 8px rgba(107, 142, 111, 0.2) !important;
+            }
+
+            .btn-enhanced:hover {
+                background: linear-gradient(135deg, #5A7A5E 0%, #4F6B52 100%) !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 16px rgba(107, 142, 111, 0.3) !important;
+            }
+
+            .atmospheric-bg {
+                background: linear-gradient(135deg, rgba(254, 255, 254, 0.9) 0%, rgba(221, 228, 234, 0.7) 100%) !important;
+                backdrop-filter: blur(10px) !important;
+                -webkit-backdrop-filter: blur(10px) !important;
+                border-radius: 12px !important;
+            }
+
+            .text-enhanced {
+                font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                color: #4A4A4A !important;
+                line-height: 1.6 !important;
+            }
+
+            .container-enhanced {
+                background: rgba(254, 255, 254, 0.6) !important;
+                backdrop-filter: blur(10px) !important;
+                border-radius: 12px !important;
+                padding: 2rem !important;
+            }
+
+            .input-enhanced {
+                background: #FEFFFE !important;
+                border: 1px solid #DDE4EA !important;
+                border-radius: 8px !important;
+                color: #4A4A4A !important;
+                font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                padding: 12px 16px !important;
+                transition: all 0.2s ease !important;
+            }
+
+            .input-enhanced:focus {
+                border-color: #6B8E6F !important;
+                box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1) !important;
+                outline: none !important;
+            }
+
+            /* Animation Classes */
+            .fade-in {
+                animation: brbs-fadeIn 0.6s ease-out forwards !important;
+            }
+
+            .slide-up {
+                animation: brbs-slideUp 0.6s ease-out forwards !important;
+            }
+
+            .scale-in {
+                animation: brbs-scaleIn 0.6s ease-out forwards !important;
+            }
+
+            .pulse {
+                animation: brbs-pulse 2s infinite !important;
+            }
+
+            .hover-lift {
+                transition: transform 0.2s ease !important;
+            }
+
+            .hover-lift:hover {
+                transform: translateY(-2px) !important;
+            }
+
+            @keyframes brbs-fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+
+            @keyframes brbs-slideUp {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            @keyframes brbs-scaleIn {
+                from { opacity: 0; transform: scale(0.95); }
+                to { opacity: 1; transform: scale(1); }
+            }
+
+            @keyframes brbs-pulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.5; }
+            }
+
+            /* Seasonal Themes */
+            .spring-theme { filter: hue-rotate(10deg) saturate(1.1) !important; }
+            .summer-theme { filter: hue-rotate(20deg) saturate(1.2) brightness(1.05) !important; }
+            .autumn-theme { filter: hue-rotate(-10deg) saturate(1.15) !important; }
+            .winter-theme { filter: saturate(0.9) brightness(0.95) !important; }
+        `;
+
+      // Inject default styles on load
+      setTimeout(() => {
+        injectCSS(defaultCSS);
+      }, 100);
+
+      // Ready notification
+      setTimeout(() => {
+        window.parent.postMessage(
+          {
+            type: "CSS_COMPONENT_READY",
+            timestamp: new Date().toISOString(),
+          },
+          "*"
+        );
+      }, 200);
+    </script>
+  </body>
+</html>

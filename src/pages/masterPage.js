@@ -1,115 +1,917 @@
 // @ts-nocheck
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
-// Blue Ridge Bonsai Society - Master Page Implementation
+// Blue Ridge Bonsai Society - Master Page Implementation with Dependency Injection
 // WIX REPOSITORY INTEGRATION - Auto-deploys from Git commits
 
 import { currentMember } from "wix-members";
 import wixLocationFrontend from "wix-location-frontend";
 import wixUsers from "wix-users";
+import wixWindow from "wix-window";
+
+// =====================================================
+// DEPENDENCY INJECTION & WORKAROUND SYSTEM
+// =====================================================
+
+let injectedCSS = false;
+let cssInjectionAttempts = 0;
+const maxCSSInjectionAttempts = 3;
+
+// Environment detection and safety checks
+const IS_BROWSER =
+  typeof window !== "undefined" && typeof document !== "undefined";
+const IS_WIX_EDITOR =
+  typeof wixWindow !== "undefined" &&
+  wixWindow.rendering &&
+  wixWindow.rendering.env === "browser";
+
+// Helper function to safely access window properties
+function safeGetWindowProperty(propertyName, defaultValue = {}) {
+  if (!IS_BROWSER || typeof window === "undefined") {
+    console.log(
+      `⚠️ Window property ${propertyName} not available in current environment`
+    );
+    return defaultValue;
+  }
+  return window[propertyName] || defaultValue;
+}
+
+// Helper function to safely set window properties
+function safeSetWindowProperty(propertyName, value) {
+  if (typeof window !== "undefined") {
+    window[propertyName] = value;
+    return true;
+  }
+  return false;
+}
+
+// Helper function to safely call window property methods
+function safeCallWindowMethod(propertyName, methodName, ...args) {
+  const obj = safeGetWindowProperty(propertyName);
+  if (obj && typeof obj[methodName] === "function") {
+    return obj[methodName](...args);
+  }
+  return undefined;
+}
+
+// Fallback styling methods when Wix APIs fail
+const FALLBACK_STYLES = {
+  liquidGlassNav: {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    right: "0",
+    zIndex: "9999",
+    backgroundColor: "rgba(254, 255, 254, 0.85)",
+    backdropFilter: "blur(20px)",
+    borderBottom: "1px solid rgba(107, 142, 111, 0.2)",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  },
+  enhancedButton: {
+    backgroundColor: "#6B8E6F",
+    color: "#FEFFFE",
+    borderRadius: "8px",
+    fontFamily:
+      "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    fontWeight: "500",
+    padding: "12px 24px",
+    border: "none",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
+  atmosphericBg: {
+    background:
+      "linear-gradient(135deg, rgba(254, 255, 254, 0.9) 0%, rgba(221, 228, 234, 0.7) 100%)",
+    backdropFilter: "blur(10px)",
+    borderRadius: "12px",
+  },
+};
 
 $w.onReady(function () {
-  console.log("🌸 Blue Ridge Bonsai Society - Repository Integration Active");
-  console.log("🚀 Auto-deploying from Git repository commit");
+  console.log(
+    "Running the code for the site. To debug this code in your browser's dev tools, open masterPage.js."
+  );
+  console.log("💡 Blue Ridge Bonsai Society - Enhanced System Ready");
+  console.log("🔧 Dependency injection and workaround systems active");
+  console.log("🎯 Fallback methods initialized for Wix API limitations");
+  console.log(
+    "🌸 Blue Ridge Bonsai Society - Enhanced Dependency Injection Active"
+  );
+  console.log(
+    "🚀 Auto-deploying from Git repository commit with fallback systems"
+  );
 
-  // Wait for CSS to be loaded from repository
-  setTimeout(() => {
-    // Verify CSS is loaded from repository
-    verifyCSSLoaded();
-
-    // Phase 1: Initialize Liquid Glass Navigation
-    try {
-      initializeLiquidGlassNavigation();
-    } catch (error) {
-      console.error("Error initializing liquid glass navigation:", error);
-    }
-
-    // Phase 2: Apply Design System Styling via CSS Classes
-    try {
-      applyDesignSystemStyling();
-    } catch (error) {
-      console.error("Error applying design system:", error);
-    }
-
-    // Initialize navigation system with embedded functionality
-    initializeEmbeddedNavigation();
-
-    // Phase 3: Add micro-interactions and animations
-    setTimeout(() => {
-      addMicroInteractions();
-    }, 200);
-
-    console.log("✅ All repository styling applied successfully!");
-  }, 100);
+  // Initialize dependency injection system
+  initializeDependencyInjection();
 });
 
 /**
- * Verify that CSS has been loaded from repository integration
+ * Initialize comprehensive dependency injection and workaround system
  */
-function verifyCSSLoaded() {
+async function initializeDependencyInjection() {
   try {
-    // Check if our CSS classes are available in the document
-    const testElement = document.createElement("div");
-    testElement.className = "liquid-glass-nav";
-    document.body.appendChild(testElement);
+    console.log("🔧 Initializing dependency injection system...");
 
-    const computedStyle = getComputedStyle(testElement);
-    const hasBackdropFilter =
-      computedStyle.backdropFilter !== "none" &&
-      computedStyle.backdropFilter !== "";
-    const hasPosition = computedStyle.position === "fixed";
+    // Phase 1: CSS Injection with multiple fallback methods
+    await injectCSSWithFallbacks();
 
-    document.body.removeChild(testElement);
+    // Phase 2: Enhanced element manipulation with error handling
+    await initializeEnhancedElementManipulation();
 
-    if (hasBackdropFilter && hasPosition) {
-      console.log(
-        "✅ CSS loaded successfully from repository (src/public/global.css)"
-      );
-      console.log("🎨 Liquid glass navigation styles are active");
-    } else {
-      console.warn("⚠️ CSS not fully loaded from repository");
-      console.warn(
-        "📋 Check: src/public/global.css should be deployed via Wix Git Integration"
-      );
-      console.warn("🔄 Try: Commit changes and wait for Wix deployment");
+    // Phase 3: Alternative navigation system
+    await initializeRobustNavigation();
+
+    // Phase 4: Enhanced styling with fallback methods
+    await applyEnhancedStylingWithFallbacks();
+
+    // Phase 5: Micro-interactions with error handling
+    await addRobustMicroInteractions();
+
+    console.log(
+      "✅ All dependency injection and workarounds completed successfully!"
+    );
+  } catch (error) {
+    console.error("❌ Error in dependency injection system:", error);
+    await initializeFallbackSystem();
+  }
+}
+
+/**
+ * Inject CSS using multiple fallback methods when Wix methods fail
+ */
+async function injectCSSWithFallbacks() {
+  console.log("💉 Injecting CSS with multiple fallback methods...");
+
+  try {
+    // Method 1: Try standard CSS verification first
+    if (await verifyCSSLoaded()) {
+      console.log("✅ Standard CSS loading verified");
+      return;
     }
 
-    return hasBackdropFilter && hasPosition;
+    // Method 2: Inject CSS via HTML component if available
+    await injectCSSViaHTMLComponent();
+
+    // Method 3: Inject CSS via custom style element
+    await injectCSSViaCustomElement();
+
+    // Method 4: Apply inline styles as final fallback
+    await applyInlineStylesFallback();
   } catch (error) {
-    console.log("Could not verify CSS loading:", error);
-    return false;
+    console.error("Error in CSS injection:", error);
+    await applyInlineStylesFallback();
   }
 }
 
 /**
- * Phase 1: Initialize Liquid Glass Navigation System
- * Applies CSS classes to achieve liquid glass effects
+ * Verify CSS loading with enhanced detection and environment safety
  */
-function initializeLiquidGlassNavigation() {
-  console.log("🌊 Initializing Liquid Glass Navigation System");
+async function verifyCSSLoaded() {
+  return new Promise((resolve) => {
+    try {
+      // Check if we're in a browser environment with DOM access
+      if (typeof document === "undefined" || typeof window === "undefined") {
+        console.log(
+          "⚠️ Browser APIs not available - server/restricted environment detected"
+        );
+        console.log("🔄 Skipping CSS verification, will use fallback styling");
+        resolve(false);
+        return;
+      }
 
+      // Check Wix environment if available
+      if (wixWindow && wixWindow.rendering) {
+        if (wixWindow.rendering.env !== "browser") {
+          console.log(
+            "⚠️ Not in browser rendering environment:",
+            wixWindow.rendering.env
+          );
+          resolve(false);
+          return;
+        }
+      }
+
+      // Try to create test element
+      let testDiv;
+      try {
+        testDiv = document.createElement("div");
+      } catch (domError) {
+        console.log("⚠️ Cannot create DOM elements - restricted environment");
+        resolve(false);
+        return;
+      }
+
+      testDiv.className = "liquid-glass-nav";
+      testDiv.style.position = "absolute";
+      testDiv.style.left = "-9999px";
+      testDiv.style.top = "-9999px";
+      testDiv.style.visibility = "hidden";
+      testDiv.style.pointerEvents = "none";
+
+      // Safe DOM manipulation
+      try {
+        document.body.appendChild(testDiv);
+      } catch (appendError) {
+        console.log(
+          "⚠️ Cannot append to document body - restricted DOM access"
+        );
+        resolve(false);
+        return;
+      }
+
+      setTimeout(() => {
+        try {
+          const computedStyle = getComputedStyle(testDiv);
+          const hasBackdropFilter =
+            computedStyle.backdropFilter !== "none" &&
+            computedStyle.backdropFilter !== "";
+          const hasPosition =
+            computedStyle.position === "fixed" ||
+            computedStyle.position === "absolute";
+
+          // Safe removal
+          if (document.body.contains(testDiv)) {
+            document.body.removeChild(testDiv);
+          }
+
+          if (hasBackdropFilter && hasPosition) {
+            console.log("✅ CSS loaded successfully from repository");
+            resolve(true);
+          } else {
+            console.warn("⚠️ CSS not fully loaded - attempting injection");
+            resolve(false);
+          }
+        } catch (cleanupError) {
+          console.log("Error in CSS verification:", cleanupError);
+          // Try to clean up anyway
+          try {
+            if (testDiv && document.body.contains(testDiv)) {
+              document.body.removeChild(testDiv);
+            }
+          } catch (removeError) {
+            // Ignore cleanup errors
+          }
+          resolve(false);
+        }
+      }, 100);
+    } catch (error) {
+      console.log("Could not verify CSS loading:", error);
+      resolve(false);
+    }
+  });
+}
+
+/**
+ * Inject CSS via HTML component method
+ */
+async function injectCSSViaHTMLComponent() {
   try {
-    // Apply liquid glass CSS classes to Wix elements
-    applyLiquidGlassClasses();
+    // Try to find an HTML component to inject CSS
+    const htmlComponents = $w("HtmlComponent");
 
-    // Initialize dynamic navigation adaptation
-    initializeNavigationAdaptation();
+    if (htmlComponents && htmlComponents.length > 0) {
+      const cssContent = generateCSSContent();
 
-    // Setup scroll-based navigation behavior
-    setupScrollBasedNavigation();
+      htmlComponents.forEach((component) => {
+        try {
+          component.postMessage({
+            type: "INJECT_CSS",
+            css: cssContent,
+          });
+          console.log("✅ CSS injected via HTML component");
+        } catch (e) {
+          console.log("Could not inject CSS via HTML component");
+        }
+      });
+    }
 
-    console.log("✅ Liquid Glass Navigation System initialized");
+    // Create hidden HTML component for CSS injection if none exists
+    await createCSSInjectionComponent();
   } catch (error) {
-    console.error("❌ Error initializing liquid glass navigation:", error);
+    console.log("HTML component CSS injection failed:", error);
   }
 }
 
 /**
- * Apply Liquid Glass CSS Classes to Navigation Elements
- * Uses Wix Studio's CSS class system
+ * Create a hidden HTML component specifically for CSS injection
  */
-function applyLiquidGlassClasses() {
+async function createCSSInjectionComponent() {
   try {
-    // Apply to header/navigation elements - try multiple common IDs
+    if (cssInjectionAttempts >= maxCSSInjectionAttempts) {
+      console.log("Max CSS injection attempts reached");
+      return;
+    }
+
+    cssInjectionAttempts++;
+
+    // Check if we're in a browser environment first
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      console.log(
+        "⚠️ Document/Window not available - skipping direct CSS injection"
+      );
+      return;
+    }
+
+    // Try to add CSS injection via wixWindow if available
+    if (wixWindow && wixWindow.rendering) {
+      if (wixWindow.rendering.env === "browser") {
+        const cssContent = generateCSSContent();
+
+        // Method: Direct style injection with safe DOM access
+        try {
+          const styleElement = document.createElement("style");
+          styleElement.textContent = cssContent;
+          styleElement.id = "brbs-injected-styles";
+
+          // Remove existing injected styles safely
+          const existingStyle = document.getElementById("brbs-injected-styles");
+          if (existingStyle && existingStyle.parentNode) {
+            existingStyle.parentNode.removeChild(existingStyle);
+          }
+
+          // Safe append to head
+          if (document.head) {
+            document.head.appendChild(styleElement);
+            console.log("✅ CSS injected directly via document.head");
+            injectedCSS = true;
+          } else {
+            console.log("⚠️ Document head not available");
+          }
+        } catch (domError) {
+          console.log("⚠️ DOM manipulation failed:", domError);
+        }
+      } else {
+        console.log(
+          "⚠️ Not in browser rendering environment:",
+          wixWindow.rendering.env
+        );
+      }
+    } else {
+      console.log("⚠️ wixWindow.rendering not available");
+    }
+  } catch (error) {
+    console.log("Could not create CSS injection component:", error);
+  }
+}
+
+/**
+ * Generate CSS content for injection
+ */
+function generateCSSContent() {
+  return `
+    /* Blue Ridge Bonsai Society - Injected Styles */
+    .liquid-glass-nav {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 9999 !important;
+      background: rgba(254, 255, 254, 0.85) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border-bottom: 1px solid rgba(107, 142, 111, 0.2) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .nav-enhanced {
+      padding: 0.75rem 1.5rem !important;
+      background: transparent !important;
+    }
+
+    .nav-scrolled {
+      background: rgba(254, 255, 254, 0.95) !important;
+      backdrop-filter: blur(25px) !important;
+      box-shadow: 0 1px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .nav-hidden {
+      transform: translateY(-100%) !important;
+    }
+
+    .btn-enhanced {
+      background: linear-gradient(135deg, #6B8E6F 0%, #5A7A5E 100%) !important;
+      color: #FEFFFE !important;
+      border: none !important;
+      border-radius: 8px !important;
+      padding: 12px 24px !important;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      font-weight: 500 !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      box-shadow: 0 2px 8px rgba(107, 142, 111, 0.2) !important;
+    }
+
+    .btn-enhanced:hover {
+      background: linear-gradient(135deg, #5A7A5E 0%, #4F6B52 100%) !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 16px rgba(107, 142, 111, 0.3) !important;
+    }
+
+    .atmospheric-bg {
+      background: linear-gradient(135deg, rgba(254, 255, 254, 0.9) 0%, rgba(221, 228, 234, 0.7) 100%) !important;
+      backdrop-filter: blur(10px) !important;
+      -webkit-backdrop-filter: blur(10px) !important;
+      border-radius: 12px !important;
+    }
+
+    .text-enhanced {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      color: #4A4A4A !important;
+      line-height: 1.6 !important;
+    }
+
+    .container-enhanced {
+      background: rgba(254, 255, 254, 0.6) !important;
+      backdrop-filter: blur(10px) !important;
+      border-radius: 12px !important;
+      padding: 2rem !important;
+    }
+
+    .input-enhanced {
+      background: #FEFFFE !important;
+      border: 1px solid #DDE4EA !important;
+      border-radius: 8px !important;
+      color: #4A4A4A !important;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      padding: 12px 16px !important;
+      transition: all 0.2s ease !important;
+    }
+
+    .input-enhanced:focus {
+      border-color: #6B8E6F !important;
+      box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1) !important;
+      outline: none !important;
+    }
+
+    /* Animation Classes */
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards !important;
+    }
+
+    .slide-up {
+      animation: slideUp 0.6s ease-out forwards !important;
+    }
+
+    .scale-in {
+      animation: scaleIn 0.6s ease-out forwards !important;
+    }
+
+    .pulse {
+      animation: pulse 2s infinite !important;
+    }
+
+    .hover-lift {
+      transition: transform 0.2s ease !important;
+    }
+
+    .hover-lift:hover {
+      transform: translateY(-2px) !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Seasonal Themes */
+    .spring-theme { filter: hue-rotate(10deg) saturate(1.1) !important; }
+    .summer-theme { filter: hue-rotate(20deg) saturate(1.2) brightness(1.05) !important; }
+    .autumn-theme { filter: hue-rotate(-10deg) saturate(1.15) !important; }
+    .winter-theme { filter: saturate(0.9) brightness(0.95) !important; }
+  `;
+}
+
+/**
+ * Inject CSS via custom element method with environment safety
+ */
+async function injectCSSViaCustomElement() {
+  try {
+    // Check for browser environment
+    if (typeof window === "undefined") {
+      console.log(
+        "⚠️ Window not available - skipping custom element CSS injection"
+      );
+      return;
+    }
+
+    // Try using wixWindow to access broader APIs
+    if (wixWindow && wixWindow.copyToClipboard) {
+      // This indicates we have enhanced wixWindow access
+      console.log("✅ Enhanced wixWindow access available");
+    }
+
+    // Alternative: Use messaging system to inject CSS
+    if (window.parent && typeof window.parent.postMessage === "function") {
+      try {
+        window.parent.postMessage(
+          {
+            type: "BRBS_INJECT_CSS",
+            css: generateCSSContent(),
+          },
+          "*"
+        );
+        console.log("✅ CSS injection message sent to parent window");
+      } catch (messageError) {
+        console.log(
+          "⚠️ Could not send message to parent window:",
+          messageError
+        );
+      }
+    } else {
+      console.log("⚠️ Parent window messaging not available");
+    }
+  } catch (error) {
+    console.log("Custom element CSS injection failed:", error);
+  }
+}
+
+/**
+ * Apply inline styles as ultimate fallback
+ */
+async function applyInlineStylesFallback() {
+  console.log("🔄 Applying inline styles as fallback method");
+
+  try {
+    // Apply fallback styles to navigation
+    await applyNavigationFallbackStyles();
+
+    // Apply fallback styles to buttons
+    await applyButtonFallbackStyles();
+
+    // Apply fallback styles to containers
+    await applyContainerFallbackStyles();
+
+    console.log("✅ Inline fallback styles applied");
+  } catch (error) {
+    console.error("Error applying inline fallback styles:", error);
+  }
+}
+
+/**
+ * Apply navigation fallback styles
+ */
+async function applyNavigationFallbackStyles() {
+  const headerSelectors = [
+    "#SITE_HEADER",
+    "#header",
+    "#wixHeader",
+    "#masterHeader",
+    "#siteHeader",
+  ];
+
+  headerSelectors.forEach((selector) => {
+    try {
+      const headerElement = $w(selector);
+      if (headerElement && headerElement.length > 0) {
+        // Apply styles with error handling
+        Object.entries(FALLBACK_STYLES.liquidGlassNav).forEach(
+          ([property, value]) => {
+            try {
+              if (
+                headerElement.style &&
+                headerElement.style[property] !== undefined
+              ) {
+                headerElement.style[property] = value;
+              }
+            } catch (e) {
+              console.log(`Could not apply ${property} to ${selector}`);
+            }
+          }
+        );
+
+        console.log(`✅ Fallback navigation styles applied to ${selector}`);
+      }
+    } catch (e) {
+      // Element not found, continue
+    }
+  });
+}
+
+/**
+ * Apply button fallback styles
+ */
+async function applyButtonFallbackStyles() {
+  try {
+    const buttons = $w("Button");
+    if (buttons && buttons.length > 0) {
+      buttons.forEach((button) => {
+        try {
+          Object.entries(FALLBACK_STYLES.enhancedButton).forEach(
+            ([property, value]) => {
+              try {
+                if (button.style && button.style[property] !== undefined) {
+                  button.style[property] = value;
+                }
+              } catch (e) {
+                console.log(`Could not apply ${property} to button`);
+              }
+            }
+          );
+
+          // Enhanced interactions with error handling
+          try {
+            button.onMouseIn(() => {
+              if (button.style && button.style.backgroundColor !== undefined) {
+                button.style.backgroundColor = "#5A7A5E";
+              }
+            });
+
+            button.onMouseOut(() => {
+              if (button.style && button.style.backgroundColor !== undefined) {
+                button.style.backgroundColor = "#6B8E6F";
+              }
+            });
+          } catch (e) {
+            console.log("Could not add button interactions");
+          }
+        } catch (e) {
+          console.log("Could not style button");
+        }
+      });
+    }
+  } catch (error) {
+    console.log("Error applying button fallback styles:", error);
+  }
+}
+
+/**
+ * Apply container fallback styles
+ */
+async function applyContainerFallbackStyles() {
+  try {
+    const containers = $w("Container");
+    if (containers && containers.length > 0) {
+      containers.forEach((container) => {
+        try {
+          Object.entries(FALLBACK_STYLES.atmosphericBg).forEach(
+            ([property, value]) => {
+              try {
+                if (
+                  container.style &&
+                  container.style[property] !== undefined
+                ) {
+                  container.style[property] = value;
+                }
+              } catch (e) {
+                console.log(`Could not apply ${property} to container`);
+              }
+            }
+          );
+        } catch (e) {
+          console.log("Could not style container");
+        }
+      });
+    }
+  } catch (error) {
+    console.log("Error applying container fallback styles:", error);
+  }
+}
+
+/**
+ * Initialize enhanced element manipulation with robust error handling
+ */
+async function initializeEnhancedElementManipulation() {
+  console.log("🔧 Initializing enhanced element manipulation...");
+
+  try {
+    // Enhanced class manipulation with fallbacks
+    await enhancedClassManipulation();
+
+    // Enhanced event handling with error recovery
+    await enhancedEventHandling();
+
+    // Enhanced style application with validation
+    await enhancedStyleApplication();
+  } catch (error) {
+    console.error("Error in enhanced element manipulation:", error);
+  }
+}
+
+/**
+ * Enhanced class manipulation with multiple fallback methods
+ */
+async function enhancedClassManipulation() {
+  const elementMethods = {
+    // Method 1: Try customClassList
+    addClassMethod1: (element, className) => {
+      if (
+        element.customClassList &&
+        typeof element.customClassList.add === "function"
+      ) {
+        element.customClassList.add(className);
+        return true;
+      }
+      return false;
+    },
+
+    // Method 2: Try direct className manipulation
+    addClassMethod2: (element, className) => {
+      if (element.className !== undefined) {
+        const currentClasses = element.className.split(" ");
+        if (!currentClasses.includes(className)) {
+          element.className = `${element.className} ${className}`.trim();
+        }
+        return true;
+      }
+      return false;
+    },
+
+    // Method 3: Try setAttribute
+    addClassMethod3: (element, className) => {
+      if (typeof element.setAttribute === "function") {
+        const currentClass = element.getAttribute("class") || "";
+        const classes = currentClass.split(" ");
+        if (!classes.includes(className)) {
+          element.setAttribute("class", `${currentClass} ${className}`.trim());
+        }
+        return true;
+      }
+      return false;
+    },
+  };
+
+  // Store for later use (if window is available)
+  if (safeSetWindowProperty("BRBS_ElementMethods", elementMethods)) {
+    console.log(
+      "✅ Enhanced class manipulation methods initialized and stored on window"
+    );
+  } else {
+    console.log(
+      "✅ Enhanced class manipulation methods initialized (window not available for storage)"
+    );
+  }
+}
+
+/**
+ * Enhanced event handling with error recovery
+ */
+async function enhancedEventHandling() {
+  const eventMethods = {
+    // Safe event binding with error handling
+    safeBindEvent: (element, eventName, handler) => {
+      try {
+        if (element && typeof element[eventName] === "function") {
+          element[eventName](handler);
+          return true;
+        }
+      } catch (error) {
+        console.log(`Could not bind ${eventName} event:`, error);
+      }
+      return false;
+    },
+
+    // Alternative event binding methods
+    bindEventAlternative: (element, eventName, handler) => {
+      try {
+        if (element && element.addEventListener) {
+          element.addEventListener(eventName.replace("on", ""), handler);
+          return true;
+        }
+      } catch (error) {
+        console.log(`Could not bind ${eventName} via addEventListener:`, error);
+      }
+      return false;
+    },
+  };
+
+  if (safeSetWindowProperty("BRBS_EventMethods", eventMethods)) {
+    console.log(
+      "✅ Enhanced event handling methods initialized and stored on window"
+    );
+  } else {
+    console.log(
+      "✅ Enhanced event handling methods initialized (window not available for storage)"
+    );
+  }
+}
+
+/**
+ * Enhanced style application with validation
+ */
+async function enhancedStyleApplication() {
+  const styleMethods = {
+    // Safe style application
+    safeApplyStyle: (element, property, value) => {
+      try {
+        if (element && element.style && element.style[property] !== undefined) {
+          element.style[property] = value;
+          return true;
+        }
+      } catch (error) {
+        console.log(`Could not apply style ${property}:`, error);
+      }
+      return false;
+    },
+
+    // Batch style application
+    applyStyleBatch: (element, styles) => {
+      let applied = 0;
+      Object.entries(styles).forEach(([property, value]) => {
+        if (styleMethods.safeApplyStyle(element, property, value)) {
+          applied++;
+        }
+      });
+      return applied;
+    },
+  };
+
+  if (safeSetWindowProperty("BRBS_StyleMethods", styleMethods)) {
+    console.log(
+      "✅ Enhanced style application methods initialized and stored on window"
+    );
+  } else {
+    console.log(
+      "✅ Enhanced style application methods initialized (window not available for storage)"
+    );
+  }
+}
+
+/**
+ * Initialize robust navigation system with multiple fallback methods
+ */
+async function initializeRobustNavigation() {
+  console.log("🧭 Initializing robust navigation system...");
+
+  try {
+    // Get current member with enhanced error handling
+    const member = await getCurrentMemberRobust();
+    const userRole = getUserRoleRobust(member);
+
+    // Setup navigation with fallback methods
+    await setupRobustNavigationForUser(userRole);
+
+    // Setup enhanced responsive navigation
+    await setupEnhancedResponsiveNavigation();
+
+    // Setup scroll-based navigation with error handling
+    await setupRobustScrollNavigation();
+
+    console.log("✅ Robust navigation system initialized");
+  } catch (error) {
+    console.error("Error in robust navigation system:", error);
+    await setupBasicNavigationFallback();
+  }
+}
+
+/**
+ * Get current member with enhanced error handling
+ */
+async function getCurrentMemberRobust() {
+  try {
+    const member = await currentMember.getMember();
+    return member;
+  } catch (error) {
+    console.log("No member logged in or error accessing member:", error);
+    return null;
+  }
+}
+
+/**
+ * Get user role with enhanced validation
+ */
+function getUserRoleRobust(member) {
+  if (!member) return "guest";
+
+  try {
+    const memberRoles = member.memberRoles || member.roles || [];
+    if (Array.isArray(memberRoles)) {
+      if (memberRoles.includes("admin")) return "admin";
+      if (memberRoles.includes("board")) return "board";
+      return "member";
+    }
+    return "member";
+  } catch (error) {
+    console.log("Error determining user role:", error);
+    return "guest";
+  }
+}
+
+/**
+ * Setup robust navigation with multiple fallback methods
+ */
+async function setupRobustNavigationForUser(userRole) {
+  console.log(`Setting up navigation for user role: ${userRole}`);
+
+  try {
+    // Use enhanced element methods
+    const { addClassMethod1, addClassMethod2, addClassMethod3 } =
+      safeGetWindowProperty("BRBS_ElementMethods");
+
+    // Apply navigation classes with fallback methods
     const headerSelectors = [
       "#SITE_HEADER",
       "#header",
@@ -118,298 +920,602 @@ function applyLiquidGlassClasses() {
       "#siteHeader",
     ];
 
-    let headerFound = false;
     headerSelectors.forEach((selector) => {
       try {
         const headerElement = $w(selector);
         if (headerElement && headerElement.length > 0) {
-          headerElement.customClassList.add("liquid-glass-nav");
-          console.log(`✅ Applied liquid-glass-nav to ${selector}`);
-          headerFound = true;
-        }
-      } catch (e) {
-        // Element not found, continue
-      }
-    });
+          // Try multiple methods to add classes
+          let classAdded = false;
+          if (
+            addClassMethod1 &&
+            addClassMethod1(headerElement, "liquid-glass-nav")
+          ) {
+            classAdded = true;
+          } else if (
+            addClassMethod2 &&
+            addClassMethod2(headerElement, "liquid-glass-nav")
+          ) {
+            classAdded = true;
+          } else if (
+            addClassMethod3 &&
+            addClassMethod3(headerElement, "liquid-glass-nav")
+          ) {
+            classAdded = true;
+          }
 
-    if (!headerFound) {
-      console.log("ℹ️ No header elements found with standard IDs");
-    }
-
-    // Apply enhanced nav styles to navigation elements
-    const navSelectors = [
-      "#navBar",
-      "#navigation",
-      "#menuContainer",
-      "#horizontalMenuContainer",
-    ];
-
-    navSelectors.forEach((selector) => {
-      try {
-        const navElement = $w(selector);
-        if (navElement && navElement.length > 0) {
-          if (Array.isArray(navElement)) {
-            navElement.forEach((element) => {
-              try {
-                element.customClassList.add("nav-enhanced");
-              } catch (e) {
-                console.log("Could not add nav-enhanced class to element");
-              }
-            });
+          if (classAdded) {
+            console.log(`✅ Applied liquid-glass-nav class to ${selector}`);
           } else {
-            navElement.customClassList.add("nav-enhanced");
+            // Fallback to direct styling
+            safeCallWindowMethod(
+              "BRBS_StyleMethods",
+              "applyStyleBatch",
+              headerElement,
+              FALLBACK_STYLES.liquidGlassNav
+            );
           }
-          console.log(`✅ Applied nav-enhanced to ${selector}`);
         }
       } catch (e) {
-        // Element not found, continue
+        console.log(`Could not access ${selector}`);
       }
     });
 
-    // Apply atmospheric background to main containers
-    const containerSelectors = [
-      "#SITE_CONTAINER",
-      "#main",
-      "#mainContainer",
-      "#pageContainer",
-    ];
+    // Setup role-based navigation visibility
+    await setupRoleBasedNavigation(userRole);
+  } catch (error) {
+    console.error("Error setting up robust navigation:", error);
+  }
+}
 
-    containerSelectors.forEach((selector) => {
+/**
+ * Setup role-based navigation with enhanced error handling
+ */
+async function setupRoleBasedNavigation(userRole) {
+  const membersOnlySelectors = [
+    "#membersArea",
+    "#memberDirectory",
+    "#adminPanel",
+    "#memberDashboard",
+  ];
+
+  const publicSelectors = ["#joinUsButton", "#loginLink", "#guestWelcome"];
+
+  try {
+    if (userRole === "guest") {
+      // Hide member elements, show public elements
+      membersOnlySelectors.forEach((selector) => {
+        try {
+          const element = $w(selector);
+          if (
+            element &&
+            element.length > 0 &&
+            typeof element.hide === "function"
+          ) {
+            element.hide();
+          }
+        } catch (e) {
+          console.log(`Could not hide ${selector}`);
+        }
+      });
+
+      publicSelectors.forEach((selector) => {
+        try {
+          const element = $w(selector);
+          if (
+            element &&
+            element.length > 0 &&
+            typeof element.show === "function"
+          ) {
+            element.show();
+          }
+        } catch (e) {
+          console.log(`Could not show ${selector}`);
+        }
+      });
+    } else {
+      // Show member elements, hide public elements
+      membersOnlySelectors.forEach((selector) => {
+        try {
+          const element = $w(selector);
+          if (
+            element &&
+            element.length > 0 &&
+            typeof element.show === "function"
+          ) {
+            element.show();
+          }
+        } catch (e) {
+          console.log(`Could not show ${selector}`);
+        }
+      });
+
+      publicSelectors.forEach((selector) => {
+        try {
+          const element = $w(selector);
+          if (
+            element &&
+            element.length > 0 &&
+            typeof element.hide === "function"
+          ) {
+            element.hide();
+          }
+        } catch (e) {
+          console.log(`Could not hide ${selector}`);
+        }
+      });
+    }
+
+    console.log(`✅ Role-based navigation setup completed for: ${userRole}`);
+  } catch (error) {
+    console.error("Error in role-based navigation setup:", error);
+  }
+}
+
+/**
+ * Setup enhanced responsive navigation with error handling
+ */
+async function setupEnhancedResponsiveNavigation() {
+  try {
+    const { safeBindEvent, bindEventAlternative } =
+      safeGetWindowProperty("BRBS_EventMethods");
+
+    // Mobile menu toggle with enhanced error handling
+    const mobileToggle = $w("#mobileMenuToggle");
+    const mobileMenu = $w("#mobileMenu");
+
+    if (
+      mobileToggle &&
+      mobileToggle.length > 0 &&
+      mobileMenu &&
+      mobileMenu.length > 0
+    ) {
+      const toggleHandler = () => {
+        try {
+          const isVisible =
+            typeof mobileMenu.isVisible === "boolean"
+              ? mobileMenu.isVisible
+              : mobileMenu.style && mobileMenu.style.display !== "none";
+
+          if (isVisible) {
+            if (typeof mobileMenu.hide === "function") {
+              mobileMenu.hide();
+            } else if (mobileMenu.style) {
+              mobileMenu.style.display = "none";
+            }
+          } else {
+            if (typeof mobileMenu.show === "function") {
+              mobileMenu.show();
+            } else if (mobileMenu.style) {
+              mobileMenu.style.display = "block";
+            }
+          }
+        } catch (e) {
+          console.log("Error in mobile menu toggle:", e);
+        }
+      };
+
+      // Try multiple event binding methods
+      if (
+        !safeBindEvent ||
+        !safeBindEvent(mobileToggle, "onClick", toggleHandler)
+      ) {
+        if (bindEventAlternative) {
+          bindEventAlternative(mobileToggle, "click", toggleHandler);
+        }
+      }
+
+      console.log("✅ Enhanced mobile navigation setup completed");
+    }
+  } catch (error) {
+    console.error("Error setting up enhanced responsive navigation:", error);
+  }
+}
+
+/**
+ * Setup robust scroll-based navigation
+ */
+async function setupRobustScrollNavigation() {
+  if (typeof window === "undefined") return;
+
+  try {
+    let lastScrollY = 0;
+    let ticking = false;
+
+    const updateNavigation = () => {
+      const currentScrollY = window.scrollY || window.pageYOffset || 0;
+
       try {
-        const container = $w(selector);
-        if (container && container.length > 0) {
-          container.customClassList.add("atmospheric-bg");
-          console.log(`✅ Applied atmospheric-bg to ${selector}`);
-        }
-      } catch (e) {
-        // Element not found, continue
+        const headerSelectors = ["#SITE_HEADER", "#header", "#wixHeader"];
+        const elementMethods =
+          (typeof window !== "undefined" && window.BRBS_ElementMethods) || {};
+        const { addClassMethod1, addClassMethod2 } = elementMethods;
+
+        headerSelectors.forEach((selector) => {
+          try {
+            const headerElement = $w(selector);
+            if (headerElement && headerElement.length > 0) {
+              // Remove/add classes based on scroll with fallback methods
+              if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                // Scrolling down - hide navigation
+                if (addClassMethod1) {
+                  addClassMethod1(headerElement, "nav-hidden");
+                } else if (addClassMethod2) {
+                  addClassMethod2(headerElement, "nav-hidden");
+                } else if (headerElement.style) {
+                  headerElement.style.transform = "translateY(-100%)";
+                }
+              } else {
+                // Scrolling up - show navigation
+                if (
+                  headerElement.customClassList &&
+                  typeof headerElement.customClassList.remove === "function"
+                ) {
+                  headerElement.customClassList.remove("nav-hidden");
+                } else if (headerElement.style) {
+                  headerElement.style.transform = "translateY(0)";
+                }
+              }
+
+              // Add scrolled state
+              if (currentScrollY > 50) {
+                if (addClassMethod1) {
+                  addClassMethod1(headerElement, "nav-scrolled");
+                } else if (addClassMethod2) {
+                  addClassMethod2(headerElement, "nav-scrolled");
+                } else {
+                  const styleMethods =
+                    (typeof window !== "undefined" &&
+                      window.BRBS_StyleMethods) ||
+                    {};
+                  if (styleMethods.applyStyleBatch) {
+                    styleMethods.applyStyleBatch(headerElement, {
+                      backgroundColor: "rgba(254, 255, 254, 0.95)",
+                      backdropFilter: "blur(25px)",
+                      boxShadow: "0 1px 20px rgba(0, 0, 0, 0.08)",
+                    });
+                  }
+                }
+              } else {
+                if (
+                  headerElement.customClassList &&
+                  typeof headerElement.customClassList.remove === "function"
+                ) {
+                  headerElement.customClassList.remove("nav-scrolled");
+                } else {
+                  const styleMethods =
+                    (typeof window !== "undefined" &&
+                      window.BRBS_StyleMethods) ||
+                    {};
+                  if (styleMethods.applyStyleBatch) {
+                    styleMethods.applyStyleBatch(
+                      headerElement,
+                      FALLBACK_STYLES.liquidGlassNav
+                    );
+                  }
+                }
+              }
+            }
+          } catch (e) {
+            console.log(`Error updating navigation for ${selector}`);
+          }
+        });
+      } catch (error) {
+        console.log("Error in scroll navigation update:", error);
       }
-    });
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        if (window.requestAnimationFrame) {
+          window.requestAnimationFrame(updateNavigation);
+        } else {
+          setTimeout(updateNavigation, 16);
+        }
+        ticking = true;
+      }
+    };
+
+    // Bind scroll event with error handling
+    try {
+      window.addEventListener("scroll", onScroll, { passive: true });
+      console.log("✅ Robust scroll navigation initialized");
+    } catch (error) {
+      // Fallback for older browsers
+      window.onscroll = onScroll;
+      console.log("✅ Fallback scroll navigation initialized");
+    }
   } catch (error) {
-    console.log("Error applying liquid glass classes:", error);
+    console.error("Error setting up robust scroll navigation:", error);
   }
 }
 
 /**
- * Initialize Navigation Adaptation Based on Content
+ * Apply enhanced styling with comprehensive fallback methods
  */
-function initializeNavigationAdaptation() {
-  if (typeof window === "undefined") return;
-
-  // Add adaptive classes based on scroll and content
-  const addAdaptiveClasses = () => {
-    try {
-      const headerSelectors = ["#SITE_HEADER", "#header", "#wixHeader"];
-
-      headerSelectors.forEach((selector) => {
-        try {
-          const headerElement = $w(selector);
-          if (headerElement && headerElement.length > 0) {
-            // Add base navigation enhancement
-            headerElement.customClassList.add("liquid-glass-nav");
-
-            // Add adaptive state based on scroll position
-            const scrollY = window.scrollY;
-            if (scrollY > 50) {
-              headerElement.customClassList.add("nav-scrolled");
-            } else {
-              headerElement.customClassList.remove("nav-scrolled");
-            }
-          }
-        } catch (e) {
-          // Element not found, continue
-        }
-      });
-    } catch (error) {
-      console.log("Error in navigation adaptation:", error);
-    }
-  };
-
-  // Run immediately and on scroll
-  addAdaptiveClasses();
-
-  // Listen for scroll events
-  if (typeof window !== "undefined") {
-    window.addEventListener("scroll", addAdaptiveClasses, { passive: true });
-  }
-}
-
-/**
- * Setup Scroll-Based Navigation Behavior
- */
-function setupScrollBasedNavigation() {
-  if (typeof window === "undefined") return;
-
-  let lastScrollY = 0;
-  let ticking = false;
-
-  const updateNavigation = () => {
-    const currentScrollY = window.scrollY;
-
-    try {
-      const headerSelectors = ["#SITE_HEADER", "#header", "#wixHeader"];
-
-      headerSelectors.forEach((selector) => {
-        try {
-          const headerElement = $w(selector);
-          if (headerElement && headerElement.length > 0) {
-            // Add/remove scroll-based classes
-            if (currentScrollY > lastScrollY && currentScrollY > 100) {
-              headerElement.customClassList.add("nav-hidden");
-            } else {
-              headerElement.customClassList.remove("nav-hidden");
-            }
-
-            if (currentScrollY > 50) {
-              headerElement.customClassList.add("nav-scrolled");
-            } else {
-              headerElement.customClassList.remove("nav-scrolled");
-            }
-          }
-        } catch (e) {
-          // Element not found, continue
-        }
-      });
-    } catch (error) {
-      console.log("Error in scroll navigation:", error);
-    }
-
-    lastScrollY = currentScrollY;
-    ticking = false;
-  };
-
-  const onScroll = () => {
-    if (!ticking) {
-      requestAnimationFrame(updateNavigation);
-      ticking = true;
-    }
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-}
-
-/**
- * Phase 2: Apply Design System Styling
- * Uses Wix Studio CSS classes for consistent styling
- */
-function applyDesignSystemStyling() {
-  console.log("🎨 Applying Design System Styling (Wix Studio CSS)");
+async function applyEnhancedStylingWithFallbacks() {
+  console.log("🎨 Applying enhanced styling with fallback methods...");
 
   try {
-    // Apply Design System CSS classes to Wix elements
-    applyDesignSystemClasses();
+    // Apply enhanced button styling
+    await applyEnhancedButtonStyling();
 
-    // Apply Wix element styling using style properties
-    applyWixElementStyling();
+    // Apply enhanced text styling
+    await applyEnhancedTextStyling();
 
-    // Setup atmospheric effects using CSS classes
-    setupAtmosphericEffects();
+    // Apply enhanced container styling
+    await applyEnhancedContainerStyling();
 
-    console.log("✅ Design System styling applied successfully");
+    // Apply enhanced input styling
+    await applyEnhancedInputStyling();
+
+    // Apply seasonal theming
+    await applySeasonalTheming();
+
+    console.log("✅ Enhanced styling with fallbacks applied successfully");
   } catch (error) {
-    console.error("❌ Error applying design system styling:", error);
+    console.error("Error applying enhanced styling:", error);
   }
 }
 
 /**
- * Apply Design System CSS Classes to Wix Elements
- * Uses classes defined in Wix Studio CSS panel
+ * Apply enhanced button styling with multiple methods
  */
-function applyDesignSystemClasses() {
+async function applyEnhancedButtonStyling() {
   try {
-    // Apply enhanced classes to buttons
     const buttons = $w("Button");
     if (buttons && buttons.length > 0) {
       buttons.forEach((button) => {
         try {
-          button.customClassList.add("btn-enhanced");
-          console.log("✅ Applied btn-enhanced class to button");
+          // Try class-based styling first
+          const { addClassMethod1, addClassMethod2 } = safeGetWindowProperty(
+            "BRBS_ElementMethods"
+          );
+
+          let classApplied = false;
+          if (addClassMethod1 && addClassMethod1(button, "btn-enhanced")) {
+            classApplied = true;
+          } else if (
+            addClassMethod2 &&
+            addClassMethod2(button, "btn-enhanced")
+          ) {
+            classApplied = true;
+          }
+
+          // Fallback to direct styling
+          if (!classApplied) {
+            safeCallWindowMethod(
+              "BRBS_StyleMethods",
+              "applyStyleBatch",
+              button,
+              FALLBACK_STYLES.enhancedButton
+            );
+          }
+
+          // Enhanced interactions with fallback methods
+          const { safeBindEvent } = safeGetWindowProperty("BRBS_EventMethods");
+
+          const mouseInHandler = () => {
+            safeCallWindowMethod(
+              "BRBS_StyleMethods",
+              "safeApplyStyle",
+              button,
+              "backgroundColor",
+              "#5A7A5E"
+            );
+            safeCallWindowMethod(
+              "BRBS_StyleMethods",
+              "safeApplyStyle",
+              button,
+              "transform",
+              "translateY(-1px)"
+            );
+          };
+
+          const mouseOutHandler = () => {
+            safeCallWindowMethod(
+              "BRBS_StyleMethods",
+              "safeApplyStyle",
+              button,
+              "backgroundColor",
+              "#6B8E6F"
+            );
+            safeCallWindowMethod(
+              "BRBS_StyleMethods",
+              "safeApplyStyle",
+              button,
+              "transform",
+              "translateY(0)"
+            );
+          };
+
+          if (safeBindEvent) {
+            safeBindEvent(button, "onMouseIn", mouseInHandler);
+            safeBindEvent(button, "onMouseOut", mouseOutHandler);
+          }
+
+          console.log("✅ Enhanced button styling applied");
         } catch (e) {
-          console.log("Could not add btn-enhanced class to button");
+          console.log("Could not style individual button:", e);
         }
       });
     }
+  } catch (error) {
+    console.log("Error applying enhanced button styling:", error);
+  }
+}
 
-    // Apply enhanced classes to text elements
+/**
+ * Apply enhanced text styling
+ */
+async function applyEnhancedTextStyling() {
+  try {
     const textElements = $w("Text");
     if (textElements && textElements.length > 0) {
       textElements.forEach((text) => {
         try {
-          text.customClassList.add("text-enhanced");
+          const { addClassMethod1, addClassMethod2 } = safeGetWindowProperty(
+            "BRBS_ElementMethods"
+          );
+
+          let classApplied = false;
+          if (addClassMethod1 && addClassMethod1(text, "text-enhanced")) {
+            classApplied = true;
+          } else if (
+            addClassMethod2 &&
+            addClassMethod2(text, "text-enhanced")
+          ) {
+            classApplied = true;
+          }
+
+          if (!classApplied) {
+            safeCallWindowMethod("BRBS_StyleMethods", "applyStyleBatch", text, {
+              fontFamily:
+                "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+              color: "#4A4A4A",
+              lineHeight: "1.6",
+            });
+          }
         } catch (e) {
-          console.log("Could not add text-enhanced class to text");
+          console.log("Could not style text element");
         }
       });
     }
+  } catch (error) {
+    console.log("Error applying enhanced text styling:", error);
+  }
+}
 
-    // Apply enhanced classes to headings/titles
-    const headings = $w("Title");
-    if (headings && headings.length > 0) {
-      headings.forEach((heading) => {
-        try {
-          heading.customClassList.add("heading-enhanced");
-        } catch (e) {
-          console.log("Could not add heading-enhanced class to title");
-        }
-      });
-    }
-
-    // Apply enhanced classes to containers
+/**
+ * Apply enhanced container styling
+ */
+async function applyEnhancedContainerStyling() {
+  try {
     const containers = $w("Container");
     if (containers && containers.length > 0) {
       containers.forEach((container) => {
         try {
-          container.customClassList.add("container-enhanced");
+          const { addClassMethod1, addClassMethod2 } = safeGetWindowProperty(
+            "BRBS_ElementMethods"
+          );
+
+          let classApplied = false;
+          if (
+            addClassMethod1 &&
+            addClassMethod1(container, "container-enhanced")
+          ) {
+            classApplied = true;
+          } else if (
+            addClassMethod2 &&
+            addClassMethod2(container, "container-enhanced")
+          ) {
+            classApplied = true;
+          }
+
+          if (!classApplied) {
+            safeCallWindowMethod(
+              "BRBS_StyleMethods",
+              "applyStyleBatch",
+              container,
+              FALLBACK_STYLES.atmosphericBg
+            );
+          }
         } catch (e) {
-          console.log("Could not add container-enhanced class");
+          console.log("Could not style container");
         }
       });
     }
+  } catch (error) {
+    console.log("Error applying enhanced container styling:", error);
+  }
+}
 
-    // Apply enhanced classes to sections
-    const sections = $w("Section");
-    if (sections && sections.length > 0) {
-      sections.forEach((section) => {
-        try {
-          section.customClassList.add("section-enhanced");
-        } catch (e) {
-          console.log("Could not add section-enhanced class");
-        }
-      });
-    }
+/**
+ * Apply enhanced input styling
+ */
+async function applyEnhancedInputStyling() {
+  const inputTypes = ["TextInput", "TextBox"];
 
-    // Apply enhanced classes to input elements
+  inputTypes.forEach((inputType) => {
     try {
-      const textInputs = $w("TextInput");
-      if (textInputs && textInputs.length > 0) {
-        textInputs.forEach((input) => {
+      const inputs = $w(inputType);
+      if (inputs && inputs.length > 0) {
+        inputs.forEach((input) => {
           try {
-            input.customClassList.add("input-enhanced");
+            const { addClassMethod1, addClassMethod2 } = safeGetWindowProperty(
+              "BRBS_ElementMethods"
+            );
+
+            let classApplied = false;
+            if (addClassMethod1 && addClassMethod1(input, "input-enhanced")) {
+              classApplied = true;
+            } else if (
+              addClassMethod2 &&
+              addClassMethod2(input, "input-enhanced")
+            ) {
+              classApplied = true;
+            }
+
+            if (!classApplied) {
+              safeCallWindowMethod(
+                "BRBS_StyleMethods",
+                "applyStyleBatch",
+                input,
+                {
+                  backgroundColor: "#FEFFFE",
+                  borderColor: "#DDE4EA",
+                  borderRadius: "8px",
+                  color: "#4A4A4A",
+                  fontFamily:
+                    "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                  padding: "12px 16px",
+                }
+              );
+            }
+
+            // Enhanced focus effects
+            const { safeBindEvent } =
+              safeGetWindowProperty("BRBS_EventMethods");
+
+            if (safeBindEvent) {
+              safeBindEvent(input, "onFocus", () => {
+                safeCallWindowMethod(
+                  "BRBS_StyleMethods",
+                  "safeApplyStyle",
+                  input,
+                  "borderColor",
+                  "#6B8E6F"
+                );
+              });
+
+              safeBindEvent(input, "onBlur", () => {
+                safeCallWindowMethod(
+                  "BRBS_StyleMethods",
+                  "safeApplyStyle",
+                  input,
+                  "borderColor",
+                  "#DDE4EA"
+                );
+              });
+            }
           } catch (e) {
-            console.log("Could not add input-enhanced class to TextInput");
+            console.log(`Could not style ${inputType} element`);
           }
         });
       }
     } catch (e) {
-      console.log("Could not access TextInput elements");
+      console.log(`Could not access ${inputType} elements`);
     }
+  });
+}
 
-    try {
-      const textBoxes = $w("TextBox");
-      if (textBoxes && textBoxes.length > 0) {
-        textBoxes.forEach((input) => {
-          try {
-            input.customClassList.add("input-enhanced");
-          } catch (e) {
-            console.log("Could not add input-enhanced class to TextBox");
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Could not access TextBox elements");
-    }
-
-    // Apply seasonal theme based on current month
+/**
+ * Apply seasonal theming with enhanced detection
+ */
+async function applySeasonalTheming() {
+  try {
     const currentMonth = new Date().getMonth();
     let seasonalClass = "";
 
@@ -423,515 +1529,365 @@ function applyDesignSystemClasses() {
       seasonalClass = "winter-theme";
     }
 
-    // Apply seasonal class to main container
-    const containerSelectors = ["#SITE_CONTAINER", "#main", "#mainContainer"];
+    const containerSelectors = [
+      "#SITE_CONTAINER",
+      "#main",
+      "#mainContainer",
+      "#pageContainer",
+    ];
+    const { addClassMethod1, addClassMethod2 } = safeGetWindowProperty(
+      "BRBS_ElementMethods"
+    );
+
     containerSelectors.forEach((selector) => {
       try {
         const container = $w(selector);
         if (container && container.length > 0) {
-          container.customClassList.add(seasonalClass);
-          console.log(`✅ Applied ${seasonalClass} to ${selector}`);
+          let classApplied = false;
+          if (addClassMethod1 && addClassMethod1(container, seasonalClass)) {
+            classApplied = true;
+          } else if (
+            addClassMethod2 &&
+            addClassMethod2(container, seasonalClass)
+          ) {
+            classApplied = true;
+          }
+
+          if (classApplied) {
+            console.log(`✅ Applied ${seasonalClass} to ${selector}`);
+          }
         }
       } catch (e) {
-        // Element not found, continue
+        console.log(`Could not apply seasonal theme to ${selector}`);
       }
     });
-
-    console.log("✅ Design system CSS classes applied successfully");
   } catch (error) {
-    console.log("Error applying design system classes:", error);
+    console.log("Error applying seasonal theming:", error);
   }
 }
 
 /**
- * Apply styling to Wix elements using the $w API
+ * Add robust micro-interactions with comprehensive error handling
  */
-function applyWixElementStyling() {
+async function addRobustMicroInteractions() {
+  console.log("✨ Adding robust micro-interactions with error handling...");
+
   try {
-    // Style buttons using Design System
-    const wixButtons = $w("Button");
-    if (wixButtons && wixButtons.length > 0) {
-      wixButtons.forEach((button) => {
+    // Enhanced animations with fallback methods
+    await addEnhancedAnimations();
+
+    // Enhanced scroll-triggered effects
+    await addEnhancedScrollEffects();
+
+    // Enhanced loading transitions
+    await addEnhancedLoadingTransitions();
+
+    console.log("✅ Robust micro-interactions added successfully");
+  } catch (error) {
+    console.error("Error adding robust micro-interactions:", error);
+  }
+}
+
+/**
+ * Add enhanced animations with multiple fallback methods
+ */
+async function addEnhancedAnimations() {
+  try {
+    const elementTypes = ["Container", "Section", "Text", "Title", "Image"];
+    const { addClassMethod1, addClassMethod2 } = safeGetWindowProperty(
+      "BRBS_ElementMethods"
+    );
+
+    elementTypes.forEach((elementType) => {
+      try {
+        const elements = $w(elementType);
+        if (elements && elements.length > 0) {
+          elements.forEach((element, index) => {
+            try {
+              setTimeout(() => {
+                let animationClass = "";
+                switch (elementType) {
+                  case "Container":
+                    animationClass = "scale-in";
+                    break;
+                  case "Section":
+                    animationClass = "fade-in";
+                    break;
+                  case "Text":
+                  case "Title":
+                    animationClass = "slide-up";
+                    break;
+                  case "Image":
+                    animationClass = "fade-in";
+                    break;
+                  default:
+                    animationClass = "fade-in";
+                }
+
+                // Try multiple methods to add animation class
+                let classApplied = false;
+                if (
+                  addClassMethod1 &&
+                  addClassMethod1(element, animationClass)
+                ) {
+                  classApplied = true;
+                } else if (
+                  addClassMethod2 &&
+                  addClassMethod2(element, animationClass)
+                ) {
+                  classApplied = true;
+                }
+
+                // Fallback to direct style animation
+                if (!classApplied && element.style) {
+                  element.style.opacity = "0";
+                  setTimeout(() => {
+                    if (element.style) {
+                      element.style.transition = "opacity 0.6s ease-out";
+                      element.style.opacity = "1";
+                    }
+                  }, 50);
+                }
+              }, index * 100);
+            } catch (e) {
+              console.log(`Could not animate ${elementType} element`);
+            }
+          });
+        }
+      } catch (e) {
+        console.log(`Could not access ${elementType} elements`);
+      }
+    });
+  } catch (error) {
+    console.log("Error adding enhanced animations:", error);
+  }
+}
+
+/**
+ * Add enhanced scroll effects
+ */
+async function addEnhancedScrollEffects() {
+  if (typeof window === "undefined") return;
+
+  try {
+    // Enhanced scroll-triggered animations
+    const observeElements = () => {
+      try {
+        const containers = $w("Container");
+        if (containers && containers.length > 0) {
+          containers.forEach((container) => {
+            try {
+              // Add hover effects via CSS classes
+              const { addClassMethod1, addClassMethod2 } =
+                safeGetWindowProperty("BRBS_ElementMethods");
+
+              if (addClassMethod1) {
+                addClassMethod1(container, "hover-lift");
+              } else if (addClassMethod2) {
+                addClassMethod2(container, "hover-lift");
+              }
+            } catch (e) {
+              console.log("Could not add scroll effects to container");
+            }
+          });
+        }
+      } catch (error) {
+        console.log("Error in scroll effects observation:", error);
+      }
+    };
+
+    // Run scroll effects
+    observeElements();
+
+    // Setup intersection observer if available
+    if (window.IntersectionObserver) {
+      try {
+        const observerCallback = (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const element = entry.target;
+              if (element && element.style) {
+                element.style.opacity = "1";
+                element.style.transform = "translateY(0)";
+              }
+            }
+          });
+        };
+
+        const observer = new IntersectionObserver(observerCallback, {
+          threshold: 0.1,
+          rootMargin: "50px",
+        });
+
+        // Observe elements if we can access them
+        setTimeout(() => {
+          try {
+            const allElements = [
+              ...($w("Container") || []),
+              ...($w("Section") || []),
+              ...($w("Text") || []),
+            ];
+
+            allElements.forEach((element) => {
+              if (element && element.style) {
+                element.style.opacity = "0";
+                element.style.transform = "translateY(20px)";
+                element.style.transition =
+                  "opacity 0.6s ease, transform 0.6s ease";
+
+                // Try to observe the element
+                try {
+                  observer.observe(element);
+                } catch (e) {
+                  // Fallback: just show the element
+                  element.style.opacity = "1";
+                  element.style.transform = "translateY(0)";
+                }
+              }
+            });
+          } catch (e) {
+            console.log("Could not setup intersection observer");
+          }
+        }, 500);
+      } catch (error) {
+        console.log("Intersection Observer not available:", error);
+      }
+    }
+  } catch (error) {
+    console.log("Error adding enhanced scroll effects:", error);
+  }
+}
+
+/**
+ * Add enhanced loading transitions
+ */
+async function addEnhancedLoadingTransitions() {
+  try {
+    const images = $w("Image");
+    if (images && images.length > 0) {
+      images.forEach((image, index) => {
         try {
-          button.style.backgroundColor = "#6B8E6F";
-          button.style.color = "#FEFFFE";
-          button.style.borderRadius = "8px";
-          button.style.fontFamily =
-            "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-          button.style.fontWeight = "500";
-          button.style.padding = "12px 24px";
-          button.style.border = "none";
-          button.style.cursor = "pointer";
+          const { addClassMethod1, addClassMethod2 } = safeGetWindowProperty(
+            "BRBS_ElementMethods"
+          );
 
-          // Enhanced hover effects
-          button.onMouseIn(() => {
-            button.style.backgroundColor = "#5A7A5E";
-            if (button.style.transform !== undefined) {
-              button.style.transform = "translateY(-1px)";
-            }
-          });
+          // Add loading animation
+          let loadingApplied = false;
+          if (addClassMethod1 && addClassMethod1(image, "pulse")) {
+            loadingApplied = true;
+          } else if (addClassMethod2 && addClassMethod2(image, "pulse")) {
+            loadingApplied = true;
+          }
 
-          button.onMouseOut(() => {
-            button.style.backgroundColor = "#6B8E6F";
-            if (button.style.transform !== undefined) {
-              button.style.transform = "translateY(0)";
+          // Fallback loading animation
+          if (!loadingApplied && image.style) {
+            image.style.opacity = "0.5";
+            image.style.animation = "pulse 2s infinite";
+          }
+
+          // Simulate loading completion
+          setTimeout(() => {
+            try {
+              if (
+                image.customClassList &&
+                typeof image.customClassList.remove === "function"
+              ) {
+                image.customClassList.remove("pulse");
+              }
+
+              if (addClassMethod1) {
+                addClassMethod1(image, "fade-in");
+              } else if (image.style) {
+                image.style.opacity = "1";
+                image.style.animation = "none";
+                image.style.transition = "opacity 0.3s ease";
+              }
+            } catch (e) {
+              console.log("Could not complete loading transition");
             }
-          });
+          }, 500 + index * 100);
         } catch (e) {
-          console.log("Could not style button:", e);
+          console.log("Could not add loading transition to image");
+        }
+      });
+    }
+  } catch (error) {
+    console.log("Error adding enhanced loading transitions:", error);
+  }
+}
+
+/**
+ * Initialize fallback system when all else fails
+ */
+async function initializeFallbackSystem() {
+  console.log("🔄 Initializing ultimate fallback system...");
+
+  try {
+    // Basic styling fallback
+    await applyBasicStylingFallback();
+
+    // Basic navigation fallback
+    await setupBasicNavigationFallback();
+
+    // Basic interactions fallback
+    await addBasicInteractionsFallback();
+
+    console.log("✅ Ultimate fallback system initialized");
+  } catch (error) {
+    console.error("Error in ultimate fallback system:", error);
+  }
+}
+
+/**
+ * Apply basic styling as ultimate fallback
+ */
+async function applyBasicStylingFallback() {
+  try {
+    // Apply basic button styling
+    const buttons = $w("Button");
+    if (buttons && buttons.length > 0) {
+      buttons.forEach((button) => {
+        try {
+          if (button.style) {
+            button.style.backgroundColor = "#6B8E6F";
+            button.style.color = "#FEFFFE";
+            button.style.borderRadius = "8px";
+            button.style.padding = "12px 24px";
+            button.style.border = "none";
+          }
+        } catch (e) {
+          console.log("Could not apply basic button styling");
         }
       });
     }
 
-    // Style text elements with improved typography
+    // Apply basic text styling
     const textElements = $w("Text");
     if (textElements && textElements.length > 0) {
       textElements.forEach((text) => {
         try {
-          text.style.fontFamily =
-            "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-          text.style.color = "#4A4A4A";
-          text.style.lineHeight = "1.6";
+          if (text.style) {
+            text.style.color = "#4A4A4A";
+            text.style.lineHeight = "1.6";
+          }
         } catch (e) {
-          console.log("Could not style text element");
+          console.log("Could not apply basic text styling");
         }
       });
     }
 
-    // Style containers with atmospheric effects
-    const containers = $w("Container");
-    if (containers && containers.length > 0) {
-      containers.forEach((container) => {
-        try {
-          container.style.backgroundColor = "rgba(254, 255, 254, 0.6)";
-          container.style.borderRadius = "12px";
-          container.style.padding = "2rem";
-          if (container.style.backdropFilter !== undefined) {
-            container.style.backdropFilter = "blur(10px)";
-          }
-        } catch (e) {
-          console.log("Could not style container");
-        }
-      });
-    }
-
-    // Style input elements with design system - use safer approach
-    try {
-      // Try TextInput first
-      const textInputs = $w("TextInput");
-      if (textInputs && textInputs.length > 0) {
-        textInputs.forEach((input) => {
-          try {
-            if (input.style) {
-              input.style.backgroundColor = "#FEFFFE";
-              input.style.borderColor = "#DDE4EA";
-              input.style.borderRadius = "8px";
-              input.style.color = "#4A4A4A";
-              input.style.fontFamily =
-                "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-              input.style.padding = "12px 16px";
-
-              // Enhanced focus effects
-              input.onFocus(() => {
-                if (input.style) input.style.borderColor = "#6B8E6F";
-              });
-
-              input.onBlur(() => {
-                if (input.style) input.style.borderColor = "#DDE4EA";
-              });
-            }
-          } catch (e) {
-            console.log("Could not style text input element");
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Could not access TextInput elements");
-    }
-
-    try {
-      // Try TextBox separately
-      const textBoxes = $w("TextBox");
-      if (textBoxes && textBoxes.length > 0) {
-        textBoxes.forEach((input) => {
-          try {
-            if (input.style) {
-              input.style.backgroundColor = "#FEFFFE";
-              input.style.borderColor = "#DDE4EA";
-              input.style.borderRadius = "8px";
-              input.style.color = "#4A4A4A";
-              input.style.fontFamily =
-                "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-              input.style.padding = "12px 16px";
-
-              // Enhanced focus effects
-              input.onFocus(() => {
-                if (input.style) input.style.borderColor = "#6B8E6F";
-              });
-
-              input.onBlur(() => {
-                if (input.style) input.style.borderColor = "#DDE4EA";
-              });
-            }
-          } catch (e) {
-            console.log("Could not style text box element");
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Could not access TextBox elements");
-    }
-
-    console.log("✅ Design System Wix element styling applied");
+    console.log("✅ Basic styling fallback applied");
   } catch (error) {
-    console.error("❌ Error applying Wix element styling:", error);
+    console.log("Error applying basic styling fallback:", error);
   }
 }
 
 /**
- * Setup atmospheric effects and seasonal adaptations
+ * Setup basic navigation as ultimate fallback
  */
-function setupAtmosphericEffects() {
+async function setupBasicNavigationFallback() {
   try {
-    // Apply atmospheric background class to main containers
-    try {
-      const mainContainers = $w("#SITE_CONTAINER, #main, #mainContainer");
-      if (mainContainers && mainContainers.length > 0) {
-        mainContainers.forEach((container) => {
-          try {
-            container.customClassList.add("atmospheric-bg");
-            console.log("✅ Applied atmospheric-bg class to main container");
-          } catch (e) {
-            console.log("Could not add atmospheric-bg class");
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Could not access main containers for atmospheric effects");
-    }
-
-    // Apply hero enhancement to header sections
-    try {
-      const heroSections = $w("#header, #hero, .hero-section");
-      if (heroSections && heroSections.length > 0) {
-        heroSections.forEach((hero) => {
-          try {
-            hero.customClassList.add("hero-enhanced");
-            console.log("✅ Applied hero-enhanced class");
-          } catch (e) {
-            console.log("Could not add hero-enhanced class");
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Could not access hero sections");
-    }
-
-    console.log("✅ Atmospheric effects setup complete");
-  } catch (error) {
-    console.error("❌ Error setting up atmospheric effects:", error);
-  }
-}
-
-/**
- * Initialize embedded navigation system
- */
-async function initializeEmbeddedNavigation() {
-  console.log("🧭 Initializing embedded navigation system");
-
-  try {
-    // Get current member status
-    const member = await getCurrentMember();
-    const userRole = getUserRole(member);
-
-    // Setup navigation based on user role
-    await setupNavigationForUser(userRole);
-
-    // Setup responsive navigation
-    setupResponsiveNavigation();
-
-    // Setup member features
-    setupMemberFeatures();
-
-    // Update active navigation
-    updateActiveNavigation();
-
-    console.log(
-      "✅ Embedded navigation system initialized for user:",
-      userRole
-    );
-  } catch (error) {
-    console.error("❌ Error initializing embedded navigation:", error);
-    setupBasicNavigation();
-  }
-}
-
-/**
- * Get current member information
- */
-async function getCurrentMember() {
-  try {
-    const member = await currentMember.getMember();
-    return member;
-  } catch (error) {
-    console.log("No member logged in");
-    return null;
-  }
-}
-
-/**
- * Determine user role based on member data
- */
-function getUserRole(member) {
-  if (!member) return "guest";
-
-  try {
-    const memberRoles = member.memberRoles || [];
-    if (memberRoles.includes("admin")) return "admin";
-    if (memberRoles.includes("board")) return "board";
-    return "member";
-  } catch (error) {
-    return "guest";
-  }
-}
-
-/**
- * Setup navigation based on user role
- */
-async function setupNavigationForUser(userRole) {
-  try {
-    // Show/hide navigation items based on user role
-    const membersOnlySelectors = [
-      "#membersArea",
-      "#memberDirectory",
-      "#adminPanel",
-    ];
-
-    if (userRole === "guest") {
-      // Hide members-only navigation
-      membersOnlySelectors.forEach((selector) => {
-        try {
-          const element = $w(selector);
-          if (element && element.length > 0) {
-            element.hide();
-          }
-        } catch (e) {
-          console.log(`Member element not found: ${selector}`);
-        }
-      });
-
-      // Show login/join prompts
-      try {
-        const joinButton = $w("#joinUsButton");
-        if (joinButton && joinButton.length > 0) joinButton.show();
-      } catch (e) {
-        console.log("Join button not found");
-      }
-
-      try {
-        const loginLink = $w("#loginLink");
-        if (loginLink && loginLink.length > 0) loginLink.show();
-      } catch (e) {
-        console.log("Login link not found");
-      }
-    } else {
-      // Show member navigation
-      membersOnlySelectors.forEach((selector) => {
-        try {
-          const element = $w(selector);
-          if (element && element.length > 0) {
-            element.show();
-          }
-        } catch (e) {
-          console.log(`Member element not found: ${selector}`);
-        }
-      });
-
-      // Hide join prompts
-      try {
-        const joinButton = $w("#joinUsButton");
-        if (joinButton && joinButton.length > 0) joinButton.hide();
-      } catch (e) {
-        console.log("Join button not found");
-      }
-
-      try {
-        const loginLink = $w("#loginLink");
-        if (loginLink && loginLink.length > 0) loginLink.hide();
-      } catch (e) {
-        console.log("Login link not found");
-      }
-
-      // Setup member-specific navigation
-      await setupMemberNavigation(userRole);
-    }
-  } catch (error) {
-    console.error("Error setting up navigation for user:", error);
-  }
-}
-
-/**
- * Setup member-specific navigation
- */
-async function setupMemberNavigation(userRole) {
-  try {
-    // Setup member dashboard link
-    try {
-      const memberDashboard = $w("#memberDashboard");
-      if (memberDashboard && memberDashboard.length > 0) {
-        memberDashboard.onClick(() => {
-          wixLocationFrontend.to("/members/dashboard");
-        });
-      }
-    } catch (e) {
-      console.log("Member dashboard not found");
-    }
-
-    // Setup member directory (board members only)
-    if (userRole === "board" || userRole === "admin") {
-      try {
-        const memberDirectory = $w("#memberDirectory");
-        if (memberDirectory && memberDirectory.length > 0) {
-          memberDirectory.show();
-          memberDirectory.onClick(() => {
-            wixLocationFrontend.to("/members/directory");
-          });
-        }
-      } catch (e) {
-        console.log("Member directory not found");
-      }
-    }
-
-    // Setup admin panel (admins only)
-    if (userRole === "admin") {
-      try {
-        const adminPanel = $w("#adminPanel");
-        if (adminPanel && adminPanel.length > 0) {
-          adminPanel.show();
-          adminPanel.onClick(() => {
-            wixLocationFrontend.to("/admin");
-          });
-        }
-      } catch (e) {
-        console.log("Admin panel not found");
-      }
-    }
-  } catch (error) {
-    console.error("Error setting up member navigation:", error);
-  }
-}
-
-/**
- * Setup responsive navigation
- */
-function setupResponsiveNavigation() {
-  try {
-    // Mobile menu toggle
-    try {
-      const mobileToggle = $w("#mobileMenuToggle");
-      const mobileMenu = $w("#mobileMenu");
-
-      if (
-        mobileToggle &&
-        mobileToggle.length > 0 &&
-        mobileMenu &&
-        mobileMenu.length > 0
-      ) {
-        mobileToggle.onClick(() => {
-          try {
-            const isOpen = mobileMenu.isVisible;
-            if (isOpen) {
-              mobileMenu.hide();
-            } else {
-              mobileMenu.show();
-            }
-          } catch (e) {
-            console.log("Error toggling mobile menu:", e);
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Mobile navigation elements not found");
-    }
-
-    // Close menu when overlay is clicked
-    try {
-      const overlay = $w("#mobileOverlay");
-      if (overlay && overlay.length > 0) {
-        overlay.onClick(() => {
-          try {
-            const mobileMenu = $w("#mobileMenu");
-            if (mobileMenu && mobileMenu.length > 0) {
-              mobileMenu.hide();
-            }
-          } catch (e) {
-            console.log("Error closing mobile menu:", e);
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Mobile overlay not found");
-    }
-  } catch (error) {
-    console.error("Error setting up responsive navigation:", error);
-  }
-}
-
-/**
- * Setup member features
- */
-function setupMemberFeatures() {
-  try {
-    // Login button
-    try {
-      const loginButton = $w("#loginButton");
-      if (loginButton && loginButton.length > 0) {
-        loginButton.onClick(async () => {
-          try {
-            await wixUsers.promptLogin();
-            await initializeEmbeddedNavigation(); // Refresh navigation
-          } catch (error) {
-            console.error("Login error:", error);
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Login button not found");
-    }
-
-    // Logout button
-    try {
-      const logoutButton = $w("#logoutButton");
-      if (logoutButton && logoutButton.length > 0) {
-        logoutButton.onClick(async () => {
-          try {
-            await wixUsers.logout();
-            await initializeEmbeddedNavigation(); // Refresh navigation
-          } catch (error) {
-            console.error("Logout error:", error);
-          }
-        });
-      }
-    } catch (e) {
-      console.log("Logout button not found");
-    }
-  } catch (error) {
-    console.error("Error setting up member features:", error);
-  }
-}
-
-/**
- * Update active navigation states
- */
-function updateActiveNavigation() {
-  try {
-    const pathResult = wixLocationFrontend.path || "";
-    const currentPath = Array.isArray(pathResult)
-      ? pathResult.join("/")
-      : String(pathResult);
-
-    // This will work with any nav links that exist
-    const navSelectors = [".nav-link", "[data-nav-link]", "nav a"];
+    const navSelectors = [".nav-link", "[data-nav-link]", "nav a", "header a"];
 
     navSelectors.forEach((selector) => {
       try {
@@ -939,359 +1895,103 @@ function updateActiveNavigation() {
         if (navLinks && navLinks.length > 0) {
           navLinks.forEach((link) => {
             try {
-              if (link && link.link) {
-                const href = String(link.link);
-                if (href && currentPath.startsWith(href)) {
-                  // Add active styling
-                  if (link.style) {
-                    link.style.backgroundColor = "rgba(107, 142, 111, 0.25)";
-                    link.style.color = "#6B8E6F";
+              if (link && link.link && typeof link.onClick === "function") {
+                link.onClick(() => {
+                  try {
+                    wixLocationFrontend.to(link.link);
+                  } catch (e) {
+                    console.log("Could not navigate using wixLocationFrontend");
+                    // Ultimate fallback: try window.location
+                    if (typeof window !== "undefined" && window.location) {
+                      window.location.href = link.link;
+                    }
                   }
-                } else {
-                  // Remove active styling
-                  if (link.style) {
-                    link.style.backgroundColor = "transparent";
-                    link.style.color = "#4A4A4A";
-                  }
-                }
+                });
               }
             } catch (e) {
-              // Individual link error, continue with others
+              console.log("Could not setup link navigation");
             }
           });
         }
       } catch (e) {
-        // Selector not found, try next one
+        console.log(`Could not access navigation links: ${selector}`);
       }
     });
+
+    console.log("✅ Basic navigation fallback setup completed");
   } catch (error) {
-    console.error("Error updating active navigation:", error);
+    console.log("Error setting up basic navigation fallback:", error);
   }
 }
 
 /**
- * Basic navigation setup as fallback
+ * Add basic interactions as ultimate fallback
  */
-function setupBasicNavigation() {
-  console.log("Setting up basic navigation");
-
-  // Try multiple navigation selectors
-  const navSelectors = [".nav-link", "[data-nav-link]", "nav a", "header a"];
-
-  navSelectors.forEach((selector) => {
-    try {
-      const navLinks = $w(selector);
-      if (navLinks && navLinks.length > 0) {
-        navLinks.forEach((link) => {
-          try {
-            if (link && link.link) {
-              link.onClick(() => {
-                wixLocationFrontend.to(link.link);
-              });
-            }
-          } catch (e) {
-            // Individual link error, continue
-          }
-        });
-        console.log(`✅ Basic navigation setup for: ${selector}`);
-      }
-    } catch (e) {
-      // Selector not found, try next
-    }
-  });
-}
-
-/**
- * Phase 3: Add Enhanced Micro-Interactions and Animations
- * Implements component library and sophisticated animations
- */
-function addMicroInteractions() {
-  console.log("✨ Adding Enhanced Micro-Interactions (Phase 3)");
-
+async function addBasicInteractionsFallback() {
   try {
-    // Add enhanced button interactions using CSS classes
-    addEnhancedButtonInteractions();
+    // Basic button hover effects
+    const buttons = $w("Button");
+    if (buttons && buttons.length > 0) {
+      buttons.forEach((button) => {
+        try {
+          if (
+            typeof button.onMouseIn === "function" &&
+            typeof button.onMouseOut === "function"
+          ) {
+            button.onMouseIn(() => {
+              if (button.style && button.style.backgroundColor !== undefined) {
+                button.style.backgroundColor = "#5A7A5E";
+              }
+            });
 
-    // Add scroll-triggered animations using CSS classes
-    addScrollTriggeredAnimations();
+            button.onMouseOut(() => {
+              if (button.style && button.style.backgroundColor !== undefined) {
+                button.style.backgroundColor = "#6B8E6F";
+              }
+            });
+          }
+        } catch (e) {
+          console.log("Could not add basic button interactions");
+        }
+      });
+    }
 
-    // Add loading and transition effects using CSS classes
-    addLoadingTransitions();
-
-    // Add enhanced form interactions
-    addFormInteractions();
-
-    console.log("✅ Enhanced micro-interactions added successfully");
-  } catch (error) {
-    console.error("❌ Error adding micro-interactions:", error);
-  }
-}
-
-/**
- * Add enhanced button interactions
- */
-function addEnhancedButtonInteractions() {
-  const buttons = $w("Button");
-  if (buttons && buttons.length > 0) {
-    buttons.forEach((button) => {
+    // Basic form focus effects
+    const inputs = [...($w("TextInput") || []), ...($w("TextBox") || [])];
+    inputs.forEach((input) => {
       try {
-        // Enhanced hover with supported Wix events
-        button.onMouseIn(() => {
-          if (button.style) {
-            button.style.backgroundColor = "#5A7A5E";
-            // Only use transform if available
-            try {
-              if (button.style.transform !== undefined) {
-                button.style.transform = "translateY(-2px)";
-              }
-            } catch (e) {
-              // Transform not supported, continue without
-            }
-            // Only use boxShadow if available
-            try {
-              if (button.style.boxShadow !== undefined) {
-                button.style.boxShadow = "0 8px 32px rgba(107, 142, 111, 0.25)";
-              }
-            } catch (e) {
-              // BoxShadow not supported, continue without
-            }
-          }
-        });
-
-        button.onMouseOut(() => {
-          if (button.style) {
-            button.style.backgroundColor = "#6B8E6F";
-            // Only use transform if available
-            try {
-              if (button.style.transform !== undefined) {
-                button.style.transform = "translateY(0)";
-              }
-            } catch (e) {
-              // Transform not supported, continue without
-            }
-            // Only use boxShadow if available
-            try {
-              if (button.style.boxShadow !== undefined) {
-                button.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.06)";
-              }
-            } catch (e) {
-              // BoxShadow not supported, continue without
-            }
-          }
-        });
-      } catch (e) {
-        console.log("Could not enhance button interactions");
-      }
-    });
-  }
-}
-
-/**
- * Add scroll-triggered animations using CSS classes on Wix elements
- */
-function addScrollTriggeredAnimations() {
-  try {
-    // Apply entrance animations to containers
-    const containers = $w("Container");
-    if (containers && containers.length > 0) {
-      containers.forEach((container, index) => {
-        try {
-          // Stagger the animations
-          setTimeout(() => {
-            container.customClassList.add("scale-in");
-            container.customClassList.add("hover-lift");
-          }, index * 100);
-        } catch (e) {
-          console.log("Could not add animation classes to container");
-        }
-      });
-    }
-
-    // Apply fade-in animations to sections
-    const sections = $w("Section");
-    if (sections && sections.length > 0) {
-      sections.forEach((section, index) => {
-        try {
-          setTimeout(() => {
-            section.customClassList.add("fade-in");
-          }, index * 150);
-        } catch (e) {
-          console.log("Could not add animation classes to section");
-        }
-      });
-    }
-
-    // Apply slide-up animations to text elements
-    const textElements = $w("Text");
-    if (textElements && textElements.length > 0) {
-      textElements.forEach((text, index) => {
-        try {
-          setTimeout(() => {
-            text.customClassList.add("slide-up");
-          }, index * 50);
-        } catch (e) {
-          console.log("Could not add animation classes to text");
-        }
-      });
-    }
-
-    console.log("✅ Scroll-triggered animations applied via CSS classes");
-  } catch (error) {
-    console.log("Error applying scroll-triggered animations:", error);
-  }
-}
-
-/**
- * Add loading and transition effects using CSS classes
- */
-function addLoadingTransitions() {
-  try {
-    // Apply loading transitions to images
-    const images = $w("Image");
-    if (images && images.length > 0) {
-      images.forEach((image, index) => {
-        try {
-          // Add loading skeleton initially
-          image.customClassList.add("pulse");
-
-          // Add fade-in after a delay to simulate loading
-          setTimeout(() => {
-            image.customClassList.remove("pulse");
-            image.customClassList.add("fade-in");
-          }, 500 + index * 100);
-        } catch (e) {
-          console.log("Could not add loading transition to image");
-        }
-      });
-    }
-
-    // Apply staggered entrance animations to all major elements
-    const allElements = [
-      ...($w("Button") || []),
-      ...($w("Text") || []),
-      ...($w("Title") || []),
-    ];
-
-    allElements.forEach((element, index) => {
-      try {
-        setTimeout(() => {
-          element.customClassList.add("fade-in");
-        }, index * 25);
-      } catch (e) {
-        console.log("Could not add entrance animation");
-      }
-    });
-
-    console.log("✅ Loading transitions applied via CSS classes");
-  } catch (error) {
-    console.log("Error applying loading transitions:", error);
-  }
-}
-
-/**
- * Add enhanced form interactions
- */
-function addFormInteractions() {
-  // Handle TextInput and TextBox separately for better type safety
-  try {
-    const textInputs = $w("TextInput");
-    if (textInputs && textInputs.length > 0) {
-      textInputs.forEach((input) => {
-        try {
-          // Enhanced focus animations
+        if (
+          typeof input.onFocus === "function" &&
+          typeof input.onBlur === "function"
+        ) {
           input.onFocus(() => {
-            if (input.style) {
+            if (input.style && input.style.borderColor !== undefined) {
               input.style.borderColor = "#6B8E6F";
-              input.style.boxShadow = "0 0 0 3px rgba(107, 142, 111, 0.1)";
-              try {
-                if (input.style.transform !== undefined) {
-                  input.style.transform = "translateY(-1px)";
-                }
-              } catch (e) {
-                // Transform not supported
-              }
             }
           });
 
           input.onBlur(() => {
-            if (input.style) {
+            if (input.style && input.style.borderColor !== undefined) {
               input.style.borderColor = "#DDE4EA";
-              input.style.boxShadow = "none";
-              try {
-                if (input.style.transform !== undefined) {
-                  input.style.transform = "translateY(0)";
-                }
-              } catch (e) {
-                // Transform not supported
-              }
             }
           });
-
-          // Input validation animations
-          input.onChange(() => {
-            if (input.value && input.value.length > 0) {
-              if (input.style && input.style.borderColor !== undefined) {
-                input.style.borderColor = "#4F7942"; // Success color
-              }
-            }
-          });
-        } catch (e) {
-          console.log("Could not enhance TextInput interactions");
         }
-      });
-    }
-  } catch (e) {
-    console.log("Could not access TextInput elements");
-  }
+      } catch (e) {
+        console.log("Could not add basic input interactions");
+      }
+    });
 
-  try {
-    const textBoxes = $w("TextBox");
-    if (textBoxes && textBoxes.length > 0) {
-      textBoxes.forEach((input) => {
-        try {
-          // Enhanced focus animations
-          input.onFocus(() => {
-            if (input.style) {
-              input.style.borderColor = "#6B8E6F";
-              input.style.boxShadow = "0 0 0 3px rgba(107, 142, 111, 0.1)";
-              try {
-                if (input.style.transform !== undefined) {
-                  input.style.transform = "translateY(-1px)";
-                }
-              } catch (e) {
-                // Transform not supported
-              }
-            }
-          });
-
-          input.onBlur(() => {
-            if (input.style) {
-              input.style.borderColor = "#DDE4EA";
-              input.style.boxShadow = "none";
-              try {
-                if (input.style.transform !== undefined) {
-                  input.style.transform = "translateY(0)";
-                }
-              } catch (e) {
-                // Transform not supported
-              }
-            }
-          });
-
-          // Input validation animations
-          input.onChange(() => {
-            if (input.value && input.value.length > 0) {
-              if (input.style && input.style.borderColor !== undefined) {
-                input.style.borderColor = "#4F7942"; // Success color
-              }
-            }
-          });
-        } catch (e) {
-          console.log("Could not enhance TextBox interactions");
-        }
-      });
-    }
-  } catch (e) {
-    console.log("Could not access TextBox elements");
+    console.log("✅ Basic interactions fallback added");
+  } catch (error) {
+    console.log("Error adding basic interactions fallback:", error);
   }
 }
+
+// =====================================================
+// INITIALIZE SYSTEM ON PAGE READY
+// =====================================================
+
+// Log system status
+console.log("💡 Blue Ridge Bonsai Society - Enhanced System Ready");
+console.log("🔧 Dependency injection and workaround systems active");
+console.log("🎯 Fallback methods initialized for Wix API limitations");
