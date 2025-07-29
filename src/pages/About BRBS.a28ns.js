@@ -5,16 +5,29 @@ import wixData from 'wix-data';
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 
+// Enhanced initialization for Wix environment
+function runAboutInitialization() {
+  console.log('🚀 Starting About Us page initialization...');
+  initializeAboutPage()
+    .then(() => {
+      setupEventHandlers();
+      return loadDynamicContent();
+    })
+    .catch((error) => {
+      console.error('Error in About Us initialization:', error);
+    });
+}
+
 $w.onReady(async function () {
-    // Initialize About Us page components
-    await initializeAboutPage();
-    
-    // Setup event handlers
-    setupEventHandlers();
-    
-    // Load dynamic content
-    await loadDynamicContent();
+    console.log('About Us page $w.onReady triggered');
+    runAboutInitialization();
 });
+
+// Also try immediate initialization for better Wix compatibility
+if (typeof setTimeout !== 'undefined') {
+  setTimeout(runAboutInitialization, 100);
+  setTimeout(runAboutInitialization, 1000);
+}
 
 async function initializeAboutPage() {
     try {

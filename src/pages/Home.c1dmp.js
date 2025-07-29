@@ -2,7 +2,8 @@
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 
 // Environment detection
-const IS_BROWSER = typeof window !== "undefined" && typeof document !== "undefined";
+const IS_BROWSER =
+  typeof window !== "undefined" && typeof document !== "undefined";
 const IS_SERVER = typeof window === "undefined";
 
 // Mock Wix APIs for standalone execution
@@ -16,19 +17,19 @@ const mockWixAPIs = {
       descending: () => mockWixAPIs.wixData.query(collection),
       limit: () => mockWixAPIs.wixData.query(collection),
       count: () => Promise.resolve({ totalCount: 25 }),
-      find: () => Promise.resolve({ items: getMockData(collection) })
-    })
+      find: () => Promise.resolve({ items: getMockData(collection) }),
+    }),
   },
   currentMember: {
-    getMember: () => Promise.resolve(null) // Not logged in by default
+    getMember: () => Promise.resolve(null), // Not logged in by default
   },
   wixLocation: {
     to: (url) => console.log(`Navigate to: ${url}`),
-    url: IS_BROWSER ? window.location.href : 'https://example.com'
+    url: IS_BROWSER ? window.location.href : "https://example.com",
   },
   wixWindow: {
-    openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data)
-  }
+    openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data),
+  },
 };
 
 // Mock data for testing
@@ -36,51 +37,56 @@ function getMockData(collection) {
   const mockData = {
     Events: [
       {
-        _id: '1',
-        title: 'Spring Bonsai Workshop',
-        description: 'Learn the fundamentals of bonsai care and styling in this hands-on workshop perfect for beginners and intermediate enthusiasts.',
+        _id: "1",
+        title: "Spring Bonsai Workshop",
+        description:
+          "Learn the fundamentals of bonsai care and styling in this hands-on workshop perfect for beginners and intermediate enthusiasts.",
         startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
-        category: 'Workshop',
-        location: 'NC Arboretum'
+        category: "Workshop",
+        location: "NC Arboretum",
       },
       {
-        _id: '2', 
-        title: 'Monthly Club Meeting',
-        description: 'Join us for our monthly meeting featuring guest speaker and tree critiques. All skill levels welcome.',
+        _id: "2",
+        title: "Monthly Club Meeting",
+        description:
+          "Join us for our monthly meeting featuring guest speaker and tree critiques. All skill levels welcome.",
         startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
-        category: 'Meeting',
-        location: 'Community Center'
+        category: "Meeting",
+        location: "Community Center",
       },
       {
-        _id: '3',
-        title: 'Advanced Styling Techniques',
-        description: 'Master advanced wiring and shaping techniques with expert guidance. Intermediate to advanced level.',
+        _id: "3",
+        title: "Advanced Styling Techniques",
+        description:
+          "Master advanced wiring and shaping techniques with expert guidance. Intermediate to advanced level.",
         startDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), // 3 weeks from now
-        category: 'Workshop',
-        location: 'NC Arboretum'
-      }
+        category: "Workshop",
+        location: "NC Arboretum",
+      },
     ],
     MemberSpotlights: [
       {
-        _id: '1',
-        memberName: 'Sarah Johnson',
-        memberTitle: 'Bonsai Enthusiast',
-        testimonial: 'Joining BRBS transformed my understanding of bonsai. The community support and expert guidance have been invaluable.',
+        _id: "1",
+        memberName: "Sarah Johnson",
+        memberTitle: "Bonsai Enthusiast",
+        testimonial:
+          "Joining BRBS transformed my understanding of bonsai. The community support and expert guidance have been invaluable.",
         yearsExperience: 8,
-        favoriteStyle: 'Informal Upright',
-        memberPhoto: '/images/member-sarah.jpg'
-      }
+        favoriteStyle: "Informal Upright",
+        memberPhoto: "/images/member-sarah.jpg",
+      },
     ],
     Announcements: [
       {
-        _id: '1',
-        title: 'Spring Exhibition Coming Soon',
-        excerpt: 'Our annual spring exhibition will showcase the finest bonsai from our members. Registration opens next week.',
-        publishDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) // 2 days ago
-      }
-    ]
+        _id: "1",
+        title: "Spring Exhibition Coming Soon",
+        excerpt:
+          "Our annual spring exhibition will showcase the finest bonsai from our members. Registration opens next week.",
+        publishDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+      },
+    ],
   };
-  
+
   return mockData[collection] || [];
 }
 
@@ -90,7 +96,7 @@ function safeElement(selector) {
     console.warn(`Element access skipped (server environment): ${selector}`);
     return null;
   }
-  
+
   try {
     const element = document.querySelector(selector);
     if (!element) {
@@ -106,7 +112,7 @@ function safeElement(selector) {
 
 function safeSetText(selector, text) {
   if (!IS_BROWSER) return;
-  
+
   const element = safeElement(selector);
   if (element) {
     element.textContent = text;
@@ -115,7 +121,7 @@ function safeSetText(selector, text) {
 
 function safeSetHtml(selector, html) {
   if (!IS_BROWSER) return;
-  
+
   const element = safeElement(selector);
   if (element) {
     element.innerHTML = html;
@@ -124,12 +130,12 @@ function safeSetHtml(selector, html) {
 
 function safeShow(selector) {
   if (!IS_BROWSER) return;
-  
+
   try {
     const element = safeElement(selector);
     if (element) {
-      element.style.display = '';
-      element.classList.remove('hidden');
+      element.style.display = "";
+      element.classList.remove("hidden");
     }
   } catch (error) {
     console.warn(`Error showing element ${selector}:`, error);
@@ -138,12 +144,12 @@ function safeShow(selector) {
 
 function safeHide(selector) {
   if (!IS_BROWSER) return;
-  
+
   try {
     const element = safeElement(selector);
     if (element) {
-      element.style.display = 'none';
-      element.classList.add('hidden');
+      element.style.display = "none";
+      element.classList.add("hidden");
     }
   } catch (error) {
     console.warn(`Error hiding element ${selector}:`, error);
@@ -152,92 +158,109 @@ function safeHide(selector) {
 
 function safeOnClick(selector, handler) {
   if (!IS_BROWSER) return;
-  
+
   const element = safeElement(selector);
   if (element) {
-    element.addEventListener('click', handler);
+    element.addEventListener("click", handler);
   }
 }
 
 function createElement(tagName, attributes = {}, children = []) {
   if (!IS_BROWSER) return null;
-  
+
   const element = document.createElement(tagName);
-  
+
   // Set attributes
   Object.entries(attributes).forEach(([key, value]) => {
-    if (key === 'className') {
+    if (key === "className") {
       element.className = value;
-    } else if (key === 'textContent') {
+    } else if (key === "textContent") {
       element.textContent = value;
-    } else if (key === 'innerHTML') {
+    } else if (key === "innerHTML") {
       element.innerHTML = value;
     } else {
       element.setAttribute(key, value);
     }
   });
-  
+
   // Add children
-  children.forEach(child => {
-    if (typeof child === 'string') {
+  children.forEach((child) => {
+    if (typeof child === "string") {
       element.appendChild(document.createTextNode(child));
     } else if (child instanceof Element) {
       element.appendChild(child);
     }
   });
-  
+
   return element;
 }
 
-// Initialize when document is ready or immediately if in server environment  
+// Initialize when document is ready or immediately if in server environment
 function initializeHomePage() {
-  console.log("Running the code for the Home page. To debug this code in your browser's dev tools, open c1dmp.js.");
+  console.log(
+    "Running the code for the Home page. To debug this code in your browser's dev tools, open c1dmp.js."
+  );
   console.log("💡 Initializing Blue Ridge Bonsai Society Home Page");
 
-    // Initialize homepage components
-  initializeHomepage().then(() => {
-    // Setup event handlers
-    setupEventHandlers();
-    
-    // Load dynamic content
-    loadDynamicContent();
-  }).catch(error => {
-    console.error("Error initializing homepage:", error);
-  });
+  // Initialize homepage components
+  initializeHomepage()
+    .then(() => {
+      // Setup event handlers
+      setupEventHandlers();
+
+      // Load dynamic content
+      loadDynamicContent();
+    })
+    .catch((error) => {
+      console.error("Error initializing homepage:", error);
+    });
 }
 
-// Run initialization based on environment
-if (IS_BROWSER) {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeHomePage);
-  } else {
-    initializeHomePage();
-  }
-} else {
-  // Server-side execution
+// Enhanced initialization for Wix environment
+function runInitialization() {
+  console.log('🚀 Starting homepage initialization...');
   initializeHomePage();
 }
 
+// Multiple initialization strategies
+if (IS_BROWSER) {
+  // Browser environment
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runInitialization);
+  } else {
+    runInitialization();
+  }
+} else {
+  // Server/Wix environment - try immediate and delayed initialization
+  runInitialization();
+  
+  // Also try delayed initialization in case elements load later
+  if (typeof setTimeout !== 'undefined') {
+    setTimeout(runInitialization, 1000);
+    setTimeout(runInitialization, 3000);
+  }
+}
+
 async function initializeHomepage() {
-    try {
+  try {
     // Create the main home page structure
     createHomePageStructure();
 
-        // Display welcome message with current user info
-        await displayWelcomeMessage();
-        
-        // Load latest events preview
-        await loadEventsPreview();
-        
-        // Load member spotlight
-        await loadMemberSpotlight();
-        
-        // Setup call-to-action buttons
-        setupCallToActions();
-        
-        // Initialize atmospheric animations
-        initializeAnimations();
-    } catch (error) {
+    // Display welcome message with current user info
+    await displayWelcomeMessage();
+
+    // Load latest events preview
+    await loadEventsPreview();
+
+    // Load member spotlight
+    await loadMemberSpotlight();
+
+    // Setup call-to-action buttons
+    setupCallToActions();
+
+    // Initialize atmospheric animations
+    initializeAnimations();
+  } catch (error) {
     console.error("Error initializing homepage:", error);
   }
 }
@@ -247,22 +270,61 @@ async function initializeHomepage() {
  */
 function createHomePageStructure() {
   try {
-    // Find or create main container
-    let mainContainer =
-      safeElement("#main") ||
-      safeElement("#page-content") ||
-      safeElement("#content");
-
+    // For Wix environment, try to use $w to find/create containers
+    let mainContainer;
+    
+    // Try Wix-specific selectors first
+    try {
+      if (typeof $w !== 'undefined') {
+        // Look for common Wix page containers
+        const wixContainers = ['#page1', '#main', '#content', '#pageContainer', '#siteContainer'];
+        for (const selector of wixContainers) {
+          try {
+            const element = $w(selector);
+            if (element) {
+              mainContainer = element;
+              console.log(`✅ Found Wix container: ${selector}`);
+              break;
+            }
+          } catch (e) {
+            // Container doesn't exist, try next one
+          }
+        }
+        
+        // If no existing container found, try to create in body or use first available container
+        if (!mainContainer) {
+          try {
+            const bodyElements = $w('#page1') || $w('Page') || $w('*').filter(el => el.type === 'Page')[0];
+            if (bodyElements) {
+              mainContainer = bodyElements;
+              console.log('✅ Using Wix page element as container');
+            }
+          } catch (e) {
+            console.warn('Could not find Wix page container');
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Wix $w not available, falling back to DOM');
+    }
+    
+    // Fallback to regular DOM if Wix methods don't work
     if (!mainContainer) {
-      // If no main container exists, create one in the body
-      if (typeof document !== "undefined") {
+      mainContainer =
+        safeElement("#main") ||
+        safeElement("#page-content") ||
+        safeElement("#content");
+
+      if (!mainContainer && typeof document !== "undefined") {
         mainContainer = document.createElement("div");
         mainContainer.id = "main";
         document.body.appendChild(mainContainer);
-      } else {
-        console.warn("Cannot create page structure - document not available");
-        return;
       }
+    }
+    
+    if (!mainContainer) {
+      console.warn("Cannot create page structure - no container available");
+      return;
     }
 
     const homePageHTML = `
@@ -346,23 +408,76 @@ function createHomePageStructure() {
         `;
 
     // Inject the HTML into the main container
-    if (mainContainer.innerHTML !== undefined) {
-      mainContainer.innerHTML = homePageHTML;
-    } else if (mainContainer.html !== undefined) {
-      mainContainer.html = homePageHTML;
+    // Try multiple methods to set content
+    let contentSet = false;
+    
+    // Method 1: Wix element html property
+    if (mainContainer.html !== undefined) {
+      try {
+        mainContainer.html = homePageHTML;
+        contentSet = true;
+        console.log('✅ Content set using Wix .html property');
+      } catch (e) {
+        console.warn('Failed to set content using Wix .html:', e);
+      }
+    }
+    
+    // Method 2: Standard DOM innerHTML
+    if (!contentSet && mainContainer.innerHTML !== undefined) {
+      try {
+        mainContainer.innerHTML = homePageHTML;
+        contentSet = true;
+        console.log('✅ Content set using DOM .innerHTML');
+      } catch (e) {
+        console.warn('Failed to set content using .innerHTML:', e);
+      }
+    }
+    
+    // Method 3: Create elements manually and append
+    if (!contentSet && typeof document !== 'undefined') {
+      try {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = homePageHTML;
+        
+        // Clear existing content
+        while (mainContainer.firstChild) {
+          mainContainer.removeChild(mainContainer.firstChild);
+        }
+        
+        // Append new content
+        while (tempDiv.firstChild) {
+          mainContainer.appendChild(tempDiv.firstChild);
+        }
+        contentSet = true;
+        console.log('✅ Content set using manual DOM manipulation');
+      } catch (e) {
+        console.warn('Failed to set content using manual DOM:', e);
+      }
+    }
+    
+    if (!contentSet) {
+      console.error('❌ Could not set page content using any method');
+      // As a last resort, try to add a simple text indicator
+      try {
+        if (mainContainer.text !== undefined) {
+          mainContainer.text = 'Blue Ridge Bonsai Society - Homepage Loading...';
+        }
+      } catch (e) {
+        console.warn('Even basic text setting failed');
+      }
     }
 
     console.log("✅ Home page structure created successfully");
   } catch (error) {
     console.error("Error creating home page structure:", error);
-    }
+  }
 }
 
 async function displayWelcomeMessage() {
-    try {
+  try {
     const member = await mockWixAPIs.currentMember.getMember();
-        
-        if (member) {
+
+    if (member) {
       const firstName = member.contactDetails?.firstName || "Member";
       safeSetText("#heroTitle", `Welcome back, ${firstName}!`);
       safeSetText(
@@ -376,7 +491,7 @@ async function displayWelcomeMessage() {
         joinButton.textContent = "My Dashboard";
         joinButton.setAttribute("data-link", "/members/dashboard");
       }
-        } else {
+    } else {
       safeSetText("#heroTitle", "Welcome to Blue Ridge Bonsai Society");
       safeSetText(
         "#heroSubtitle",
@@ -388,52 +503,52 @@ async function displayWelcomeMessage() {
         joinButton.textContent = "Join Our Community";
         joinButton.setAttribute("data-link", "/join-brbs");
       }
-        }
-    } catch (error) {
+    }
+  } catch (error) {
     console.error("Error displaying welcome message:", error);
-        // Fallback to default message
+    // Fallback to default message
     safeSetText("#heroTitle", "Welcome to Blue Ridge Bonsai Society");
     safeSetText(
       "#heroSubtitle",
       "Cultivating the ancient art of bonsai in the heart of Asheville, North Carolina"
     );
-    }
+  }
 }
 
 async function loadEventsPreview() {
-    try {
-        // Load next 3 upcoming events
-      const upcomingEvents = await mockWixAPIs.wixData
-        .query("Events")
-        .gt("startDate", new Date())
-        .ascending("startDate")
-            .limit(3)
-            .find();
-        
-        if (upcomingEvents.items.length > 0) {
-        safeShow("#eventsSection");
-            displayEventsPreview(upcomingEvents.items);
-        } else {
-        safeHide("#eventsSection");
-        }
-    } catch (error) {
-      console.error("Error loading events preview:", error);
-        // Hide events section if there's an error
+  try {
+    // Load next 3 upcoming events
+    const upcomingEvents = await mockWixAPIs.wixData
+      .query("Events")
+      .gt("startDate", new Date())
+      .ascending("startDate")
+      .limit(3)
+      .find();
+
+    if (upcomingEvents.items.length > 0) {
+      safeShow("#eventsSection");
+      displayEventsPreview(upcomingEvents.items);
+    } else {
       safeHide("#eventsSection");
     }
+  } catch (error) {
+    console.error("Error loading events preview:", error);
+    // Hide events section if there's an error
+    safeHide("#eventsSection");
+  }
 }
 
 function displayEventsPreview(events) {
   const eventsHTML = events
     .map((event) => {
-        const eventDate = new Date(event.startDate);
+      const eventDate = new Date(event.startDate);
       const formattedDate = eventDate.toLocaleDateString("en-US", {
         weekday: "short",
         month: "short",
         day: "numeric",
-        });
-        
-        return `
+      });
+
+      return `
             <div class="glass-card event-preview-card" data-event-id="${
               event._id
             }">
@@ -466,8 +581,10 @@ function displayEventsPreview(events) {
         `;
     })
     .join("");
-    
-  safeSetHtml("#eventsPreviewContainer", `
+
+  safeSetHtml(
+    "#eventsPreviewContainer",
+    `
         <div class="events-preview-grid">
             ${eventsHTML}
         </div>
@@ -476,35 +593,38 @@ function displayEventsPreview(events) {
                 View All Events
             </button>
         </div>
-    `);
+    `
+  );
 }
 
 async function loadMemberSpotlight() {
-    try {
-        // Load featured member or testimonial
-    const spotlights = await wixData
+  try {
+    // Load featured member or testimonial
+    const spotlights = await mockWixAPIs.wixData
       .query("MemberSpotlights")
       .eq("featured", true)
       .eq("active", true)
-            .limit(1)
-            .find();
-        
-        if (spotlights.items.length > 0) {
-            const spotlight = spotlights.items[0];
-            displayMemberSpotlight(spotlight);
-      $w("#memberSpotlightSection").show();
-        } else {
-            // Fallback to default testimonial
-            displayDefaultTestimonial();
-        }
-    } catch (error) {
-    console.error("Error loading member spotlight:", error);
-        displayDefaultTestimonial();
+      .limit(1)
+      .find();
+
+    if (spotlights.items.length > 0) {
+      const spotlight = spotlights.items[0];
+      displayMemberSpotlight(spotlight);
+      safeShow("#memberSpotlightSection");
+    } else {
+      // Fallback to default testimonial
+      displayDefaultTestimonial();
     }
+  } catch (error) {
+    console.error("Error loading member spotlight:", error);
+    displayDefaultTestimonial();
+  }
 }
 
 function displayMemberSpotlight(spotlight) {
-  $w("#spotlightContainer").html = `
+  safeSetHtml(
+    "#spotlightContainer",
+    `
         <div class="glass-card spotlight-card">
             <div class="spotlight-image">
                 <img src="${
@@ -529,11 +649,14 @@ function displayMemberSpotlight(spotlight) {
                 </div>
             </div>
         </div>
-    `;
+    `
+  );
 }
 
 function displayDefaultTestimonial() {
-  $w("#spotlightContainer").html = `
+  safeSetHtml(
+    "#spotlightContainer",
+    `
         <div class="glass-card spotlight-card">
             <div class="spotlight-content text-center">
                 <h4 class="spotlight-title">Community Voices</h4>
@@ -549,98 +672,85 @@ function displayDefaultTestimonial() {
                 </div>
             </div>
         </div>
-    `;
-  $w("#memberSpotlightSection").show();
+    `
+  );
+  safeShow("#memberSpotlightSection");
 }
 
 function setupCallToActions() {
-    // Primary CTA - Join/Dashboard button
+  // Primary CTA - Join/Dashboard button
   safeOnClick("#ctaJoinButton", () => {
     const button = safeElement("#ctaJoinButton");
     const link = button?.getAttribute("data-link") || "/join-brbs";
-    if (typeof wixLocation !== "undefined") {
-        wixLocation.to(link);
-    } else {
-      console.log("Navigate to:", link);
-    }
-    });
-    
-    // Secondary CTAs
+    mockWixAPIs.wixLocation.to(link);
+  });
+
+  // Secondary CTAs
   safeOnClick("#ctaEventsButton", () => {
-    if (typeof wixLocation !== "undefined") {
-      wixLocation.to("/events");
-    } else {
-      console.log("Navigate to: /events");
-    }
+    mockWixAPIs.wixLocation.to("/events");
   });
 
   safeOnClick("#ctaLearningButton", () => {
-    if (typeof wixLocation !== "undefined") {
-      wixLocation.to("/beginners-guide");
-    } else {
-      console.log("Navigate to: /beginners-guide");
-    }
+    mockWixAPIs.wixLocation.to("/beginners-guide");
   });
 
   safeOnClick("#ctaAboutButton", () => {
-    if (typeof wixLocation !== "undefined") {
-      wixLocation.to("/about-brbs");
-    } else {
-      console.log("Navigate to: /about-brbs");
-    }
-    });
+    mockWixAPIs.wixLocation.to("/about-brbs");
+  });
 }
 
 function initializeAnimations() {
-    // Add scroll-triggered animations for cards
-    const observerOptions = {
-        threshold: 0.1,
+  // Add scroll-triggered animations for cards
+  const observerOptions = {
+    threshold: 0.1,
     rootMargin: "0px 0px -50px 0px",
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
+  };
+
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-            if (entry.isIntersecting) {
+      if (entry.isIntersecting) {
         entry.target.classList.add("animate-in");
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all glass cards
-    setTimeout(() => {
+      }
+    });
+  }, observerOptions);
+
+  // Observe all glass cards
+  setTimeout(() => {
     const cards = document.querySelectorAll(".glass-card");
     cards.forEach((card) => observer.observe(card));
-    }, 500);
+  }, 500);
 }
 
 async function loadDynamicContent() {
-    try {
-        // Load quick stats
-        await loadQuickStats();
-        
-        // Load latest news/announcements
-        await loadLatestNews();
-    } catch (error) {
+  try {
+    // Load quick stats
+    await loadQuickStats();
+
+    // Load latest news/announcements
+    await loadLatestNews();
+  } catch (error) {
     console.error("Error loading dynamic content:", error);
-    }
+  }
 }
 
 async function loadQuickStats() {
-    try {
-        // Get member count (approximate)
-    const memberCount = await wixData
+  try {
+    // Get member count (approximate)
+    const memberCount = await mockWixAPIs.wixData
       .query("Members")
       .eq("isActive", true)
-            .count();
-        
-        // Get upcoming events count
-    const upcomingEventsCount = await wixData
+      .count();
+
+    // Get upcoming events count
+    const upcomingEventsCount = await mockWixAPIs.wixData
       .query("Events")
       .gt("startDate", new Date())
-            .count();
-        
-        // Display stats
-    $w("#statsContainer").html = `
+      .count();
+
+    // Display stats
+    safeSetHtml(
+      "#statsContainer",
+      `
             <div class="stats-grid">
                 <div class="stat-item glass-card">
                     <div class="stat-number">${
@@ -663,37 +773,40 @@ async function loadQuickStats() {
                     <div class="stat-label">Learning Opportunities</div>
                 </div>
             </div>
-        `;
-        
-    $w("#statsSection").show();
-    } catch (error) {
+        `
+    );
+
+    safeShow("#statsSection");
+  } catch (error) {
     console.error("Error loading stats:", error);
-    $w("#statsSection").hide();
-    }
+    safeHide("#statsSection");
+  }
 }
 
 async function loadLatestNews() {
-    try {
-        // Load latest announcement or blog post
-    const latestNews = await wixData
+  try {
+    // Load latest announcement or blog post
+    const latestNews = await mockWixAPIs.wixData
       .query("Announcements")
       .eq("published", true)
       .descending("publishDate")
-            .limit(1)
-            .find();
-        
-        if (latestNews.items.length > 0) {
-            const news = latestNews.items[0];
-            displayLatestNews(news);
-        }
-    } catch (error) {
-    console.error("Error loading latest news:", error);
-        // News section will remain hidden if no data
+      .limit(1)
+      .find();
+
+    if (latestNews.items.length > 0) {
+      const news = latestNews.items[0];
+      displayLatestNews(news);
     }
+  } catch (error) {
+    console.error("Error loading latest news:", error);
+    // News section will remain hidden if no data
+  }
 }
 
 function displayLatestNews(news) {
-  $w("#newsContainer").html = `
+  safeSetHtml(
+    "#newsContainer",
+    `
         <div class="glass-card news-card">
             <div class="news-header">
                 <h4 class="news-title">${news.title}</h4>
@@ -710,45 +823,50 @@ function displayLatestNews(news) {
                 </button>
             </div>
         </div>
-    `;
-  $w("#newsSection").show();
+    `
+  );
+  safeShow("#newsSection");
 }
 
 function setupEventHandlers() {
-    // Global event handlers for dynamically created elements
-  $w("#page").onClick((event) => {
-        const target = event.target;
-        
-        // Handle event card clicks
+  if (!IS_BROWSER) return;
+
+  // Global event handlers for dynamically created elements
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+
+    // Handle event card clicks
     if (target.closest(".event-preview-card")) {
       const eventId = target.closest(".event-preview-card").dataset.eventId;
-            if (eventId) {
-                wixLocation.to(`/event-details?eventId=${eventId}`);
-            }
-        }
-    });
+      if (eventId) {
+        mockWixAPIs.wixLocation.to(`/event-details?eventId=${eventId}`);
+      }
+    }
+  });
 }
 
 // Global functions for dynamic content
-window.viewEventDetails = function (eventId) {
-    wixLocation.to(`/event-details?eventId=${eventId}`);
-};
+if (IS_BROWSER) {
+  window.viewEventDetails = function (eventId) {
+    mockWixAPIs.wixLocation.to(`/event-details?eventId=${eventId}`);
+  };
 
-window.viewAllEvents = function () {
-  wixLocation.to("/events");
-};
+  window.viewAllEvents = function () {
+    mockWixAPIs.wixLocation.to("/events");
+  };
 
-window.joinCommunity = function () {
-  wixLocation.to("/join-brbs");
-};
+  window.joinCommunity = function () {
+    mockWixAPIs.wixLocation.to("/join-brbs");
+  };
 
-window.readFullNews = function (newsId) {
-    wixLocation.to(`/news?id=${newsId}`);
-};
+  window.readFullNews = function (newsId) {
+    mockWixAPIs.wixLocation.to(`/news?id=${newsId}`);
+  };
+}
 
 // Add CSS for homepage-specific styling
 if (typeof window !== "undefined") {
-    const homepageStyles = `
+  const homepageStyles = `
         <style id="homepage-styles">
             /* Home Page Layout */
             .home-page-container {
@@ -1006,8 +1124,8 @@ if (typeof window !== "undefined") {
             }
         </style>
     `;
-    
+
   if (!document.getElementById("homepage-styles")) {
     document.head.insertAdjacentHTML("beforeend", homepageStyles);
-    }
+  }
 }

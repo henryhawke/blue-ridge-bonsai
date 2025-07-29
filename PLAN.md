@@ -435,7 +435,7 @@ Create a harmonious digital sanctuary that blends traditional Japanese bonsai ae
 
 ```css
 /* Liquid Glass Navigation Base */
-.liquid-glass-nav {
+#liquid-glass-nav {
   position: fixed;
   top: 0;
   width: 100%;
