@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "fcat001",
+    "name": "General Discussion",
+    "description": "A place for general chat about bonsai, the club, and anything else on your mind.",
+    "moderators": ["mem001"],
+    "active": true,
+    "postCount": 2,
+    "latestPost": {
+      "title": "Welcome to the new forums!",
+      "authorName": "David Anderson",
+      "timestamp": "2025-08-10T10:00:00Z"
+    }
+  },
+  {
+    "_id": "fcat002",
+    "name": "Beginner's Corner",
+    "description": "New to bonsai? Ask your questions here! No question is too simple.",
+    "moderators": ["mem002"],
+    "active": true,
+    "postCount": 1,
+    "latestPost": {
+      "title": "Help! My Juniper is turning yellow!",
+      "authorName": "Bob Smith",
+      "timestamp": "2025-08-12T14:00:00Z"
+    }
+  },
+  {
+    "_id": "fcat003",
+    "name": "Critique & Advice",
+    "description": "Post photos of your trees and get constructive feedback from fellow members.",
+    "moderators": [],
+    "active": true,
+    "postCount": 0,
+    "latestPost": null
+  },
+  {
+    "_id": "fcat004",
+    "name": "Buy, Sell, & Trade",
+    "description": "A marketplace for members to exchange trees, pots, tools, and other supplies.",
+    "moderators": [],
+    "active": true,
+    "postCount": 0,
+    "latestPost": null
+  }
+]

@@ -1,1131 +1,213 @@
 // Blue Ridge Bonsai Society Homepage - Phase 1 Implementation
+// This script builds the homepage dynamically, ensuring all requirements from the TO-DO.md are met.
+// It uses functions to create the structure and load content, making it maintainable and clear.
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 
-// Environment detection
-const IS_BROWSER =
-  typeof window !== "undefined" && typeof document !== "undefined";
-const IS_SERVER = typeof window === "undefined";
+$w.onReady(function () {
+    console.log("🚀 Initializing Blue Ridge Bonsai Society Homepage");
+    initializeHomepage();
+});
 
-// Mock Wix APIs for standalone execution
-const mockWixAPIs = {
-  wixData: {
-    query: (collection) => ({
-      eq: () => mockWixAPIs.wixData.query(collection),
-      gt: () => mockWixAPIs.wixData.query(collection),
-      lt: () => mockWixAPIs.wixData.query(collection),
-      ascending: () => mockWixAPIs.wixData.query(collection),
-      descending: () => mockWixAPIs.wixData.query(collection),
-      limit: () => mockWixAPIs.wixData.query(collection),
-      count: () => Promise.resolve({ totalCount: 25 }),
-      find: () => Promise.resolve({ items: getMockData(collection) }),
-    }),
-  },
-  currentMember: {
-    getMember: () => Promise.resolve(null), // Not logged in by default
-  },
-  wixLocation: {
-    to: (url) => console.log(`Navigate to: ${url}`),
-    url: IS_BROWSER ? window.location.href : "https://example.com",
-  },
-  wixWindow: {
-    openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data),
-  },
-};
-
-// Mock data for testing
-function getMockData(collection) {
-  const mockData = {
-    Events: [
-      {
-        _id: "1",
-        title: "Spring Bonsai Workshop",
-        description:
-          "Learn the fundamentals of bonsai care and styling in this hands-on workshop perfect for beginners and intermediate enthusiasts.",
-        startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week from now
-        category: "Workshop",
-        location: "NC Arboretum",
-      },
-      {
-        _id: "2",
-        title: "Monthly Club Meeting",
-        description:
-          "Join us for our monthly meeting featuring guest speaker and tree critiques. All skill levels welcome.",
-        startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 2 weeks from now
-        category: "Meeting",
-        location: "Community Center",
-      },
-      {
-        _id: "3",
-        title: "Advanced Styling Techniques",
-        description:
-          "Master advanced wiring and shaping techniques with expert guidance. Intermediate to advanced level.",
-        startDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), // 3 weeks from now
-        category: "Workshop",
-        location: "NC Arboretum",
-      },
-    ],
-    MemberSpotlights: [
-      {
-        _id: "1",
-        memberName: "Sarah Johnson",
-        memberTitle: "Bonsai Enthusiast",
-        testimonial:
-          "Joining BRBS transformed my understanding of bonsai. The community support and expert guidance have been invaluable.",
-        yearsExperience: 8,
-        favoriteStyle: "Informal Upright",
-        memberPhoto: "/images/member-sarah.jpg",
-      },
-    ],
-    Announcements: [
-      {
-        _id: "1",
-        title: "Spring Exhibition Coming Soon",
-        excerpt:
-          "Our annual spring exhibition will showcase the finest bonsai from our members. Registration opens next week.",
-        publishDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-      },
-    ],
-  };
-
-  return mockData[collection] || [];
-}
-
-// Pure JavaScript DOM manipulation functions
-function safeElement(selector) {
-  if (!IS_BROWSER) {
-    console.warn(`Element access skipped (server environment): ${selector}`);
-    return null;
-  }
-
-  try {
-    const element = document.querySelector(selector);
-    if (!element) {
-      console.warn(`Element not found: ${selector}`);
-      return null;
-    }
-    return element;
-  } catch (error) {
-    console.warn(`Error selecting element ${selector}:`, error);
-    return null;
-  }
-}
-
-function safeSetText(selector, text) {
-  if (!IS_BROWSER) return;
-
-  const element = safeElement(selector);
-  if (element) {
-    element.textContent = text;
-  }
-}
-
-function safeSetHtml(selector, html) {
-  if (!IS_BROWSER) return;
-
-  const element = safeElement(selector);
-  if (element) {
-    element.innerHTML = html;
-  }
-}
-
-function safeShow(selector) {
-  if (!IS_BROWSER) return;
-
-  try {
-    const element = safeElement(selector);
-    if (element) {
-      element.style.display = "";
-      element.classList.remove("hidden");
-    }
-  } catch (error) {
-    console.warn(`Error showing element ${selector}:`, error);
-  }
-}
-
-function safeHide(selector) {
-  if (!IS_BROWSER) return;
-
-  try {
-    const element = safeElement(selector);
-    if (element) {
-      element.style.display = "none";
-      element.classList.add("hidden");
-    }
-  } catch (error) {
-    console.warn(`Error hiding element ${selector}:`, error);
-  }
-}
-
-function safeOnClick(selector, handler) {
-  if (!IS_BROWSER) return;
-
-  const element = safeElement(selector);
-  if (element) {
-    element.addEventListener("click", handler);
-  }
-}
-
-function createElement(tagName, attributes = {}, children = []) {
-  if (!IS_BROWSER) return null;
-
-  const element = document.createElement(tagName);
-
-  // Set attributes
-  Object.entries(attributes).forEach(([key, value]) => {
-    if (key === "className") {
-      element.className = value;
-    } else if (key === "textContent") {
-      element.textContent = value;
-    } else if (key === "innerHTML") {
-      element.innerHTML = value;
-    } else {
-      element.setAttribute(key, value);
-    }
-  });
-
-  // Add children
-  children.forEach((child) => {
-    if (typeof child === "string") {
-      element.appendChild(document.createTextNode(child));
-    } else if (child instanceof Element) {
-      element.appendChild(child);
-    }
-  });
-
-  return element;
-}
-
-// Initialize when document is ready or immediately if in server environment
-function initializeHomePage() {
-  console.log(
-    "Running the code for the Home page. To debug this code in your browser's dev tools, open c1dmp.js."
-  );
-  console.log("💡 Initializing Blue Ridge Bonsai Society Home Page");
-
-  // Initialize homepage components
-  initializeHomepage()
-    .then(() => {
-      // Setup event handlers
-      setupEventHandlers();
-
-      // Load dynamic content
-      loadDynamicContent();
-    })
-    .catch((error) => {
-      console.error("Error initializing homepage:", error);
-    });
-}
-
-// Enhanced initialization for Wix environment
-function runInitialization() {
-  console.log('🚀 Starting homepage initialization...');
-  initializeHomePage();
-}
-
-// Multiple initialization strategies
-if (IS_BROWSER) {
-  // Browser environment
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", runInitialization);
-  } else {
-    runInitialization();
-  }
-} else {
-  // Server/Wix environment - try immediate and delayed initialization
-  runInitialization();
-  
-  // Also try delayed initialization in case elements load later
-  if (typeof setTimeout !== 'undefined') {
-    setTimeout(runInitialization, 1000);
-    setTimeout(runInitialization, 3000);
-  }
-}
-
+/**
+ * Main function to orchestrate the homepage initialization.
+ */
 async function initializeHomepage() {
-  try {
-    // Create the main home page structure
-    createHomePageStructure();
+    try {
+        // 1. Set up the core HTML structure of the page.
+        createHomePageStructure();
 
-    // Display welcome message with current user info
-    await displayWelcomeMessage();
+        // 2. Load all dynamic content sections concurrently.
+        await loadDynamicContent();
 
-    // Load latest events preview
-    await loadEventsPreview();
+        // 3. Set up all interactive element event handlers.
+        setupEventHandlers();
 
-    // Load member spotlight
-    await loadMemberSpotlight();
+        // 4. Initialize animations for a polished feel.
+        initializeAnimations();
 
-    // Setup call-to-action buttons
-    setupCallToActions();
-
-    // Initialize atmospheric animations
-    initializeAnimations();
-  } catch (error) {
-    console.error("Error initializing homepage:", error);
-  }
+        console.log("✅ Homepage initialization complete.");
+    } catch (error) {
+        console.error("❌ Error initializing homepage:", error);
+        // Display a user-friendly error message on the page
+        $w('#mainContainer').html = `<div style="text-align: center; padding: 4rem;">
+            <h2>We're sorry, something went wrong.</h2>
+            <p>The homepage content could not be loaded. Please try refreshing the page.</p>
+        </div>`;
+    }
 }
 
 /**
- * Create the complete HTML structure for the home page
+ * Creates the main HTML structure for the homepage within the #mainContainer element.
+ * This function ensures all required sections from the plan are present.
  */
 function createHomePageStructure() {
-  try {
-    // For Wix environment, try to use $w to find/create containers
-    let mainContainer;
-    
-    // Try Wix-specific selectors first
-    try {
-      if (typeof $w !== 'undefined') {
-        // Look for common Wix page containers
-        const wixContainers = ['#page1', '#main', '#content', '#pageContainer', '#siteContainer'];
-        for (const selector of wixContainers) {
-          try {
-            const element = $w(selector);
-            if (element) {
-              mainContainer = element;
-              console.log(`✅ Found Wix container: ${selector}`);
-              break;
-            }
-          } catch (e) {
-            // Container doesn't exist, try next one
-          }
-        }
-        
-        // If no existing container found, try to create in body or use first available container
-        if (!mainContainer) {
-          try {
-            const bodyElements = $w('#page1') || $w('Page') || $w('*').filter(el => el.type === 'Page')[0];
-            if (bodyElements) {
-              mainContainer = bodyElements;
-              console.log('✅ Using Wix page element as container');
-            }
-          } catch (e) {
-            console.warn('Could not find Wix page container');
-          }
-        }
-      }
-    } catch (e) {
-      console.warn('Wix $w not available, falling back to DOM');
-    }
-    
-    // Fallback to regular DOM if Wix methods don't work
-    if (!mainContainer) {
-      mainContainer =
-        safeElement("#main") ||
-        safeElement("#page-content") ||
-        safeElement("#content");
-
-      if (!mainContainer && typeof document !== "undefined") {
-        mainContainer = document.createElement("div");
-        mainContainer.id = "main";
-        document.body.appendChild(mainContainer);
-      }
-    }
-    
-    if (!mainContainer) {
-      console.warn("Cannot create page structure - no container available");
-      return;
-    }
-
     const homePageHTML = `
-            <div class="home-page-container">
-                <!-- Hero Section -->
-                <section class="hero-section">
-                    <div class="hero-content">
-                        <h1 id="heroTitle" class="hero-title">Welcome to Blue Ridge Bonsai Society</h1>
-                        <p id="heroSubtitle" class="hero-subtitle">Cultivating the ancient art of bonsai in the heart of Asheville, North Carolina</p>
-                        
-                        <div class="hero-actions">
-                            <button id="ctaJoinButton" class="btn btn-primary">Join Our Community</button>
-                            <button id="ctaEventsButton" class="btn btn-outline">View Events</button>
-                            <button id="ctaLearningButton" class="btn btn-outline">Beginner's Guide</button>
-                            <button id="ctaAboutButton" class="btn btn-outline">About Us</button>
-                        </div>
+        <div id="homePageContainer" class="home-page-container">
+            <!-- Hero Section (BR-01, BR-04) -->
+            <section id="heroSection" class="hero-section glass-card">
+                <div class="hero-content">
+                    <h1 id="heroTitle" class="hero-title">Welcome to Blue Ridge Bonsai Society</h1>
+                    <p id="heroSubtitle" class="hero-subtitle">Cultivating the ancient art of bonsai in the heart of Asheville, North Carolina.</p>
+                    <div id="heroActions" class="hero-actions">
+                        <button id="ctaJoinButton" class="btn btn-primary">Join Our Community</button>
+                        <button id="ctaEventsButton" class="btn btn-outline">View Events</button>
                     </div>
-                    
-                    <div class="hero-image">
-                        <img src="/images/hero-bonsai.jpg" alt="Beautiful bonsai display" />
-                    </div>
-                </section>
+                </div>
+                <div class="hero-image">
+                    <img src="https://static.wixstatic.com/media/nsplsh_b28663b715a3461287e134a0a27d94b3~mv2.jpg/v1/fill/w_1185,h_790,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/nsplsh_b28663b715a3461287e134a0a27d94b3~mv2.jpg" alt="A beautiful bonsai tree on display" />
+                </div>
+            </section>
 
-                <!-- Quick Stats Section -->
-                <section id="statsSection" class="stats-section">
-                    <div id="statsContainer" class="stats-container">
-                        <!-- Stats will be loaded here -->
-                    </div>
-                </section>
+            <!-- Events Preview Section (BR-02) -->
+            <section id="eventsSection" class="events-section">
+                <div class="section-header">
+                    <h2>Upcoming Events</h2>
+                    <p>Join us for workshops, meetings, and exhibitions.</p>
+                </div>
+                <div id="eventsPreviewContainer" class="events-preview-container">
+                    <!-- Event cards will be loaded here -->
+                </div>
+                <div class="events-cta">
+                    <button id="viewAllEventsButton" class="btn btn-primary">View All Events</button>
+                </div>
+            </section>
 
-                <!-- Events Preview Section -->
-                <section id="eventsSection" class="events-section">
-                    <div class="section-header">
-                        <h2>Upcoming Events</h2>
-                        <p>Join us for workshops, meetings, and exhibitions</p>
-                    </div>
-                    <div id="eventsPreviewContainer" class="events-preview-container">
-                        <!-- Events preview will be loaded here -->
-                    </div>
-                </section>
+            <!-- Member Spotlight Section (BR-32) -->
+            <section id="memberSpotlightSection" class="spotlight-section glass-card">
+                <div class="section-header">
+                    <h2>Member Spotlight</h2>
+                    <p>Get to know our wonderful community members.</p>
+                </div>
+                <div id="spotlightContainer" class="spotlight-container">
+                    <!-- Member spotlight will be loaded here -->
+                </div>
+            </section>
 
-                <!-- Member Spotlight Section -->
-                <section id="memberSpotlightSection" class="spotlight-section">
-                    <div class="section-header">
-                        <h2>Member Spotlight</h2>
+            <!-- About Preview & Partnership Section (BR-08) -->
+            <section class="about-preview-section">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>Our Society & Partnership</h2>
+                        <p>We are a community of bonsai enthusiasts dedicated to learning, sharing, and celebrating the art of bonsai. We are proud to partner with <strong>The North Carolina Arboretum</strong> for special exhibitions and educational programs, fostering a deep appreciation for nature and art.</p>
+                        <button id="ctaAboutButton" class="btn btn-outline">Learn More About Us</button>
                     </div>
-                    <div id="spotlightContainer" class="spotlight-container">
-                        <!-- Member spotlight will be loaded here -->
+                    <div class="about-image">
+                        <img src="https://static.wixstatic.com/media/c837a6_f82fed81323f4b86a333f11082f55979~mv2.jpg/v1/fill/w_980,h_654,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/c837a6_f82fed81323f4b86a333f11082f55979~mv2.jpg" alt="The North Carolina Arboretum" />
                     </div>
-                </section>
-
-                <!-- Latest News Section -->
-                <section id="newsSection" class="news-section" style="display: none;">
-                    <div class="section-header">
-                        <h2>Latest News</h2>
-                    </div>
-                    <div id="newsContainer" class="news-container">
-                        <!-- News will be loaded here -->
-                    </div>
-                </section>
-
-                <!-- About Preview Section -->
-                <section class="about-preview-section">
-                    <div class="about-content">
-                        <div class="about-text">
-                            <h2>About Blue Ridge Bonsai Society</h2>
-                            <p>We are a community of bonsai enthusiasts dedicated to learning, sharing, and celebrating the ancient art of bonsai. Located in the beautiful Blue Ridge Mountains, we meet monthly to share knowledge, techniques, and our passion for these living sculptures.</p>
-                            
-                            <div class="partnership-highlight">
-                                <h3>Partnership with NC Arboretum</h3>
-                                <p>We're proud to partner with The North Carolina Arboretum for special exhibitions and educational programs.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="about-image">
-                            <img src="/images/arboretum-partnership.jpg" alt="NC Arboretum Partnership" />
-                        </div>
-                    </div>
-                </section>
-            </div>
-        `;
-
-    // Inject the HTML into the main container
-    // Try multiple methods to set content
-    let contentSet = false;
-    
-    // Method 1: Wix element html property
-    if (mainContainer.html !== undefined) {
-      try {
-        mainContainer.html = homePageHTML;
-        contentSet = true;
-        console.log('✅ Content set using Wix .html property');
-      } catch (e) {
-        console.warn('Failed to set content using Wix .html:', e);
-      }
-    }
-    
-    // Method 2: Standard DOM innerHTML
-    if (!contentSet && mainContainer.innerHTML !== undefined) {
-      try {
-        mainContainer.innerHTML = homePageHTML;
-        contentSet = true;
-        console.log('✅ Content set using DOM .innerHTML');
-      } catch (e) {
-        console.warn('Failed to set content using .innerHTML:', e);
-      }
-    }
-    
-    // Method 3: Create elements manually and append
-    if (!contentSet && typeof document !== 'undefined') {
-      try {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = homePageHTML;
-        
-        // Clear existing content
-        while (mainContainer.firstChild) {
-          mainContainer.removeChild(mainContainer.firstChild);
-        }
-        
-        // Append new content
-        while (tempDiv.firstChild) {
-          mainContainer.appendChild(tempDiv.firstChild);
-        }
-        contentSet = true;
-        console.log('✅ Content set using manual DOM manipulation');
-      } catch (e) {
-        console.warn('Failed to set content using manual DOM:', e);
-      }
-    }
-    
-    if (!contentSet) {
-      console.error('❌ Could not set page content using any method');
-      // As a last resort, try to add a simple text indicator
-      try {
-        if (mainContainer.text !== undefined) {
-          mainContainer.text = 'Blue Ridge Bonsai Society - Homepage Loading...';
-        }
-      } catch (e) {
-        console.warn('Even basic text setting failed');
-      }
-    }
-
-    console.log("✅ Home page structure created successfully");
-  } catch (error) {
-    console.error("Error creating home page structure:", error);
-  }
+                </div>
+            </section>
+        </div>
+    `;
+    $w('#mainContainer').html = homePageHTML;
 }
 
-async function displayWelcomeMessage() {
-  try {
-    const member = await mockWixAPIs.currentMember.getMember();
+/**
+ * Loads all dynamic content for the page from the database.
+ * Uses mock data for now, as specified in TO-DO.md.
+ */
+function loadDynamicContent() {
+    // Mock data for development - this will be replaced with wixData queries
+    const mockData = {
+        events: [
+            { _id: "evt1", title: "Spring Bonsai Workshop", startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), description: "A hands-on workshop for beginners.", location: "NC Arboretum", category: "Workshop" },
+            { _id: "evt2", title: "Monthly Club Meeting", startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), description: "Guest speaker and tree critiques.", location: "Community Center", category: "Meeting" },
+            { _id: "evt3", title: "Advanced Styling Techniques", startDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), description: "Master advanced wiring and shaping.", location: "NC Arboretum", category: "Workshop" }
+        ],
+        spotlight: {
+            memberName: "Sarah Johnson",
+            testimonial: "Joining BRBS transformed my understanding of bonsai. The community support and expert guidance have been invaluable.",
+            memberPhoto: "https://static.wixstatic.com/media/c837a6_4d805090299442e38c3538f0d242751f~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_4d805090299442e38c3538f0d242751f~mv2.jpg"
+        }
+    };
 
-    if (member) {
-      const firstName = member.contactDetails?.firstName || "Member";
-      safeSetText("#heroTitle", `Welcome back, ${firstName}!`);
-      safeSetText(
-        "#heroSubtitle",
-        "Continue your bonsai journey with Blue Ridge Bonsai Society"
-      );
-
-      // Update button text and functionality
-      const joinButton = safeElement("#ctaJoinButton");
-      if (joinButton) {
-        joinButton.textContent = "My Dashboard";
-        joinButton.setAttribute("data-link", "/members/dashboard");
-      }
-    } else {
-      safeSetText("#heroTitle", "Welcome to Blue Ridge Bonsai Society");
-      safeSetText(
-        "#heroSubtitle",
-        "Cultivating the ancient art of bonsai in the heart of Asheville, North Carolina"
-      );
-
-      const joinButton = safeElement("#ctaJoinButton");
-      if (joinButton) {
-        joinButton.textContent = "Join Our Community";
-        joinButton.setAttribute("data-link", "/join-brbs");
-      }
-    }
-  } catch (error) {
-    console.error("Error displaying welcome message:", error);
-    // Fallback to default message
-    safeSetText("#heroTitle", "Welcome to Blue Ridge Bonsai Society");
-    safeSetText(
-      "#heroSubtitle",
-      "Cultivating the ancient art of bonsai in the heart of Asheville, North Carolina"
-    );
-  }
+    // Render each section with the mock data
+    renderEventsPreview(mockData.events);
+    renderMemberSpotlight(mockData.spotlight);
 }
 
-async function loadEventsPreview() {
-  try {
-    // Load next 3 upcoming events
-    const upcomingEvents = await mockWixAPIs.wixData
-      .query("Events")
-      .gt("startDate", new Date())
-      .ascending("startDate")
-      .limit(3)
-      .find();
-
-    if (upcomingEvents.items.length > 0) {
-      safeShow("#eventsSection");
-      displayEventsPreview(upcomingEvents.items);
-    } else {
-      safeHide("#eventsSection");
+/**
+ * Renders the upcoming events preview.
+ * @param {Array} events - An array of event objects.
+ */
+function renderEventsPreview(events) {
+    if (!events || events.length === 0) {
+        $w('#eventsPreviewContainer').html = "<p>No upcoming events at this time. Please check back soon!</p>";
+        return;
     }
-  } catch (error) {
-    console.error("Error loading events preview:", error);
-    // Hide events section if there's an error
-    safeHide("#eventsSection");
-  }
-}
 
-function displayEventsPreview(events) {
-  const eventsHTML = events
-    .map((event) => {
-      const eventDate = new Date(event.startDate);
-      const formattedDate = eventDate.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-      });
-
-      return `
-            <div class="glass-card event-preview-card" data-event-id="${
-              event._id
-            }">
+    const eventsHTML = events.map(event => {
+        const eventDate = new Date(event.startDate);
+        const formattedDate = eventDate.toLocaleDateString("en-US", { month: 'short', day: 'numeric' });
+        return `
+            <div class="event-preview-card glass-card" data-event-id="${event._id}">
                 <div class="event-date">
                     <span class="date-text">${formattedDate}</span>
                 </div>
                 <div class="event-content">
                     <h4 class="event-title">${event.title}</h4>
-                    <p class="event-description">${event.description.substring(
-                      0,
-                      120
-                    )}...</p>
-                    <div class="event-meta">
-                        <span class="event-category">${
-                          event.category || "Workshop"
-                        }</span>
-                        <span class="event-location">${
-                          event.location || "TBD"
-                        }</span>
-                    </div>
+                    <p class="event-description">${event.description}</p>
                 </div>
                 <div class="event-actions">
-                    <button class="btn btn-primary" onclick="viewEventDetails('${
-                      event._id
-                    }')">
-                        Learn More
-                    </button>
+                    <button class="btn btn-outline" data-event-id="${event._id}">Details</button>
                 </div>
             </div>
         `;
-    })
-    .join("");
+    }).join("");
 
-  safeSetHtml(
-    "#eventsPreviewContainer",
-    `
-        <div class="events-preview-grid">
-            ${eventsHTML}
-        </div>
-        <div class="events-cta text-center mt-lg">
-            <button class="btn btn-primary" onclick="viewAllEvents()">
-                View All Events
-            </button>
-        </div>
-    `
-  );
+    $w('#eventsPreviewContainer').html = `<div class="events-preview-grid">${eventsHTML}</div>`;
 }
 
-async function loadMemberSpotlight() {
-  try {
-    // Load featured member or testimonial
-    const spotlights = await mockWixAPIs.wixData
-      .query("MemberSpotlights")
-      .eq("featured", true)
-      .eq("active", true)
-      .limit(1)
-      .find();
-
-    if (spotlights.items.length > 0) {
-      const spotlight = spotlights.items[0];
-      displayMemberSpotlight(spotlight);
-      safeShow("#memberSpotlightSection");
-    } else {
-      // Fallback to default testimonial
-      displayDefaultTestimonial();
+/**
+ * Renders the member spotlight section.
+ * @param {object} spotlight - The spotlight member object.
+ */
+function renderMemberSpotlight(spotlight) {
+    if (!spotlight) {
+        $w('#spotlightContainer').html = "<p>Our community is full of amazing members. Spotlights coming soon!</p>";
+        return;
     }
-  } catch (error) {
-    console.error("Error loading member spotlight:", error);
-    displayDefaultTestimonial();
-  }
-}
 
-function displayMemberSpotlight(spotlight) {
-  safeSetHtml(
-    "#spotlightContainer",
-    `
-        <div class="glass-card spotlight-card">
+    const spotlightHTML = `
+        <div class="spotlight-card">
             <div class="spotlight-image">
-                <img src="${
-                  spotlight.memberPhoto || "/images/default-member.jpg"
-                }" alt="${spotlight.memberName}" />
+                <img src="${spotlight.memberPhoto}" alt="${spotlight.memberName}" />
             </div>
             <div class="spotlight-content">
-                <h4 class="spotlight-name">${spotlight.memberName}</h4>
-                <p class="spotlight-title">${
-                  spotlight.memberTitle || "BRBS Member"
-                }</p>
-                <blockquote class="spotlight-quote">
-                    "${spotlight.testimonial}"
-                </blockquote>
-                <div class="spotlight-details">
-                    <span class="years-experience">Bonsai Experience: ${
-                      spotlight.yearsExperience
-                    } years</span>
-                    <span class="favorite-style">Favorite Style: ${
-                      spotlight.favoriteStyle
-                    }</span>
-                </div>
+                <blockquote class="spotlight-quote">"${spotlight.testimonial}"</blockquote>
+                <p class="spotlight-attribution">- ${spotlight.memberName}, BRBS Member</p>
             </div>
         </div>
-    `
-  );
-}
-
-function displayDefaultTestimonial() {
-  safeSetHtml(
-    "#spotlightContainer",
-    `
-        <div class="glass-card spotlight-card">
-            <div class="spotlight-content text-center">
-                <h4 class="spotlight-title">Community Voices</h4>
-                <blockquote class="spotlight-quote">
-                    "Blue Ridge Bonsai Society has been instrumental in developing my understanding 
-                    of this beautiful art form. The workshops and community support are invaluable."
-                </blockquote>
-                <p class="spotlight-attribution">- BRBS Community Member</p>
-                <div class="spotlight-cta mt-md">
-                    <button class="btn btn-primary" onclick="joinCommunity()">
-                        Join Our Community
-                    </button>
-                </div>
-            </div>
-        </div>
-    `
-  );
-  safeShow("#memberSpotlightSection");
-}
-
-function setupCallToActions() {
-  // Primary CTA - Join/Dashboard button
-  safeOnClick("#ctaJoinButton", () => {
-    const button = safeElement("#ctaJoinButton");
-    const link = button?.getAttribute("data-link") || "/join-brbs";
-    mockWixAPIs.wixLocation.to(link);
-  });
-
-  // Secondary CTAs
-  safeOnClick("#ctaEventsButton", () => {
-    mockWixAPIs.wixLocation.to("/events");
-  });
-
-  safeOnClick("#ctaLearningButton", () => {
-    mockWixAPIs.wixLocation.to("/beginners-guide");
-  });
-
-  safeOnClick("#ctaAboutButton", () => {
-    mockWixAPIs.wixLocation.to("/about-brbs");
-  });
-}
-
-function initializeAnimations() {
-  // Add scroll-triggered animations for cards
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("animate-in");
-      }
-    });
-  }, observerOptions);
-
-  // Observe all glass cards
-  setTimeout(() => {
-    const cards = document.querySelectorAll(".glass-card");
-    cards.forEach((card) => observer.observe(card));
-  }, 500);
-}
-
-async function loadDynamicContent() {
-  try {
-    // Load quick stats
-    await loadQuickStats();
-
-    // Load latest news/announcements
-    await loadLatestNews();
-  } catch (error) {
-    console.error("Error loading dynamic content:", error);
-  }
-}
-
-async function loadQuickStats() {
-  try {
-    // Get member count (approximate)
-    const memberCount = await mockWixAPIs.wixData
-      .query("Members")
-      .eq("isActive", true)
-      .count();
-
-    // Get upcoming events count
-    const upcomingEventsCount = await mockWixAPIs.wixData
-      .query("Events")
-      .gt("startDate", new Date())
-      .count();
-
-    // Display stats
-    safeSetHtml(
-      "#statsContainer",
-      `
-            <div class="stats-grid">
-                <div class="stat-item glass-card">
-                    <div class="stat-number">${
-                      memberCount.totalCount || "50+"
-                    }</div>
-                    <div class="stat-label">Active Members</div>
-                </div>
-                <div class="stat-item glass-card">
-                    <div class="stat-number">${
-                      upcomingEventsCount.totalCount || "5+"
-                    }</div>
-                    <div class="stat-label">Upcoming Events</div>
-                </div>
-                <div class="stat-item glass-card">
-                    <div class="stat-number">25+</div>
-                    <div class="stat-label">Years of Experience</div>
-                </div>
-                <div class="stat-item glass-card">
-                    <div class="stat-number">∞</div>
-                    <div class="stat-label">Learning Opportunities</div>
-                </div>
-            </div>
-        `
-    );
-
-    safeShow("#statsSection");
-  } catch (error) {
-    console.error("Error loading stats:", error);
-    safeHide("#statsSection");
-  }
-}
-
-async function loadLatestNews() {
-  try {
-    // Load latest announcement or blog post
-    const latestNews = await mockWixAPIs.wixData
-      .query("Announcements")
-      .eq("published", true)
-      .descending("publishDate")
-      .limit(1)
-      .find();
-
-    if (latestNews.items.length > 0) {
-      const news = latestNews.items[0];
-      displayLatestNews(news);
-    }
-  } catch (error) {
-    console.error("Error loading latest news:", error);
-    // News section will remain hidden if no data
-  }
-}
-
-function displayLatestNews(news) {
-  safeSetHtml(
-    "#newsContainer",
-    `
-        <div class="glass-card news-card">
-            <div class="news-header">
-                <h4 class="news-title">${news.title}</h4>
-                <span class="news-date">${new Date(
-                  news.publishDate
-                ).toLocaleDateString()}</span>
-            </div>
-            <div class="news-content">
-                <p class="news-excerpt">${news.excerpt}</p>
-                <button class="btn btn-primary" onclick="readFullNews('${
-                  news._id
-                }')">
-                    Read More
-                </button>
-            </div>
-        </div>
-    `
-  );
-  safeShow("#newsSection");
-}
-
-function setupEventHandlers() {
-  if (!IS_BROWSER) return;
-
-  // Global event handlers for dynamically created elements
-  document.addEventListener("click", (event) => {
-    const target = event.target;
-
-    // Handle event card clicks
-    if (target.closest(".event-preview-card")) {
-      const eventId = target.closest(".event-preview-card").dataset.eventId;
-      if (eventId) {
-        mockWixAPIs.wixLocation.to(`/event-details?eventId=${eventId}`);
-      }
-    }
-  });
-}
-
-// Global functions for dynamic content
-if (IS_BROWSER) {
-  window.viewEventDetails = function (eventId) {
-    mockWixAPIs.wixLocation.to(`/event-details?eventId=${eventId}`);
-  };
-
-  window.viewAllEvents = function () {
-    mockWixAPIs.wixLocation.to("/events");
-  };
-
-  window.joinCommunity = function () {
-    mockWixAPIs.wixLocation.to("/join-brbs");
-  };
-
-  window.readFullNews = function (newsId) {
-    mockWixAPIs.wixLocation.to(`/news?id=${newsId}`);
-  };
-}
-
-// Add CSS for homepage-specific styling
-if (typeof window !== "undefined") {
-  const homepageStyles = `
-        <style id="homepage-styles">
-            /* Home Page Layout */
-            .home-page-container {
-                font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                line-height: 1.6;
-            }
-            
-            /* Hero Section */
-            .hero-section {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
-                align-items: center;
-                padding: 4rem 2rem;
-                max-width: 1200px;
-                margin: 0 auto;
-                min-height: 60vh;
-            }
-            
-            .hero-title {
-                font-size: 3.5rem;
-                font-weight: 700;
-                color: #4A4A4A;
-                margin: 0 0 1rem 0;
-                line-height: 1.1;
-            }
-            
-            .hero-subtitle {
-                font-size: 1.25rem;
-                color: #6B8E6F;
-                margin: 0 0 2rem 0;
-                line-height: 1.5;
-            }
-            
-            .hero-actions {
-                display: flex;
-                gap: 1rem;
-                flex-wrap: wrap;
-            }
-            
-            .btn {
-                padding: 1rem 2rem;
-                border-radius: 8px;
-                font-weight: 600;
-                text-decoration: none;
-                display: inline-block;
-                transition: all 0.3s ease;
-                border: none;
-                cursor: pointer;
-                font-family: inherit;
-                font-size: 1rem;
-            }
-            
-            .btn-primary {
-                background: linear-gradient(135deg, #6B8E6F 0%, #5A7A5E 100%);
-                color: #FEFFFE;
-                box-shadow: 0 4px 16px rgba(107, 142, 111, 0.3);
-            }
-            
-            .btn-primary:hover {
-                background: linear-gradient(135deg, #5A7A5E 0%, #4F6B52 100%);
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(107, 142, 111, 0.4);
-            }
-            
-            .btn-outline {
-                background: transparent;
-                border: 2px solid #6B8E6F;
-                color: #6B8E6F;
-            }
-            
-            .btn-outline:hover {
-                background: #6B8E6F;
-                color: #FEFFFE;
-                transform: translateY(-2px);
-            }
-            
-            .hero-image img {
-                width: 100%;
-                height: auto;
-                border-radius: 16px;
-                box-shadow: 0 12px 40px rgba(107, 142, 111, 0.2);
-            }
-            
-            /* Section Styling */
-            .stats-section, .events-section, .spotlight-section, 
-            .news-section, .about-preview-section {
-                padding: 4rem 2rem;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-            
-            .section-header {
-                text-align: center;
-                margin-bottom: 3rem;
-            }
-            
-            .section-header h2 {
-                font-size: 2.5rem;
-                color: #4A4A4A;
-                margin: 0 0 1rem 0;
-                font-weight: 700;
-            }
-            
-            .section-header p {
-                color: #6B8E6F;
-                font-size: 1.1rem;
-                margin: 0;
-            }
-            
-            /* Stats Section */
-            .stats-container {
-                background: rgba(254, 255, 254, 0.9);
-                backdrop-filter: blur(15px);
-                border-radius: 16px;
-                padding: 2rem;
-                box-shadow: 0 8px 32px rgba(107, 142, 111, 0.1);
-            }
-            
-            .events-preview-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 2rem;
-                margin: 2rem 0;
-            }
-            
-            .event-preview-card {
-                cursor: pointer;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            
-            .event-preview-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 25px rgba(107, 142, 111, 0.2);
-            }
-            
-            .event-date {
-                background: var(--mountain-sage);
-                color: var(--cloud-white);
-                padding: 0.5rem;
-                border-radius: var(--radius-md);
-                text-align: center;
-                margin-bottom: 1rem;
-                font-weight: 600;
-            }
-            
-            .event-title {
-                color: var(--stone-gray);
-                margin-bottom: 0.5rem;
-            }
-            
-            .event-description {
-                color: var(--stone-gray);
-                font-size: 0.9rem;
-                line-height: 1.5;
-            }
-            
-            .event-meta {
-                display: flex;
-                gap: 1rem;
-                margin: 1rem 0;
-                font-size: 0.85rem;
-                color: var(--earth-brown);
-            }
-            
-            .stats-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 1rem;
-                margin: 2rem 0;
-            }
-            
-            .stat-item {
-                text-align: center;
-                padding: 1.5rem 1rem;
-            }
-            
-            .stat-number {
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--mountain-sage);
-                margin-bottom: 0.5rem;
-            }
-            
-            .stat-label {
-                font-size: 0.9rem;
-                color: var(--stone-gray);
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-            
-            .spotlight-card {
-                display: flex;
-                gap: 2rem;
-                align-items: center;
-            }
-            
-            .spotlight-image img {
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: 3px solid var(--mountain-sage);
-            }
-            
-            .spotlight-quote {
-                font-style: italic;
-                font-size: 1.1rem;
-                color: var(--earth-brown);
-                margin: 1rem 0;
-                border-left: 4px solid var(--mountain-sage);
-                padding-left: 1rem;
-            }
-            
-            .news-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 1rem;
-            }
-            
-            .news-date {
-                font-size: 0.85rem;
-                color: var(--earth-brown);
-            }
-            
-            .animate-in {
-                animation: slideInUp 0.6s ease-out;
-            }
-            
-            @keyframes slideInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            
-            @media (max-width: 768px) {
-                .spotlight-card {
-                    flex-direction: column;
-                    text-align: center;
-                }
-                
-                .events-preview-grid {
-                    grid-template-columns: 1fr;
-                }
-                
-                .stats-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-            }
-        </style>
     `;
+    $w('#spotlightContainer').html = spotlightHTML;
+}
 
-  if (!document.getElementById("homepage-styles")) {
-    document.head.insertAdjacentHTML("beforeend", homepageStyles);
-  }
+/**
+ * Sets up all the event handlers for the homepage's interactive elements.
+ */
+function setupEventHandlers() {
+    // Use wix-location for navigation
+    const wixLocation = require('wix-location');
+
+    $w('#ctaJoinButton').onClick(() => wixLocation.to('/join-brbs'));
+    $w('#ctaEventsButton').onClick(() => wixLocation.to('/events'));
+    $w('#viewAllEventsButton').onClick(() => wixLocation.to('/events'));
+    $w('#ctaAboutButton').onClick(() => wixLocation.to('/about-brbs'));
+
+    // Event delegation for dynamically created event cards
+    $w('#eventsPreviewContainer').onClick((event) => {
+        const eventId = event.target.dataset.eventId;
+        if (eventId) {
+            wixLocation.to(`/event-details?eventId=${eventId}`);
+        }
+    });
+}
+
+/**
+ * Initializes scroll-triggered animations for a more dynamic feel.
+ */
+function initializeAnimations() {
+    // This is a placeholder for Velo animations.
+    // In a real Velo environment, you would use the wix-animations API.
+    // For now, we rely on the CSS classes from the design system.
+    console.log("✨ Animations initialized (CSS-based).");
 }

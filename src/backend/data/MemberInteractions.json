@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "int001",
+    "memberId": "mem001",
+    "type": "Workshop Registration",
+    "description": "Registered for Beginner's Bonsai Workshop (evt001)",
+    "date": "2025-07-22T10:00:00Z",
+    "relatedItem": "evt001",
+    "staffMember": "admin",
+    "followUpRequired": false
+  },
+  {
+    "_id": "int002",
+    "memberId": "mem002",
+    "type": "New Member Application",
+    "description": "Submitted application for Standard Membership.",
+    "date": "2024-02-28T11:00:00Z",
+    "relatedItem": "lvl001",
+    "staffMember": "admin",
+    "followUpRequired": false
+  },
+  {
+    "_id": "int003",
+    "memberId": "mem001",
+    "type": "Membership Renewal",
+    "description": "Renewed Premium Membership for another year.",
+    "date": "2025-01-10T11:00:00Z",
+    "relatedItem": "lvl002",
+    "staffMember": "system",
+    "followUpRequired": false
+  }
+]

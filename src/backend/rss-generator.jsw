@@ -1,0 +1,64 @@
+// Blue Ridge Bonsai Society - RSS Feed Generator
+// This backend web module exposes an endpoint to generate an RSS feed for events.
+
+import { webMethod, Permissions } from 'wix-web-module';
+import { EventSystem } from 'public/js/event-system.js';
+
+// This webMethod can be called by anyone, which is what we want for a public RSS feed.
+export const getEventsRss = webMethod(Permissions.Anyone, async () => {
+    try {
+        const eventSystem = new EventSystem();
+        const rssData = await eventSystem.generateRSSFeed();
+
+        // Construct the XML string for the RSS feed
+        const xmlItems = rssData.items.map(item => `
+            <item>
+                <title>${escapeXml(item.title)}</title>
+                <description>${escapeXml(item.description)}</description>
+                <link>${item.link}</link>
+                <pubDate>${item.pubDate}</pubDate>
+                <guid>${item.guid}</guid>
+            </item>
+        `).join('');
+
+        const fullXml = `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>${escapeXml(rssData.title)}</title>
+        <link>${rssData.link}</link>
+        <description>${escapeXml(rssData.description)}</description>
+        <language>en-us</language>
+        ${xmlItems}
+    </channel>
+</rss>`;
+
+        // Return the XML as a string with the correct content type
+        return new Response(fullXml, {
+            headers: {
+                'Content-Type': 'application/rss+xml; charset=utf-8'
+            }
+        });
+
+    } catch (error) {
+        console.error("Error generating RSS feed:", error);
+        return new Response("Error generating RSS feed.", { status: 500 });
+    }
+});
+
+/**
+ * Helper function to escape XML characters.
+ * @param {string} unsafe - The string to escape.
+ * @returns {string} - The escaped string.
+ */
+function escapeXml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe.replace(/[<>&'"]/g, function (c) {
+        switch (c) {
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '&': return '&amp;';
+            case '\'': return '&apos;';
+            case '"': return '&quot;';
+        }
+    });
+}

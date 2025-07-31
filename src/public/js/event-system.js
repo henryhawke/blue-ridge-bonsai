@@ -1,9 +1,29 @@
 // Blue Ridge Bonsai Society - Event System Core
-// API Documentation: https://dev.wix.com/docs/velo/apis/wix-data/introduction
+// This file is adapted to use MOCK DATA for development purposes.
+// The wixData calls have been replaced with functions that operate on local JSON data.
 
-import wixData from 'wix-data';
-import { currentMember } from 'wix-members-frontend';
-import wixWindow from 'wix-window';
+// Mock Data (simulating Wix Collections)
+const mockData = {
+    Events: [
+      { "_id": "evt001", "title": "Beginner's Bonsai Workshop", "description": "A comprehensive, hands-on workshop designed for those new to the art of bonsai.", "richDescription": "...", "startDate": "2025-09-13T10:00:00Z", "endDate": "2025-09-13T13:00:00Z", "location": "NC Arboretum, Education Center Room A", "registrationRequired": true, "maxAttendees": 20, "currentAttendees": 12, "category": "Workshop", "price": 75.00, "difficulty": "Beginner", "status": "upcoming", "featured": true, "tags": ["beginner", "workshop"], "createdDate": "2025-07-15T14:30:00Z" },
+      { "_id": "evt002", "title": "October Monthly Meeting", "description": "This month's topic is 'Preparing Your Trees for Winter'.", "richDescription": "...", "startDate": "2025-10-04T10:00:00Z", "endDate": "2025-10-04T12:00:00Z", "location": "Community Center, Asheville", "registrationRequired": false, "maxAttendees": 100, "currentAttendees": 45, "category": "Meeting", "price": 0.00, "difficulty": "All Levels", "status": "upcoming", "featured": false, "tags": ["meeting", "winter care"], "createdDate": "2025-07-10T11:00:00Z" },
+      { "_id": "evt003", "title": "Advanced Repotting Clinic", "description": "An intensive clinic for experienced members focusing on advanced repotting techniques.", "richDescription": "...", "startDate": "2025-11-08T09:00:00Z", "endDate": "2025-11-08T12:00:00Z", "location": "NC Arboretum, Greenhouse", "registrationRequired": true, "maxAttendees": 10, "currentAttendees": 7, "category": "Clinic", "price": 25.00, "difficulty": "Advanced", "status": "upcoming", "featured": false, "tags": ["repotting", "advanced"], "createdDate": "2025-08-01T18:00:00Z" }
+    ],
+    EventRegistrations: [
+      { "_id": "reg001", "eventId": "evt001", "memberEmail": "jane.doe@example.com", "memberName": "Jane Doe" },
+      { "_id": "reg002", "eventId": "evt001", "memberEmail": "bob.smith@example.com", "memberName": "Bob Smith" }
+    ],
+    Members: [
+        { "_id": "mem001", "loginEmail": "jane.doe@example.com", "contactDetails": { "firstName": "Jane", "lastName": "Doe", "phone": "555-1111" } }
+    ]
+};
+
+// Mock Wix APIs
+const wixWindow = { location: { baseUrl: 'https://www.blueridgebonsaisociety.com' } };
+const currentMember = {
+    getMember: async () => mockData.Members[0] // Assume a user is logged in
+};
+
 
 export class EventSystem {
     constructor() {
@@ -14,281 +34,163 @@ export class EventSystem {
             status: 'upcoming'
         };
         this.categories = [
-            'workshop',
-            'meeting',
-            'demonstration',
-            'exhibition',
-            'social',
-            'field-trip',
-            'competition'
+            'Workshop', 'Meeting', 'Clinic', 'Exhibition', 'Social'
         ];
         this.difficulties = [
-            'beginner',
-            'intermediate',
-            'advanced',
-            'all-levels'
+            'Beginner', 'Intermediate', 'Advanced', 'All Levels'
         ];
     }
 
-    // Load events with advanced filtering
+    // Load events with advanced filtering from MOCK DATA
     async loadEvents(filters = {}) {
-        try {
-            const query = wixData.query('Events')
-                .limit(50);
-            
-            // Apply filters
-            if (filters.category && filters.category !== 'all') {
-                query.eq('category', filters.category);
-            }
-            
-            if (filters.difficulty && filters.difficulty !== 'all') {
-                query.eq('difficulty', filters.difficulty);
-            }
-            
-            if (filters.status === 'upcoming') {
-                query.gt('startDate', new Date());
-                query.ascending('startDate');
-            } else if (filters.status === 'past') {
-                query.lt('startDate', new Date());
-                query.descending('startDate');
-            } else if (filters.status === 'featured') {
-                query.eq('featured', true);
-                query.gt('startDate', new Date());
-                query.ascending('startDate');
-            }
-            
-            // Date range filtering
-            if (filters.dateRange) {
-                const { start, end } = filters.dateRange;
-                if (start) query.gt('startDate', start);
-                if (end) query.lt('startDate', end);
-            }
-            
-            // Search by title or description
-            if (filters.search) {
-                query.contains('title', filters.search);
-            }
-            
-            const results = await query.find();
-            return results.items;
-        } catch (error) {
-            console.error('Error loading events:', error);
-            throw error;
+        console.log("Loading events with filters:", filters);
+        let results = mockData.Events;
+
+        // Apply filters
+        if (filters.category && filters.category !== 'all') {
+            results = results.filter(event => event.category === filters.category);
         }
+
+        if (filters.difficulty && filters.difficulty !== 'all') {
+            results = results.filter(event => event.difficulty === filters.difficulty);
+        }
+
+        const now = new Date();
+        if (filters.status === 'upcoming') {
+            results = results.filter(event => new Date(event.startDate) > now);
+            results.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+        } else if (filters.status === 'past') {
+            results = results.filter(event => new Date(event.startDate) <= now);
+            results.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+        }
+
+        console.log("Filtered events:", results);
+        return results;
     }
 
-    // Get single event by ID
+    // Get single event by ID from MOCK DATA
     async getEvent(eventId) {
-        try {
-            const event = await wixData.get('Events', eventId);
-            return event;
-        } catch (error) {
-            console.error('Error getting event:', error);
-            throw error;
-        }
+        const event = mockData.Events.find(e => e._id === eventId);
+        return event || null;
     }
 
     // Get events by category
     async getEventsByCategory(category, limit = 10) {
-        try {
-            const events = await wixData.query('Events')
-                .eq('category', category)
-                .gt('startDate', new Date())
-                .ascending('startDate')
-                .limit(limit)
-                .find();
-            
-            return events.items;
-        } catch (error) {
-            console.error('Error getting events by category:', error);
-            return [];
-        }
+        const results = mockData.Events.filter(event => event.category === category && new Date(event.startDate) > new Date());
+        results.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+        return results.slice(0, limit);
     }
 
     // Get featured events
     async getFeaturedEvents(limit = 5) {
-        try {
-            const events = await wixData.query('Events')
-                .eq('featured', true)
-                .gt('startDate', new Date())
-                .ascending('startDate')
-                .limit(limit)
-                .find();
-            
-            return events.items;
-        } catch (error) {
-            console.error('Error getting featured events:', error);
-            return [];
-        }
+        const results = mockData.Events.filter(event => event.featured && new Date(event.startDate) > new Date());
+        results.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+        return results.slice(0, limit);
     }
 
     // Check if user is registered for event
     async isUserRegistered(eventId) {
-        try {
-            const member = await currentMember.getMember();
-            if (!member) return false;
-            
-            const registration = await wixData.query('EventRegistrations')
-                .eq('eventId', eventId)
-                .eq('memberEmail', member.loginEmail)
-                .find();
-            
-            return registration.items.length > 0;
-        } catch (error) {
-            console.error('Error checking registration:', error);
-            return false;
-        }
+        const member = await currentMember.getMember();
+        if (!member) return false;
+
+        const registration = mockData.EventRegistrations.find(reg => reg.eventId === eventId && reg.memberEmail === member.loginEmail);
+        return !!registration;
     }
 
     // Register user for event
     async registerForEvent(eventId, registrationData = {}) {
-        try {
-            const member = await currentMember.getMember();
-            if (!member) {
-                throw new Error('Must be logged in to register for events');
-            }
-
-            // Check if already registered
-            const existingRegistration = await wixData.query('EventRegistrations')
-                .eq('eventId', eventId)
-                .eq('memberEmail', member.loginEmail)
-                .find();
-
-            if (existingRegistration.items.length > 0) {
-                throw new Error('Already registered for this event');
-            }
-
-            // Get event details to check capacity
-            const event = await wixData.get('Events', eventId);
-            if (event.maxAttendees && event.currentAttendees >= event.maxAttendees) {
-                throw new Error('Event is at full capacity');
-            }
-
-            // Create registration record
-            const registration = {
-                eventId,
-                memberEmail: member.loginEmail,
-                memberName: `${member.contactDetails.firstName} ${member.contactDetails.lastName}`,
-                phone: member.contactDetails.phone || '',
-                registrationDate: new Date(),
-                paymentStatus: 'pending',
-                attendanceStatus: 'registered',
-                notes: registrationData.notes || '',
-                specialRequests: registrationData.specialRequests || '',
-                emergencyContact: registrationData.emergencyContact || ''
-            };
-
-            const result = await wixData.insert('EventRegistrations', registration);
-
-            // Update event attendee count
-            await wixData.update('Events', {
-                _id: eventId,
-                currentAttendees: (event.currentAttendees || 0) + 1
-            });
-
-            return result;
-        } catch (error) {
-            console.error('Error registering for event:', error);
-            throw error;
+        const member = await currentMember.getMember();
+        if (!member) {
+            throw new Error('Must be logged in to register for events');
         }
+
+        if (await this.isUserRegistered(eventId)) {
+            throw new Error('Already registered for this event');
+        }
+
+        const event = await this.getEvent(eventId);
+        if (this.isEventFull(event)) {
+            throw new Error('Event is at full capacity');
+        }
+
+        const newRegistration = {
+            _id: `reg${new Date().getTime()}`,
+            eventId,
+            memberEmail: member.loginEmail,
+            memberName: `${member.contactDetails.firstName} ${member.contactDetails.lastName}`,
+            ...registrationData,
+            registrationDate: new Date().toISOString()
+        };
+
+        mockData.EventRegistrations.push(newRegistration);
+        event.currentAttendees++;
+
+        return newRegistration;
     }
 
     // Cancel event registration
     async cancelRegistration(eventId) {
-        try {
-            const member = await currentMember.getMember();
-            if (!member) {
-                throw new Error('Must be logged in to cancel registration');
-            }
-
-            const registration = await wixData.query('EventRegistrations')
-                .eq('eventId', eventId)
-                .eq('memberEmail', member.loginEmail)
-                .find();
-
-            if (registration.items.length === 0) {
-                throw new Error('No registration found for this event');
-            }
-
-            // Remove registration
-            await wixData.remove('EventRegistrations', registration.items[0]._id);
-
-            // Update event attendee count
-            const event = await wixData.get('Events', eventId);
-            await wixData.update('Events', {
-                _id: eventId,
-                currentAttendees: Math.max((event.currentAttendees || 1) - 1, 0)
-            });
-
-            return { success: true };
-        } catch (error) {
-            console.error('Error canceling registration:', error);
-            throw error;
+        const member = await currentMember.getMember();
+        if (!member) {
+            throw new Error('Must be logged in to cancel registration');
         }
+
+        const regIndex = mockData.EventRegistrations.findIndex(reg => reg.eventId === eventId && reg.memberEmail === member.loginEmail);
+
+        if (regIndex === -1) {
+            throw new Error('No registration found for this event');
+        }
+
+        mockData.EventRegistrations.splice(regIndex, 1);
+
+        const event = await this.getEvent(eventId);
+        if (event) {
+            event.currentAttendees = Math.max((event.currentAttendees || 1) - 1, 0);
+        }
+
+        return { success: true };
     }
 
     // Get user's registered events
     async getUserRegistrations() {
-        try {
-            const member = await currentMember.getMember();
-            if (!member) return [];
+        const member = await currentMember.getMember();
+        if (!member) return [];
 
-            const registrations = await wixData.query('EventRegistrations')
-                .eq('memberEmail', member.loginEmail)
-                .descending('registrationDate')
-                .find();
+        const registrations = mockData.EventRegistrations.filter(reg => reg.memberEmail === member.loginEmail);
 
-            // Get event details for each registration
-            const eventsWithRegistrations = await Promise.all(
-                registrations.items.map(async (registration) => {
-                    try {
-                        const event = await wixData.get('Events', registration.eventId);
-                        return {
-                            ...event,
-                            registration
-                        };
-                    } catch (error) {
-                        console.error('Error getting event for registration:', error);
-                        return null;
-                    }
-                })
-            );
+        const eventsWithRegistrations = await Promise.all(
+            registrations.map(async (registration) => {
+                const event = await this.getEvent(registration.eventId);
+                return event ? { ...event, registration } : null;
+            })
+        );
 
-            return eventsWithRegistrations.filter(item => item !== null);
-        } catch (error) {
-            console.error('Error getting user registrations:', error);
-            return [];
-        }
+        return eventsWithRegistrations.filter(item => item !== null);
     }
 
     // Generate RSS feed for events
     async generateRSSFeed() {
-        try {
-            const events = await this.loadEvents({ status: 'upcoming' });
-            const rssItems = events.map(event => {
-                return {
-                    title: event.title,
-                    description: event.description,
-                    link: `${wixWindow.location.baseUrl}/event-details?eventId=${event._id}`,
-                    pubDate: new Date(event.createdDate).toUTCString(),
-                    guid: event._id,
-                    category: event.category,
-                    startDate: event.startDate,
-                    location: event.location
-                };
-            });
-            
+        const events = await this.loadEvents({ status: 'upcoming' });
+        const rssItems = events.map(event => {
             return {
-                title: 'Blue Ridge Bonsai Society Events',
-                description: 'Upcoming bonsai workshops, meetings, and events',
-                link: `${wixWindow.location.baseUrl}/events`,
-                lastBuildDate: new Date().toUTCString(),
-                items: rssItems
+                title: event.title,
+                description: event.description,
+                link: `${wixWindow.location.baseUrl}/event-details?eventId=${event._id}`,
+                pubDate: new Date(event.createdDate).toUTCString(),
+                guid: event._id,
+                category: event.category,
+                startDate: event.startDate,
+                location: event.location
             };
-        } catch (error) {
-            console.error('Error generating RSS feed:', error);
-            throw error;
-        }
+        });
+
+        return {
+            title: 'Blue Ridge Bonsai Society Events',
+            description: 'Upcoming bonsai workshops, meetings, and events',
+            link: `${wixWindow.location.baseUrl}/events`,
+            lastBuildDate: new Date().toUTCString(),
+            items: rssItems
+        };
     }
 
     // Export to iCal format
@@ -355,29 +257,16 @@ export class EventSystem {
 
     // Get event statistics
     async getEventStats() {
-        try {
-            const [totalEvents, upcomingEvents, pastEvents, registrations] = await Promise.all([
-                wixData.query('Events').count(),
-                wixData.query('Events').gt('startDate', new Date()).count(),
-                wixData.query('Events').lt('startDate', new Date()).count(),
-                wixData.query('EventRegistrations').count()
-            ]);
+        const now = new Date();
+        const upcomingCount = mockData.Events.filter(e => new Date(e.startDate) > now).length;
+        const pastCount = mockData.Events.filter(e => new Date(e.startDate) <= now).length;
 
-            return {
-                total: totalEvents.totalCount,
-                upcoming: upcomingEvents.totalCount,
-                past: pastEvents.totalCount,
-                totalRegistrations: registrations.totalCount
-            };
-        } catch (error) {
-            console.error('Error getting event stats:', error);
-            return {
-                total: 0,
-                upcoming: 0,
-                past: 0,
-                totalRegistrations: 0
-            };
-        }
+        return {
+            total: mockData.Events.length,
+            upcoming: upcomingCount,
+            past: pastCount,
+            totalRegistrations: mockData.EventRegistrations.length
+        };
     }
 
     // Format event date for display
@@ -487,34 +376,29 @@ export class EventSystem {
 
     // Get events for calendar display
     async getCalendarEvents(startDate, endDate) {
-        try {
-            const events = await wixData.query('Events')
-                .ge('startDate', startDate)
-                .le('startDate', endDate)
-                .find();
+        const events = mockData.Events.filter(event => {
+            const eventDate = new Date(event.startDate);
+            return eventDate >= startDate && eventDate <= endDate;
+        });
 
-            return events.items.map(event => ({
-                id: event._id,
-                title: event.title,
-                start: event.startDate,
-                end: event.endDate || event.startDate,
-                url: `/event-details?eventId=${event._id}`,
-                backgroundColor: this.getCategoryColor(event.category),
-                borderColor: this.getCategoryColor(event.category),
-                textColor: '#ffffff',
-                extendedProps: {
-                    category: event.category,
-                    difficulty: event.difficulty,
-                    instructor: event.instructor,
-                    location: event.location,
-                    spotsLeft: this.getAvailableSpots(event),
-                    description: event.description.substring(0, 100) + '...'
-                }
-            }));
-        } catch (error) {
-            console.error('Error getting calendar events:', error);
-            return [];
-        }
+        return events.map(event => ({
+            id: event._id,
+            title: event.title,
+            start: event.startDate,
+            end: event.endDate || event.startDate,
+            url: `/event-details?eventId=${event._id}`,
+            backgroundColor: this.getCategoryColor(event.category),
+            borderColor: this.getCategoryColor(event.category),
+            textColor: '#ffffff',
+            extendedProps: {
+                category: event.category,
+                difficulty: event.difficulty,
+                instructor: event.instructor,
+                location: event.location,
+                spotsLeft: this.getAvailableSpots(event),
+                description: event.description.substring(0, 100) + '...'
+            }
+        }));
     }
 
     // Get category color for calendar display
@@ -533,17 +417,12 @@ export class EventSystem {
 
     // Search events
     async searchEvents(query, filters = {}) {
-        try {
-            const searchTerms = query.toLowerCase().split(' ');
-            const events = await this.loadEvents(filters);
-            
-            return events.filter(event => {
-                const searchText = `${event.title} ${event.description} ${event.instructor || ''} ${event.location || ''}`.toLowerCase();
-                return searchTerms.every(term => searchText.includes(term));
-            });
-        } catch (error) {
-            console.error('Error searching events:', error);
-            return [];
-        }
+        const searchTerms = query.toLowerCase().split(' ');
+        const events = await this.loadEvents(filters);
+
+        return events.filter(event => {
+            const searchText = `${event.title} ${event.description} ${event.instructor || ''} ${event.location || ''}`.toLowerCase();
+            return searchTerms.every(term => searchText.includes(term));
+        });
     }
 }

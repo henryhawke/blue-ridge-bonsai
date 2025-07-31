@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "cat001",
+    "name": "Workshop",
+    "description": "Hands-on sessions where participants work on their own trees with guidance from an instructor.",
+    "color": "#D4A574",
+    "icon": "🌿",
+    "displayOrder": 1
+  },
+  {
+    "_id": "cat002",
+    "name": "Meeting",
+    "description": "Regular club meetings featuring demonstrations, guest speakers, and community discussions.",
+    "color": "#6B8E6F",
+    "icon": "👥",
+    "displayOrder": 2
+  },
+  {
+    "_id": "cat003",
+    "name": "Clinic",
+    "description": "Focused sessions where members can bring their trees for specific advice and diagnosis.",
+    "color": "#8B7355",
+    "icon": "🩺",
+    "displayOrder": 3
+  },
+  {
+    "_id": "cat004",
+    "name": "Exhibition",
+    "description": "Public shows displaying the finest trees from our members and the community.",
+    "color": "#4A4A4A",
+    "icon": "🏆",
+    "displayOrder": 4
+  },
+  {
+    "_id": "cat005",
+    "name": "Social",
+    "description": "Informal get-togethers, picnics, and other community-building events.",
+    "color": "#5BC0DE",
+    "icon": "🎉",
+    "displayOrder": 5
+  }
+]

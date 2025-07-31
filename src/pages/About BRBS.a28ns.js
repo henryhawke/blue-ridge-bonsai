@@ -125,16 +125,24 @@ function displayMissionVision() {
 
 async function loadBoardMembers() {
     try {
-        // Load board members from database
-        const boardMembers = await wixData.query('BoardMembers')
-            .eq('active', true)
-            .ascending('displayOrder')
-            .find();
-        
+        // MOCK DATA: Using local data until database is populated.
+        const boardMembers = {
+            items: [
+              {
+                "_id": "bm001", "name": "David Anderson", "role": "President", "title": "President", "bio": "David has been practicing bonsai for over 20 years and is passionate about sharing his knowledge with the community. He specializes in native Appalachian species.", "photo": "https://static.wixstatic.com/media/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg", "yearsExperience": "20+", "specialties": "Native Species", "contactEmail": "president@brbs.org"
+              },
+              {
+                "_id": "bm002", "name": "Maria Garcia", "role": "Vice President", "title": "Vice President", "bio": "Maria brings a modern aesthetic to traditional bonsai forms. She is an expert in shohin and mame bonsai and leads many of our workshops.", "photo": "https://static.wixstatic.com/media/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg", "yearsExperience": "10+", "specialties": "Shohin & Mame", "contactEmail": "vp@brbs.org"
+              },
+              {
+                "_id": "bm003", "name": "James Chen", "role": "Treasurer", "title": "Treasurer", "bio": "With a keen eye for detail, James manages the society's finances and ensures our events and programs are sustainable. He also has a fine collection of junipers.", "photo": "https://static.wixstatic.com/media/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg", "yearsExperience": "15+", "specialties": "Junipers", "contactEmail": "treasurer@brbs.org"
+              }
+            ]
+        };
+
         if (boardMembers.items.length > 0) {
             displayBoardMembers(boardMembers.items);
         } else {
-            // Display default board structure if no data
             displayDefaultBoard();
         }
         
@@ -314,16 +322,20 @@ function displayPartnershipInfo() {
 
 async function loadFAQ() {
     try {
-        // Load FAQ items from database
-        const faqItems = await wixData.query('FAQItems')
-            .eq('active', true)
-            .ascending('displayOrder')
-            .find();
+        // MOCK DATA: Using local data until database is populated.
+        const faqItems = {
+            items: [
+              { "_id": "faq001", "question": "When and where are the meetings held?", "answer": "Our meetings are typically held on the first Saturday of every month at the Community Center in Asheville. Please check the Events page for the most up-to-date schedule and location details.", "category": "General" },
+              { "_id": "faq002", "question": "Do I need to be a member to attend a meeting?", "answer": "Guests are welcome to attend one regular meeting free of charge to see if our club is a good fit for them. Special workshops and events may have different policies and fees.", "category": "Membership" },
+              { "_id": "faq003", "question": "I'm a complete beginner. Is this club for me?", "answer": "Absolutely! We welcome enthusiasts of all skill levels. We have a dedicated Beginner's Guide section on our website, and our experienced members are always happy to help newcomers.", "category": "General" },
+              { "_id": "faq004", "question": "What should I bring to my first meeting?", "answer": "Just bring your curiosity! You can bring a tree if you'd like advice on it, but it's not required. We recommend bringing a notebook and pen to jot down tips.", "category": "General" },
+              { "_id": "faq005", "question": "How do I care for a tree I inherited?", "answer": "Donating or caring for an inherited collection can be daunting. We recommend you contact us directly through our 'Contact Us' page. We can provide advice or help find a new home for the trees within our community to ensure they are well cared for.", "category": "Donations" }
+            ]
+        };
         
         if (faqItems.items.length > 0) {
             displayFAQ(faqItems.items);
         } else {
-            // Display default FAQ if no data
             displayDefaultFAQ();
         }
         

@@ -1,0 +1,47 @@
+[
+  {
+    "_id": "reg001",
+    "eventId": "evt001",
+    "memberEmail": "jane.doe@example.com",
+    "memberName": "Jane Doe",
+    "phone": "555-123-4567",
+    "registrationDate": "2025-07-22T10:00:00Z",
+    "paymentStatus": "Paid",
+    "paymentMethod": "PayPal",
+    "notes": "Excited for my first workshop!",
+    "specialRequests": null,
+    "emergencyContact": "John Doe, 555-765-4321",
+    "attendanceStatus": "Registered",
+    "confirmationSent": true
+  },
+  {
+    "_id": "reg002",
+    "eventId": "evt001",
+    "memberEmail": "bob.smith@example.com",
+    "memberName": "Bob Smith",
+    "phone": "555-987-6543",
+    "registrationDate": "2025-07-25T14:20:00Z",
+    "paymentStatus": "Paid",
+    "paymentMethod": "Stripe",
+    "notes": null,
+    "specialRequests": "Need a seat near the front, hard of hearing.",
+    "emergencyContact": "Mary Smith, 555-987-1111",
+    "attendanceStatus": "Registered",
+    "confirmationSent": true
+  },
+  {
+    "_id": "reg003",
+    "eventId": "evt003",
+    "memberEmail": "susan.white@brbs.org",
+    "memberName": "Susan White",
+    "phone": "555-333-4444",
+    "registrationDate": "2025-08-02T11:00:00Z",
+    "paymentStatus": "Paid",
+    "paymentMethod": "PayPal",
+    "notes": "Bringing my large Trident Maple.",
+    "specialRequests": null,
+    "emergencyContact": "Admin",
+    "attendanceStatus": "Registered",
+    "confirmationSent": true
+  }
+]

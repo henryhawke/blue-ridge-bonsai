@@ -1,102 +1,25 @@
 // @ts-nocheck
 // Blue Ridge Bonsai Society - Events Page - Phase 1 Implementation
-// API Reference: https://www.wix.com/velo/reference/api-overview/introduction
+// This page uses the central EventSystem class to manage and display event data.
 
-// Environment detection
-const IS_BROWSER =
-  typeof window !== "undefined" && typeof document !== "undefined";
-const IS_SERVER = typeof window === "undefined";
+import { EventSystem } from 'public/js/event-system.js';
 
-// Mock Wix APIs for standalone execution (same as Home page)
-const mockWixAPIs = {
-  wixData: {
-    query: (collection) => ({
-      eq: () => mockWixAPIs.wixData.query(collection),
-      gt: () => mockWixAPIs.wixData.query(collection),
-      lt: () => mockWixAPIs.wixData.query(collection),
-      ascending: () => mockWixAPIs.wixData.query(collection),
-      descending: () => mockWixAPIs.wixData.query(collection),
-      limit: () => mockWixAPIs.wixData.query(collection),
-      count: () => Promise.resolve({ totalCount: 15 }),
-      find: () => Promise.resolve({ items: getMockEventsData(collection) }),
-    }),
-  },
-  currentMember: {
-    getMember: () => Promise.resolve(null), // Not logged in by default
-  },
-  wixLocation: {
-    to: (url) => console.log(`Navigate to: ${url}`),
-    url: IS_BROWSER ? window.location.href : "https://example.com",
-  },
-  wixWindow: {
+// Mock Wix APIs for standalone execution
+const wixLocation = {
+    to: (url) => console.log(`Navigating to: ${url}`),
+    url: "https://www.blueridgebonsaisociety.com/events",
+    query: {} // Add a query object to simulate URL params
+};
+const wixWindow = {
     openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data),
-  },
 };
 
-// Mock events data for testing
-function getMockEventsData(collection) {
-  const mockEvents = [
-    {
-      _id: "1",
-      title: "Spring Bonsai Workshop",
-      description:
-        "Learn the fundamentals of bonsai care and styling in this hands-on workshop perfect for beginners and intermediate enthusiasts.",
-      startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      endDate: new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000
-      ),
-      category: "workshop",
-      difficulty: "beginner",
-      location: "NC Arboretum",
-      maxCapacity: 20,
-      registeredCount: 8,
-      price: 45,
-      featured: true,
-    },
-    {
-      _id: "2",
-      title: "Monthly Club Meeting",
-      description:
-        "Join us for our monthly meeting featuring guest speaker and tree critiques. All skill levels welcome.",
-      startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-      endDate: new Date(
-        Date.now() + 14 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000
-      ),
-      category: "meeting",
-      difficulty: "all-levels",
-      location: "Community Center",
-      maxCapacity: 50,
-      registeredCount: 32,
-      price: 0,
-      featured: false,
-    },
-    {
-      _id: "3",
-      title: "Advanced Styling Techniques",
-      description:
-        "Master advanced wiring and shaping techniques with expert guidance. Intermediate to advanced level.",
-      startDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
-      endDate: new Date(
-        Date.now() + 21 * 24 * 60 * 60 * 1000 + 6 * 60 * 60 * 1000
-      ),
-      category: "workshop",
-      difficulty: "advanced",
-      location: "NC Arboretum",
-      maxCapacity: 12,
-      registeredCount: 5,
-      price: 85,
-      featured: true,
-    },
-  ];
-  return mockEvents;
-}
 let eventSystem;
 let currentFilters = {
   category: "all",
-  date: "upcoming",
+  status: "upcoming", // Changed 'date' to 'status' to match EventSystem
   difficulty: "all",
   search: "",
-  dateRange: null,
 };
 
 // Debounce timer for search input
@@ -104,255 +27,88 @@ let searchTimeoutId;
 
 // Pure JavaScript DOM manipulation functions
 function safeElement(selector) {
-  if (!IS_BROWSER) {
-    console.warn(`Element access skipped (server environment): ${selector}`);
-    return null;
-  }
-
   try {
-    const element = document.querySelector(selector);
-    if (!element) {
-      console.warn(`Element not found: ${selector}`);
-      return null;
-    }
-    return element;
-  } catch (error) {
-    console.warn(`Error selecting element ${selector}:`, error);
-    return null;
+    // In Velo, $w is the standard way to select elements.
+    // This function can be replaced with direct $w calls in the final Velo code.
+    return $w(selector);
+  } catch(e) {
+    // Fallback for testing outside of Velo
+    return document.querySelector(selector);
   }
 }
 
 function safeShow(selector) {
-  if (!IS_BROWSER) return;
-
-  try {
-    const element = safeElement(selector);
-    if (element) {
-      element.style.display = "";
-      element.classList.remove("hidden");
-    }
-  } catch (error) {
-    console.warn(`Error showing element ${selector}:`, error);
+  const element = safeElement(selector);
+  if (element) {
+      element.show();
   }
 }
 
 function safeHide(selector) {
-  if (!IS_BROWSER) return;
-
-  try {
-    const element = safeElement(selector);
-    if (element) {
-      element.style.display = "none";
-      element.classList.add("hidden");
-    }
-  } catch (error) {
-    console.warn(`Error hiding element ${selector}:`, error);
+  const element = safeElement(selector);
+  if (element) {
+      element.hide();
   }
 }
 
 function safeSetText(selector, text) {
-  if (!IS_BROWSER) return;
-
   const element = safeElement(selector);
   if (element) {
-    element.textContent = text;
+      element.text = text;
   }
 }
 
 function safeSetHtml(selector, html) {
-  if (!IS_BROWSER) return;
-
   const element = safeElement(selector);
   if (element) {
-    element.innerHTML = html;
+      element.html = html;
   }
 }
 
 function safeSetValue(selector, value) {
-  if (!IS_BROWSER) return;
-
   const element = safeElement(selector);
   if (element) {
-    if (element.value !== undefined) {
       element.value = value;
-    } else if (element.setAttribute) {
-      element.setAttribute("value", value);
-    }
   }
 }
 
 function safeGetValue(selector) {
-  if (!IS_BROWSER) return "";
-
   const element = safeElement(selector);
-  if (element && element.value !== undefined) {
-    return element.value;
-  }
-  return "";
+  return element ? element.value : "";
 }
 
 function safeOnClick(selector, handler) {
-  if (!IS_BROWSER) return;
-
   const element = safeElement(selector);
   if (element) {
-    element.addEventListener("click", handler);
+      element.onClick(handler);
   }
 }
 
 function safeOnChange(selector, handler) {
-  if (!IS_BROWSER) return;
-
   const element = safeElement(selector);
   if (element) {
-    element.addEventListener("change", handler);
+      element.onChange(handler);
   }
 }
 
 function safeOnInput(selector, handler) {
-  if (!IS_BROWSER) return;
-
   const element = safeElement(selector);
   if (element) {
-    element.addEventListener("input", handler);
+      element.onInput(handler);
   }
 }
 
-/**
- * Window property extensions for Events page
- * @typedef {Object} WindowExtensions
- * @property {any} SimpleEventSystem - Event system class
- * @property {any} eventSystem - Event system instance
- * @property {number} searchTimeout - Search debounce timeout
- * @property {function} viewEventDetails - View event details function
- * @property {function} quickRegister - Quick registration function
- * @property {function} clearFilters - Clear filters function
- * @property {function} suggestEvent - Suggest event function
- * @property {function} changeMonth - Change calendar month function
- */
+$w.onReady(function () {
+    console.log("🚀 Initializing Events Page");
+    initEventsPageCore();
+});
 
-// Initialize Events page - works in both Wix and standalone environments
 async function initEventsPageCore() {
-  console.log(
-    "Running the code for the Events page. To debug this code in your browser's dev tools, open yyqhk.js."
-  );
+  console.log("Running the code for the Events page.");
 
-  // Initialize event system with comprehensive mock data
-  try {
-    // Create event system that works everywhere
-    eventSystem = {
-      async loadEvents(filters = {}) {
-        const events = getMockEventsData();
-        return events.filter((event) => {
-          if (
-            filters.category &&
-            filters.category !== "all" &&
-            event.category !== filters.category
-          )
-            return false;
-          if (
-            filters.difficulty &&
-            filters.difficulty !== "all" &&
-            event.difficulty !== filters.difficulty
-          )
-            return false;
-          if (
-            filters.search &&
-            !event.title.toLowerCase().includes(filters.search.toLowerCase())
-          )
-            return false;
-          return true;
-        });
-      },
-      async getEventStats() {
-        const events = getMockEventsData();
-        return {
-          total: events.length,
-          upcoming: events.filter((e) => new Date(e.startDate) > new Date())
-            .length,
-          past: events.filter((e) => new Date(e.startDate) <= new Date())
-            .length,
-          totalRegistrations: events.reduce(
-            (sum, e) => sum + e.registeredCount,
-            0
-          ),
-        };
-      },
-      async getCalendarEvents(startDate, endDate) {
-        return getMockEventsData().map((event) => ({
-          ...event,
-          start: event.startDate,
-          end: event.endDate || event.startDate,
-        }));
-      },
-      formatEventDate(date) {
-        return new Date(date).toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      },
-      getTimeUntilEvent(date) {
-        const diff = new Date(date).getTime() - Date.now();
-        if (diff < 0) return "Past event";
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        return days === 0 ? "Today" : days === 1 ? "1 day" : `${days} days`;
-      },
-      getAvailableSpots(event) {
-        return event.maxCapacity - event.registeredCount;
-      },
-      isEventFull(event) {
-        return event.registeredCount >= event.maxCapacity;
-      },
-      async registerForEvent(eventId) {
-        console.log("Registering for event:", eventId);
-        return true;
-      },
-      async generateRSSFeed() {
-        return '<?xml version="1.0"?><rss><channel><title>BRBS Events</title></channel></rss>';
-      },
-      generateICalFeed(events) {
-        return "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:BRBS\nEND:VCALENDAR";
-      },
-    };
-    console.log("✅ Event system initialized successfully");
-  } catch (error) {
-    console.error("Error initializing event system:", error);
-    // Use fallback
-    eventSystem = {
-      async loadEvents() {
-        return [];
-      },
-      async getEventStats() {
-        return { total: 0, upcoming: 0, past: 0, totalRegistrations: 0 };
-      },
-      async getCalendarEvents() {
-        return [];
-      },
-      formatEventDate(date) {
-        return new Date(date).toLocaleDateString();
-      },
-      getTimeUntilEvent() {
-        return "Loading...";
-      },
-      getAvailableSpots() {
-        return "TBD";
-      },
-      isEventFull() {
-        return false;
-      },
-      async registerForEvent() {
-        throw new Error("Event system not available");
-      },
-      async generateRSSFeed() {
-        throw new Error("RSS feed not available");
-      },
-      generateICalFeed() {
-        throw new Error("iCal export not available");
-      },
-    };
-  }
+  // Instantiate the central event system
+  eventSystem = new EventSystem();
+  console.log("✅ Event system instantiated successfully");
 
   // Initialize events page
   await initializeEventsPage();
@@ -362,6 +118,9 @@ async function initEventsPageCore() {
 
   // Handle URL parameters
   handleURLParameters();
+
+  // Final refresh of events based on any URL params
+  await loadAndDisplayEvents();
 }
 
 async function initializeEventsPage() {

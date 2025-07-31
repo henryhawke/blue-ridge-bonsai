@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "res001",
+    "name": "Bonsai Mirai Live",
+    "type": "Website",
+    "url": "https://live.bonsaimirai.com/",
+    "description": "An extensive online library of bonsai tutorials, live streams, and articles from Ryan Neil and his team. Subscription-based, but with many free resources.",
+    "category": "Online Learning",
+    "rating": 5,
+    "verified": true
+  },
+  {
+    "_id": "res002",
+    "name": "Bjorn Bjorholm's YouTube Channel",
+    "type": "Video",
+    "url": "https://www.youtube.com/c/BonsaiB",
+    "description": "A fantastic resource for high-quality, in-depth bonsai tutorials covering a wide range of species and techniques.",
+    "category": "Online Learning",
+    "rating": 5,
+    "verified": true
+  },
+  {
+    "_id": "res003",
+    "name": "American Bonsai Society (ABS)",
+    "type": "Organization",
+    "url": "https://www.absbonsai.org/",
+    "description": "The official website of the American Bonsai Society, offering articles, event listings, and a quarterly journal for members.",
+    "category": "Community",
+    "rating": 4,
+    "verified": true
+  },
+  {
+    "_id": "res004",
+    "name": "The 'Shag Rug' Method for Nebari",
+    "type": "Downloadable Guide",
+    "url": "/downloads/shag-rug-method.pdf",
+    "description": "A downloadable guide based on Daniel Coffey's presentation on an effective technique for developing impressive surface roots (Nebari).",
+    "category": "Technique Guides",
+    "rating": 4,
+    "verified": true
+  }
+]

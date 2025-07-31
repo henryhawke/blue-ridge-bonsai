@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "mint001",
+    "memberId": "mem001",
+    "interestType": "Styling",
+    "skillLevel": "Intermediate",
+    "yearsExperience": 5,
+    "wantsToLearn": true,
+    "canTeach": false
+  },
+  {
+    "_id": "mint002",
+    "memberId": "mem001",
+    "interestType": "Maples",
+    "skillLevel": "Intermediate",
+    "yearsExperience": 4,
+    "wantsToLearn": true,
+    "canTeach": true
+  },
+  {
+    "_id": "mint003",
+    "memberId": "mem002",
+    "interestType": "Watering",
+    "skillLevel": "Beginner",
+    "yearsExperience": 1,
+    "wantsToLearn": true,
+    "canTeach": false
+  },
+  {
+    "_id": "mint004",
+    "memberId": "mem002",
+    "interestType": "Tools",
+    "skillLevel": "Beginner",
+    "yearsExperience": 1,
+    "wantsToLearn": true,
+    "canTeach": false
+  }
+]

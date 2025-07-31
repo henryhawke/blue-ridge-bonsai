@@ -1,273 +1,75 @@
 // Blue Ridge Bonsai Society - Learning Center - Phase 1 Implementation
-// API Reference: https://www.wix.com/velo/reference/api-overview/introduction
+// This is the main page for the Learning Center, providing a tabbed interface
+// to access all learning-related content. It uses the central LearningSystem.
 
-// Environment detection
-const IS_BROWSER = typeof window !== "undefined" && typeof document !== "undefined";
-const IS_SERVER = typeof window === "undefined";
+import { LearningSystem } from 'public/js/learning-system.js';
 
-// Mock Wix APIs for standalone execution
-const mockWixAPIs = {
-  wixData: {
-    query: (collection) => ({
-      eq: () => mockWixAPIs.wixData.query(collection),
-      gt: () => mockWixAPIs.wixData.query(collection),
-      lt: () => mockWixAPIs.wixData.query(collection),
-      ascending: () => mockWixAPIs.wixData.query(collection),
-      descending: () => mockWixAPIs.wixData.query(collection),
-      limit: () => mockWixAPIs.wixData.query(collection),
-      count: () => Promise.resolve({ totalCount: 50 }),
-      find: () => Promise.resolve({ items: getMockLearningData(collection) }),
-    }),
-  },
-  currentMember: {
-    getMember: () => Promise.resolve(null), // Not logged in by default
-  },
-  wixLocation: {
-    to: (url) => console.log(`Navigate to: ${url}`),
-    url: IS_BROWSER ? window.location.href : "https://example.com/beginners-guide",
-  },
-  wixWindow: {
-    openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data),
-  },
-};
+// Mock Velo APIs
+const wixLocation = { to: (url) => console.log(`Navigating to: ${url}`) };
+const wixWindow = { openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data) };
 
-// Mock learning data
-function getMockLearningData(collection) {
-  const mockData = {
-    Articles: [
-      {
-        _id: "1",
-        title: "Understanding Bonsai Basics: Your First Tree",
-        excerpt: "Learn the fundamental principles of bonsai care, from choosing your first tree to basic maintenance techniques.",
-        content: "Bonsai is the ancient art of growing miniature trees in containers...",
-        category: "beginner",
-        tags: ["basics", "first-tree", "care"],
-        difficulty: "beginner",
-        readTime: 8,
-        author: "BRBS Education Committee",
-        publishDate: new Date("2024-01-15"),
-        views: 245,
-        featured: true
-      },
-      {
-        _id: "2", 
-        title: "Essential Tools for Bonsai Beginners",
-        excerpt: "A comprehensive guide to the must-have tools for starting your bonsai journey without breaking the bank.",
-        content: "Starting with bonsai doesn't require expensive tools...",
-        category: "tools",
-        tags: ["tools", "beginner", "equipment"],
-        difficulty: "beginner",
-        readTime: 6,
-        author: "Master Gardener Tom Chen",
-        publishDate: new Date("2024-01-20"),
-        views: 189,
-        featured: true
-      },
-      {
-        _id: "3",
-        title: "Seasonal Care: Spring Preparation",
-        excerpt: "Prepare your bonsai collection for the growing season with proper spring care techniques.",
-        content: "Spring is the most important season for bonsai care...",
-        category: "seasonal",
-        tags: ["spring", "seasonal-care", "repotting"],
-        difficulty: "intermediate",
-        readTime: 12,
-        author: "Sarah Johnson",
-        publishDate: new Date("2024-03-01"),
-        views: 156,
-        featured: false
-      }
-    ],
-    Resources: [
-      {
-        _id: "1",
-        title: "Bonsai Care Calendar",
-        type: "download",
-        description: "Month-by-month care guide for your bonsai trees throughout the year",
-        fileUrl: "/downloads/bonsai-care-calendar.pdf",
-        category: "reference"
-      },
-      {
-        _id: "2",
-        title: "Species Selection Guide",
-        type: "interactive",
-        description: "Interactive tool to help you choose the perfect bonsai species for your experience level",
-        url: "/interactive/species-selector",
-        category: "selection"
-      }
-    ],
-    Vendors: [
-      {
-        _id: "1",
-        name: "Mountain View Bonsai",
-        description: "Specializing in native Appalachian species perfect for our climate",
-        location: "Asheville, NC",
-        website: "https://mountainviewbonsai.com",
-        phone: "(828) 555-0123",
-        specialties: ["Native species", "Beginner trees", "Tools"],
-        rating: 4.8,
-        memberDiscount: true
-      },
-      {
-        _id: "2",
-        name: "Zen Garden Supply",
-        description: "Complete bonsai supplies, tools, and educational materials",
-        location: "Online/Charlotte, NC",
-        website: "https://zengardensupply.com",
-        phone: "(704) 555-0456",
-        specialties: ["Tools", "Soil", "Fertilizers", "Books"],
-        rating: 4.6,
-        memberDiscount: false
-      }
-    ]
-  };
-  
-  return mockData[collection] || [];
-}
-
-// Safe DOM manipulation functions
+// Safe DOM manipulation functions, adapted for Velo
 function safeElement(selector) {
-  if (!IS_BROWSER) {
-    console.warn(`Element access skipped (server environment): ${selector}`);
-    return null;
-  }
-  
   try {
-    const element = document.querySelector(selector);
-    if (!element) {
-      console.warn(`Element not found: ${selector}`);
-      return null;
-    }
-    return element;
-  } catch (error) {
-    console.warn(`Error selecting element ${selector}:`, error);
-    return null;
+    return $w(selector);
+  } catch(e) {
+    return null; // In a pure Velo environment, this shouldn't happen if the element exists
   }
 }
 
 function safeSetHtml(selector, html) {
-  if (!IS_BROWSER) return;
-  
   const element = safeElement(selector);
-  if (element) {
-    element.innerHTML = html;
-  }
+  if (element) element.html = html;
 }
 
 function safeShow(selector) {
-  if (!IS_BROWSER) return;
-  
   const element = safeElement(selector);
-  if (element) {
-    element.style.display = "";
-    element.classList.remove("hidden");
-  }
+  if (element) element.show();
 }
 
 function safeHide(selector) {
-  if (!IS_BROWSER) return;
-  
   const element = safeElement(selector);
-  if (element) {
-    element.style.display = "none";
-    element.classList.add("hidden");
-  }
+  if (element) element.hide();
 }
 
 function safeOnClick(selector, handler) {
-  if (!IS_BROWSER) return;
-  
   const element = safeElement(selector);
-  if (element) {
-    element.addEventListener("click", handler);
-  }
+  if (element) element.onClick(handler);
 }
 
 function safeSetValue(selector, value) {
   const element = safeElement(selector);
-  if (element) {
-    element.value = value;
-  }
+  if (element) element.value = value;
 }
 
 function safeGetValue(selector) {
   const element = safeElement(selector);
-  if (element) {
-    return element.value;
-  }
-  return "";
+  return element ? element.value : "";
 }
 
+let learningSystem;
 let currentSearchQuery = "";
 let currentCategory = "all";
 let currentDifficulty = "all";
 
-// Initialize Learning Center
-function initializeLearningCenter() {
-  console.log("💡 Initializing Blue Ridge Bonsai Society Learning Center");
-  
-  // Initialize the Learning Center components
-  initializeLearningPage()
-    .then(() => {
-      setupEventHandlers();
-      loadDynamicContent();
-    })
-    .catch((error) => {
-      console.error("Error initializing Learning Center:", error);
-    });
-}
-
-// Run initialization based on environment
-if (IS_BROWSER) {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializeLearningCenter);
-  } else {
-    initializeLearningCenter();
-  }
-} else {
-  // Server-side execution
-  initializeLearningCenter();
-}
-
-$w.onReady(async function () {
-  console.log("Running the code for the Learning Center page. To debug this code in your browser's dev tools, open vpald.js.");
-  
-  // Initialize Learning Center page
-  await initializeLearningPage();
-  
-  // Setup event handlers
-  setupEventHandlers();
-  
-  // Load dynamic content
-  await loadDynamicContent();
+$w.onReady(function () {
+    console.log("🚀 Initializing Learning Center Page");
+    initializeLearningPage();
 });
 
 async function initializeLearningPage() {
-  try {
-    // Create the main page structure
-    createLearningPageStructure();
-    
-    // Load beginner's guide content
-    await loadBeginnersGuide();
-    
-    // Load knowledge base articles
-    await loadKnowledgeBase();
-    
-    // Load resource library
-    await loadResourceLibrary();
-    
-    // Load vendor directory
-    await loadVendorDirectory();
-    
-    // Initialize search functionality
-    setupSearch();
-    
-    // Initialize animations
-    initializeAnimations();
-    
-  } catch (error) {
-    console.error("Error initializing Learning Center:", error);
-  }
+  learningSystem = new LearningSystem();
+  createLearningPageStructure();
+  
+  await loadBeginnersGuide();
+  await loadKnowledgeBase();
+  await loadResourceLibrary();
+  await loadVendorDirectory();
+  
+  setupEventHandlers();
+  initializeAnimations();
+
+  console.log("✅ Learning Center Page initialization complete.");
 }
 
 function createLearningPageStructure() {
@@ -618,22 +420,12 @@ async function loadBeginnersGuide() {
 }
 
 async function loadKnowledgeBase() {
-  try {
-    // Load articles from database
-    const articles = await mockWixAPIs.wixData.query("Articles")
-      .descending("publishDate")
-      .limit(20)
-      .find();
-    
-    if (articles.items.length > 0) {
-      displayKnowledgeBaseArticles(articles.items);
+    const articles = await learningSystem.loadArticles({ category: 'all', search: '' });
+    if (articles.length > 0) {
+        displayKnowledgeBaseArticles(articles);
     } else {
-      displayDefaultKnowledgeBase();
+        safeSetHtml("#knowledgeBaseContent", "<p>No articles found.</p>");
     }
-  } catch (error) {
-    console.error("Error loading knowledge base:", error);
-    displayDefaultKnowledgeBase();
-  }
 }
 
 function displayKnowledgeBaseArticles(articles) {
@@ -701,50 +493,16 @@ function createArticleCard(article, isFeatured = false) {
   `;
 }
 
-function displayDefaultKnowledgeBase() {
-  const defaultArticles = [
-    {
-      _id: "default-1",
-      title: "Bonsai Care Fundamentals",
-      excerpt: "Essential knowledge every bonsai enthusiast should know",
-      category: "basics",
-      difficulty: "beginner",
-      readTime: 10,
-      views: 342,
-      author: "BRBS Education Team",
-      tags: ["fundamentals", "care", "beginner"]
-    },
-    {
-      _id: "default-2", 
-      title: "Seasonal Bonsai Calendar",
-      excerpt: "Month-by-month care guide for your bonsai collection",
-      category: "seasonal",
-      difficulty: "all",
-      readTime: 15,
-      views: 278,
-      author: "Master Gardner Chen",
-      tags: ["seasonal", "calendar", "planning"]
-    }
-  ];
-  
-  displayKnowledgeBaseArticles(defaultArticles);
-}
+// This function is no longer needed as we load directly from the learning system.
+// function displayDefaultKnowledgeBase() { ... }
 
 async function loadResourceLibrary() {
-  try {
-    const resources = await mockWixAPIs.wixData.query("Resources")
-      .ascending("category")
-      .find();
-    
-    if (resources.items.length > 0) {
-      displayResourceLibrary(resources.items);
+    const resources = await learningSystem.loadResources();
+    if (resources.length > 0) {
+        displayResourceLibrary(resources);
     } else {
-      displayDefaultResources();
+        safeSetHtml("#resourcesContent", "<p>No resources found.</p>");
     }
-  } catch (error) {
-    console.error("Error loading resource library:", error);
-    displayDefaultResources();
-  }
 }
 
 function displayResourceLibrary(resources) {
@@ -800,44 +558,16 @@ function createResourceCard(resource) {
   `;
 }
 
-function displayDefaultResources() {
-  const defaultResources = [
-    {
-      _id: "1",
-      title: "Beginner's Care Guide",
-      type: "download",
-      description: "Complete PDF guide for new bonsai owners",
-      fileUrl: "/downloads/beginners-guide.pdf",
-      category: "guides"
-    },
-    {
-      _id: "2",
-      title: "Species Selection Tool",
-      type: "interactive", 
-      description: "Interactive tool to find the perfect tree for your skill level",
-      url: "/tools/species-selector",
-      category: "tools"
-    }
-  ];
-  
-  displayResourceLibrary(defaultResources);
-}
+// This function is no longer needed.
+// function displayDefaultResources() { ... }
 
 async function loadVendorDirectory() {
-  try {
-    const vendors = await mockWixAPIs.wixData.query("Vendors")
-      .descending("rating")
-      .find();
-    
-    if (vendors.items.length > 0) {
-      displayVendorDirectory(vendors.items);
+    const vendors = await learningSystem.loadVendors();
+    if (vendors.length > 0) {
+        displayVendorDirectory(vendors);
     } else {
-      displayDefaultVendors();
+        safeSetHtml("#vendorsContent", "<p>No vendors listed.</p>");
     }
-  } catch (error) {
-    console.error("Error loading vendor directory:", error);
-    displayDefaultVendors();
-  }
 }
 
 function displayVendorDirectory(vendors) {
@@ -900,38 +630,11 @@ function createVendorCard(vendor) {
   `;
 }
 
-function displayDefaultVendors() {
-  const defaultVendors = [
-    {
-      _id: "1",
-      name: "Local Bonsai Suppliers",
-      description: "Connect with regional suppliers for trees, tools, and materials",
-      location: "Western North Carolina",
-      specialties: ["Local species", "Beginner supplies"],
-      rating: 4.5,
-      memberDiscount: true
-    }
-  ];
-  
-  displayVendorDirectory(defaultVendors);
-}
+// This function is no longer needed.
+// function displayDefaultVendors() { ... }
 
-function setupSearch() {
-  // Search functionality implementation
-  safeOnClick("#searchBtn", performSearch);
-  
-  const searchInput = safeElement("#searchInput");
-  if (searchInput) {
-    searchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        performSearch();
-      }
-    });
-    
-    // Debounced search as user types
-    searchInput.addEventListener("input", debounce(performSearch, 500));
-  }
-}
+// This function is now part of setupEventHandlers
+// function setupSearch() { ... }
 
 function debounce(func, wait) {
   let timeout;
@@ -946,99 +649,21 @@ function debounce(func, wait) {
 }
 
 async function performSearch() {
-  const query = safeGetValue("#searchInput");
-  const category = safeGetValue("#categoryFilter");
-  const difficulty = safeGetValue("#difficultyFilter");
-  
-  currentSearchQuery = query;
-  currentCategory = category;
-  currentDifficulty = difficulty;
-  
-  if (query.trim() || category !== "all" || difficulty !== "all") {
-    await searchContent(query, category, difficulty);
-  } else {
-    // Reset to default view
-    await loadKnowledgeBase();
-  }
-}
+    currentSearchQuery = safeGetValue("#searchInput");
+    currentCategory = safeGetValue("#categoryFilter");
+    currentDifficulty = safeGetValue("#difficultyFilter");
 
-async function searchContent(query, category, difficulty) {
-  try {
-    // This would search across all content types
-    const results = await mockWixAPIs.wixData.query("Articles")
-      .find();
-    
-    let filteredResults = results.items;
-    
-    // Apply filters
-    if (query.trim()) {
-      filteredResults = filteredResults.filter(item => 
-        item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.excerpt.toLowerCase().includes(query.toLowerCase()) ||
-        item.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
-      );
-    }
-    
-    if (category !== "all") {
-      filteredResults = filteredResults.filter(item => item.category === category);
-    }
-    
-    if (difficulty !== "all") {
-      filteredResults = filteredResults.filter(item => item.difficulty === difficulty);
-    }
-    
-    displaySearchResults(filteredResults, query);
-  } catch (error) {
-    console.error("Error performing search:", error);
-  }
-}
-
-function displaySearchResults(results, query) {
-  const searchResultsHTML = `
-    <div class="search-results">
-      <h3>Search Results ${query ? `for "${query}"` : ""}</h3>
-      <p class="results-count">Found ${results.length} result${results.length !== 1 ? 's' : ''}</p>
-      
-      ${results.length > 0 ? `
-        <div class="search-results-grid">
-          ${results.map(result => createArticleCard(result)).join("")}
-        </div>
-      ` : `
-        <div class="no-results">
-          <div class="no-results-icon">🔍</div>
-          <h4>No results found</h4>
-          <p>Try adjusting your search terms or filters</p>
-          <button class="btn btn-primary" onclick="clearSearch()">Clear Search</button>
-        </div>
-      `}
-    </div>
-  `;
-  
-  safeSetHtml("#knowledgeBaseContent", searchResultsHTML);
-}
-
-function setupEventHandlers() {
-  // Navigation tab handlers
-  const navTabs = document.querySelectorAll(".nav-tab");
-  navTabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-      const section = tab.getAttribute("data-section");
-      switchSection(section);
+    const articles = await learningSystem.loadArticles({
+        search: currentSearchQuery,
+        category: currentCategory,
+        difficulty: currentDifficulty
     });
-  });
-  
-  // Filter change handlers
-  const categoryFilter = safeElement("#categoryFilter");
-  const difficultyFilter = safeElement("#difficultyFilter");
-  
-  if (categoryFilter) {
-    categoryFilter.addEventListener("change", performSearch);
-  }
-  
-  if (difficultyFilter) {
-    difficultyFilter.addEventListener("change", performSearch);
-  }
+
+    displayKnowledgeBaseArticles(articles);
 }
+
+// This function is no longer needed, as displayKnowledgeBaseArticles handles search results.
+// function displaySearchResults(results, query) { ... }
 
 function switchSection(sectionId) {
   // Hide all sections
@@ -1066,13 +691,16 @@ function switchSection(sectionId) {
   }
 }
 
-async function loadDynamicContent() {
-  try {
-    // Load any additional dynamic content
-    console.log("Loading dynamic content for Learning Center");
-  } catch (error) {
-    console.error("Error loading dynamic content:", error);
-  }
+function setupEventHandlers() {
+    safeOnClick(".nav-tab", (event) => {
+        const section = event.target.dataset.section;
+        switchSection(section);
+    });
+
+    safeOnClick("#searchBtn", performSearch);
+    safeOnInput("#searchInput", debounce(performSearch, 500));
+    safeOnChange("#categoryFilter", performSearch);
+    safeOnChange("#difficultyFilter", performSearch);
 }
 
 function initializeAnimations() {

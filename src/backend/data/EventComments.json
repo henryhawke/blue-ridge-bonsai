@@ -1,0 +1,41 @@
+[
+  {
+    "_id": "com001",
+    "eventId": "evt001",
+    "memberId": "mem123",
+    "memberName": "Bob Smith",
+    "comment": "I'm really looking forward to this! Is there a specific type of wire we will be using?",
+    "commentDate": "2025-07-26T10:00:00Z",
+    "isApproved": true,
+    "parentCommentId": null,
+    "likes": 3,
+    "isStaff": false,
+    "isDeleted": false
+  },
+  {
+    "_id": "com002",
+    "eventId": "evt001",
+    "memberId": "admin",
+    "memberName": "David Anderson",
+    "comment": "Great question, Bob! We will be providing a range of aluminum wire sizes suitable for the junipers we'll be working on.",
+    "commentDate": "2025-07-26T11:30:00Z",
+    "isApproved": true,
+    "parentCommentId": "com001",
+    "likes": 5,
+    "isStaff": true,
+    "isDeleted": false
+  },
+  {
+    "_id": "com003",
+    "eventId": "evt002",
+    "memberId": "mem456",
+    "memberName": "Jane Doe",
+    "comment": "Winter prep is so important. Glad this is the topic!",
+    "commentDate": "2025-07-15T18:00:00Z",
+    "isApproved": true,
+    "parentCommentId": null,
+    "likes": 10,
+    "isStaff": false,
+    "isDeleted": false
+  }
+]

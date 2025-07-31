@@ -1,0 +1,64 @@
+[
+  {
+    "_id": "fpost001",
+    "categoryId": "fcat001",
+    "title": "Welcome to the new forums!",
+    "content": "Welcome everyone to our new discussion forums! We hope this becomes a valuable place for our community to share knowledge, ask questions, and connect with each other. Please be respectful and enjoy the new space!",
+    "authorId": "mem001",
+    "authorName": "David Anderson",
+    "postDate": "2025-08-10T10:00:00Z",
+    "replies": [
+      {
+        "_id": "freply001",
+        "authorId": "mem002",
+        "authorName": "Bob Smith",
+        "content": "This looks great! Thanks for setting it up.",
+        "postDate": "2025-08-10T11:30:00Z"
+      }
+    ],
+    "tags": ["welcome", "announcement"],
+    "pinned": true,
+    "viewCount": 25
+  },
+  {
+    "_id": "fpost002",
+    "categoryId": "fcat002",
+    "title": "Help! My Juniper is turning yellow!",
+    "content": "Hi everyone, I'm new here. I got a Japanese Juniper a few weeks ago and some of the lower foliage is starting to turn yellow and feel brittle. I'm watering it every 2-3 days when the soil feels dry. It gets about 4 hours of direct sun. Any advice?",
+    "authorId": "mem002",
+    "authorName": "Bob Smith",
+    "postDate": "2025-08-12T14:00:00Z",
+    "replies": [
+      {
+        "_id": "freply002",
+        "authorId": "mem001",
+        "authorName": "David Anderson",
+        "content": "Hi Bob, welcome! Yellowing on lower branches is sometimes normal as the tree sheds older foliage to focus on new growth. However, it can also be a sign of overwatering or underwatering. Does your pot have good drainage? Junipers also love full sun, so if you can give it more than 4 hours, that would be ideal.",
+        "postDate": "2025-08-12T15:00:00Z"
+      },
+      {
+        "_id": "freply003",
+        "authorId": "mem001",
+        "authorName": "Jane Doe",
+        "content": "I agree with David. I'd also check the soil moisture deeper down. Sometimes the top feels dry but the bottom is still soggy. A wooden chopstick is a great tool for this - stick it in, pull it out, and see if it's damp.",
+        "postDate": "2025-08-12T16:30:00Z"
+      }
+    ],
+    "tags": ["juniper", "help", "beginner", "yellowing"],
+    "pinned": false,
+    "viewCount": 15
+  },
+  {
+    "_id": "fpost003",
+    "categoryId": "fcat001",
+    "title": "Monthly Meeting Recap - August",
+    "content": "Just wanted to say thanks to everyone who came to the August meeting. It was great to see so many new faces and beautiful trees. The demonstration on wiring techniques was fantastic!",
+    "authorId": "mem001",
+    "authorName": "Jane Doe",
+    "postDate": "2025-08-15T09:00:00Z",
+    "replies": [],
+    "tags": ["meeting", "recap"],
+    "pinned": false,
+    "viewCount": 8
+  }
+]
