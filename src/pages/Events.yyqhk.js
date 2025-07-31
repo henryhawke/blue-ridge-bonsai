@@ -1,3 +1,107 @@
+/**
+ * BLUE RIDGE BONSAI SOCIETY - EVENTS PAGE
+ * 
+ * COMPONENTS & IMPLEMENTATIONS:
+ * 
+ * 1. EVENT SYSTEM INTEGRATION
+ *    - Imports EventSystem class from public/js/event-system.js
+ *    - Centralized event management and data handling
+ *    - Comprehensive event filtering and search capabilities
+ *    - Real-time event updates and status management
+ * 
+ * 2. PAGE INITIALIZATION & STRUCTURE
+ *    - initEventsPageCore(): Core initialization with error handling
+ *    - initializeEventsPage(): Main orchestration function
+ *    - createEventsPageStructure(): Complete HTML layout with all sections
+ *    - Safe element handling with fallback for testing environments
+ * 
+ * 3. FILTERING & SEARCH SYSTEM
+ *    - Multi-criteria filtering (category, status, difficulty, search)
+ *    - setupFilters(): Configures all filter dropdowns and inputs
+ *    - Debounced search input (300ms) for performance
+ *    - Combined filter logic with real-time updates
+ *    - URL parameter handling for deep linking
+ * 
+ * 4. EVENT DISPLAY SYSTEM
+ *    - loadAndDisplayEvents(): Fetches and renders events based on filters
+ *    - displayEventsGrid(): Responsive grid layout for event cards
+ *    - Event cards with comprehensive information (dates, times, locations, prices)
+ *    - Registration status indicators and capacity tracking
+ *    - Featured event highlighting and badges
+ * 
+ * 5. CALENDAR VIEW SYSTEM
+ *    - initializeCalendarView(): Month-based calendar display
+ *    - generateCalendarHTML(): Dynamic calendar generation
+ *    - Event overlay on calendar dates
+ *    - Navigation between months
+ *    - Calendar event click handling
+ * 
+ * 6. VIEW TOGGLE SYSTEM
+ *    - setupViewToggles(): Grid and calendar view switching
+ *    - View state management and persistence
+ *    - Smooth transitions between view modes
+ *    - Responsive view adaptation
+ * 
+ * 7. EVENT STATISTICS & ANALYTICS
+ *    - loadEventStats(): Displays event statistics and counts
+ *    - Event count by category and status
+ *    - Registration statistics and trends
+ *    - Performance metrics and insights
+ * 
+ * 8. EVENT HANDLING & INTERACTIONS
+ *    - setupEventHandlers(): Configures all interactive elements
+ *    - Event registration and booking functionality
+ *    - Event detail navigation and lightbox handling
+ *    - Filter change handling with automatic updates
+ * 
+ * 9. LOADING & ERROR STATES
+ *    - showLoadingState() / hideLoadingState(): Loading indicators
+ *    - displayErrorMessage(): User-friendly error messages
+ *    - Graceful degradation for failed requests
+ *    - Retry mechanisms for failed operations
+ * 
+ * 10. URL PARAMETER HANDLING
+ *    - handleURLParameters(): Deep linking support
+ *    - Filter state persistence in URL
+ *    - Bookmarkable filtered views
+ *    - SEO-friendly URL structure
+ * 
+ * 11. ANIMATION & UX FEATURES
+ *    - initializeAnimations(): Page animations and transitions
+ *    - Smooth scrolling and micro-interactions
+ *    - Hover effects and visual feedback
+ *    - Loading animations and transitions
+ * 
+ * 12. RESPONSIVE DESIGN
+ *    - Mobile-first responsive layout
+ *    - Adaptive grid and calendar views
+ *    - Touch-friendly interactions
+ *    - Cross-device compatibility
+ * 
+ * 13. PERFORMANCE OPTIMIZATION
+ *    - Debounced search and filter updates
+ *    - Efficient DOM manipulation
+ *    - Lazy loading of event content
+ *    - Optimized calendar rendering
+ * 
+ * DEPENDENCIES:
+ *    - EventSystem class (public/js/event-system.js)
+ *    - Wix Velo framework ($w API)
+ *    - Global CSS classes and styling
+ *    - Backend event data systems
+ * 
+ * BROWSER COMPATIBILITY:
+ *    - Modern browsers with ES6+ support
+ *    - Wix Velo environment
+ *    - Mobile and desktop responsive
+ * 
+ * SEO & ACCESSIBILITY:
+ *    - Semantic HTML structure
+ *    - Proper heading hierarchy
+ *    - ARIA labels and descriptions
+ *    - Keyboard navigation support
+ */
+
 // @ts-nocheck
 // Blue Ridge Bonsai Society - Events Page - Phase 1 Implementation
 // This page uses the central EventSystem class to manage and display event data.

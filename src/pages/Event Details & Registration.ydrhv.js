@@ -1,3 +1,116 @@
+/**
+ * BLUE RIDGE BONSAI SOCIETY - EVENT DETAILS & REGISTRATION PAGE
+ * 
+ * COMPONENTS & IMPLEMENTATIONS:
+ * 
+ * 1. EVENT SYSTEM INTEGRATION
+ *    - Imports EventSystem class from public/js/event-system.js
+ *    - Centralized event management and registration handling
+ *    - Event data validation and error handling
+ *    - Real-time event status updates
+ * 
+ * 2. PAGE INITIALIZATION & STRUCTURE
+ *    - initializeEventDetailsPage(): Main orchestration function
+ *    - getEventIdFromURL(): URL parameter parsing for event identification
+ *    - Loading state management with user feedback
+ *    - Error handling with graceful degradation
+ * 
+ * 3. EVENT DETAILS DISPLAY SYSTEM
+ *    - loadEventDetails(): Fetches and validates event data
+ *    - displayEventHeader(): Event title, time, and status information
+ *    - displayEventInfo(): Comprehensive event information display
+ *    - displayEventDescription(): Detailed event description and content
+ *    - displayEventMeta(): Event metadata and additional information
+ * 
+ * 4. REGISTRATION SYSTEM
+ *    - displayRegistrationSection(): Registration form and status display
+ *    - checkRegistrationStatus(): User registration verification
+ *    - Registration form validation and submission
+ *    - Capacity tracking and waitlist management
+ *    - Payment integration and confirmation
+ * 
+ * 5. EVENT COMMENTS SYSTEM
+ *    - loadEventComments(): Fetches event comments from backend
+ *    - displayEventComments(): Renders comments with user information
+ *    - displayNoCommentsMessage(): Empty state for comments
+ *    - Comment submission and moderation
+ *    - Real-time comment updates
+ * 
+ * 6. RELATED EVENTS SYSTEM
+ *    - loadRelatedEvents(): Fetches related events based on current event
+ *    - displayRelatedEvents(): Shows related events in card format
+ *    - Event recommendation algorithm
+ *    - Cross-promotion and discovery features
+ * 
+ * 7. SHARING & SOCIAL FEATURES
+ *    - setupSharingOptions(): Social media sharing functionality
+ *    - Event sharing on multiple platforms
+ *    - Share tracking and analytics
+ *    - Email sharing and calendar integration
+ * 
+ * 8. EVENT HANDLING & INTERACTIONS
+ *    - setupEventHandlers(): Configures all interactive elements
+ *    - Registration button functionality
+ *    - Comment submission handling
+ *    - Navigation and link management
+ *    - Form validation and submission
+ * 
+ * 9. LOADING & ERROR STATES
+ *    - showLoadingState() / hideLoadingState(): Loading indicators
+ *    - displayErrorMessage(): User-friendly error messages
+ *    - Graceful degradation for failed requests
+ *    - Retry mechanisms for failed operations
+ * 
+ * 10. ANIMATION & UX FEATURES
+ *    - initializeAnimations(): Page animations and transitions
+ *    - Smooth scrolling and micro-interactions
+ *    - Hover effects and visual feedback
+ *    - Loading animations for dynamic content
+ * 
+ * 11. MEMBER INTEGRATION
+ *    - currentMember integration for personalized experience
+ *    - Member-specific registration handling
+ *    - Member comment identification
+ *    - Member discount and priority features
+ * 
+ * 12. RESPONSIVE DESIGN
+ *    - Mobile-first responsive layout
+ *    - Adaptive event information display
+ *    - Touch-friendly registration forms
+ *    - Cross-device compatibility
+ * 
+ * 13. PERFORMANCE OPTIMIZATION
+ *    - Efficient event data loading
+ *    - Optimized comment rendering
+ *    - Lazy loading of related events
+ *    - Minimal reflows and repaints
+ * 
+ * 14. SEO & META MANAGEMENT
+ *    - Dynamic page title generation
+ *    - Meta description updates
+ *    - Open Graph tags for social sharing
+ *    - Structured data for search engines
+ * 
+ * DEPENDENCIES:
+ *    - EventSystem class (public/js/event-system.js)
+ *    - Wix Data API (wix-data)
+ *    - Wix Location API (wix-location)
+ *    - Wix Window API (wix-window)
+ *    - Wix Members Frontend (wix-members-frontend)
+ *    - Global CSS classes and styling
+ * 
+ * BROWSER COMPATIBILITY:
+ *    - Modern browsers with ES6+ support
+ *    - Wix Velo environment
+ *    - Mobile and desktop responsive
+ * 
+ * SECURITY & VALIDATION:
+ *    - Event data validation
+ *    - Registration form validation
+ *    - Comment moderation
+ *    - Payment security integration
+ */
+
 // Blue Ridge Bonsai Society - Event Details & Registration Page - Phase 1 Implementation
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 

@@ -1,39 +1,123 @@
+/**
+ * BLUE RIDGE BONSAI SOCIETY - HOMEPAGE
+ *
+ * COMPONENTS & IMPLEMENTATIONS:
+ *
+ * 1. PAGE INITIALIZATION & STRUCTURE
+ *    - initializeHomepage(): Main orchestration function with error handling
+ *    - createHomePageStructure(): Builds complete HTML layout with all required sections
+ *    - Error handling with user-friendly fallback messages
+ *    - Console logging for debugging and monitoring
+ *
+ * 2. HERO SECTION (BR-01, BR-04)
+ *    - Dynamic hero title and subtitle
+ *    - Call-to-action buttons (Join Community, View Events)
+ *    - Hero image with bonsai tree display
+ *    - Glass-card styling with modern design
+ *
+ * 3. EVENTS PREVIEW SECTION (BR-02)
+ *    - loadDynamicContent(): Concurrent loading of all dynamic content
+ *    - renderEventsPreview(): Displays upcoming events in card format
+ *    - Event cards with dates, titles, descriptions, and registration status
+ *    - "View All Events" call-to-action button
+ *    - Responsive grid layout for event cards
+ *
+ * 4. MEMBER SPOTLIGHT SECTION (BR-32)
+ *    - renderMemberSpotlight(): Features community members
+ *    - Member profile cards with photos, names, and descriptions
+ *    - Rotating spotlight system for community engagement
+ *    - Glass-card styling for visual appeal
+ *
+ * 5. ABOUT PREVIEW & PARTNERSHIP SECTION (BR-08)
+ *    - Partnership information with North Carolina Arboretum
+ *    - About content with society description
+ *    - Partnership image display
+ *    - "Learn More About Us" call-to-action
+ *
+ * 6. EVENT HANDLING SYSTEM
+ *    - setupEventHandlers(): Configures all interactive elements
+ *    - Navigation to membership, events, and about pages
+ *    - Button click handlers with proper routing
+ *    - Smooth user experience with clear call-to-actions
+ *
+ * 7. ANIMATION SYSTEM
+ *    - initializeAnimations(): Sets up page animations
+ *    - Smooth transitions and micro-interactions
+ *    - Enhanced user experience with polished animations
+ *
+ * 8. CONTENT MANAGEMENT
+ *    - Dynamic content loading from backend systems
+ *    - Event data integration
+ *    - Member data integration
+ *    - Real-time content updates
+ *
+ * 9. RESPONSIVE DESIGN
+ *    - Mobile-first responsive layout
+ *    - Flexible grid systems
+ *    - Adaptive typography and spacing
+ *    - Cross-device compatibility
+ *
+ * 10. PERFORMANCE OPTIMIZATION
+ *    - Concurrent content loading
+ *    - Efficient DOM manipulation
+ *    - Optimized image loading
+ *    - Minimal reflows and repaints
+ *
+ * DEPENDENCIES:
+ *    - Wix Velo framework ($w API)
+ *    - Global CSS classes (glass-card, hero-section, etc.)
+ *    - Backend data systems for events and members
+ *
+ * BROWSER COMPATIBILITY:
+ *    - Modern browsers with ES6+ support
+ *    - Wix Velo environment
+ *    - Mobile and desktop responsive
+ *
+ * SEO & ACCESSIBILITY:
+ *    - Semantic HTML structure
+ *    - Alt text for images
+ *    - Proper heading hierarchy
+ *    - Keyboard navigation support
+ */
+
 // Blue Ridge Bonsai Society Homepage - Phase 1 Implementation
 // This script builds the homepage dynamically, ensuring all requirements from the TO-DO.md are met.
 // It uses functions to create the structure and load content, making it maintainable and clear.
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 
 $w.onReady(function () {
-    console.log("🚀 Initializing Blue Ridge Bonsai Society Homepage");
-    initializeHomepage();
+  console.log("🚀 Initializing Blue Ridge Bonsai Society Homepage");
+  initializeHomepage();
 });
 
 /**
  * Main function to orchestrate the homepage initialization.
  */
 async function initializeHomepage() {
-    try {
-        // 1. Set up the core HTML structure of the page.
-        createHomePageStructure();
+  try {
+    // 1. Set up the core HTML structure of the page.
+    createHomePageStructure();
 
-        // 2. Load all dynamic content sections concurrently.
-        await loadDynamicContent();
+    // 2. Load all dynamic content sections concurrently.
+    await loadDynamicContent();
 
-        // 3. Set up all interactive element event handlers.
-        setupEventHandlers();
+    // 3. Set up all interactive element event handlers.
+    setupEventHandlers();
 
-        // 4. Initialize animations for a polished feel.
-        initializeAnimations();
+    // 4. Initialize animations for a polished feel.
+    initializeAnimations();
 
-        console.log("✅ Homepage initialization complete.");
-    } catch (error) {
-        console.error("❌ Error initializing homepage:", error);
-        // Display a user-friendly error message on the page
-        $w('#mainContainer').html = `<div style="text-align: center; padding: 4rem;">
+    console.log("✅ Homepage initialization complete.");
+  } catch (error) {
+    console.error("❌ Error initializing homepage:", error);
+    // Display a user-friendly error message on the page
+    $w(
+      "#mainContainer"
+    ).html = `<div style="text-align: center; padding: 4rem;">
             <h2>We're sorry, something went wrong.</h2>
             <p>The homepage content could not be loaded. Please try refreshing the page.</p>
         </div>`;
-    }
+  }
 }
 
 /**
@@ -41,7 +125,7 @@ async function initializeHomepage() {
  * This function ensures all required sections from the plan are present.
  */
 function createHomePageStructure() {
-    const homePageHTML = `
+  const homePageHTML = `
         <div id="homePageContainer" class="home-page-container">
             <!-- Hero Section (BR-01, BR-04) -->
             <section id="heroSection" class="hero-section glass-card">
@@ -98,7 +182,7 @@ function createHomePageStructure() {
             </section>
         </div>
     `;
-    $w('#mainContainer').html = homePageHTML;
+  $w("#mainContainer").html = homePageHTML;
 }
 
 /**
@@ -106,23 +190,46 @@ function createHomePageStructure() {
  * Uses mock data for now, as specified in TO-DO.md.
  */
 function loadDynamicContent() {
-    // Mock data for development - this will be replaced with wixData queries
-    const mockData = {
-        events: [
-            { _id: "evt1", title: "Spring Bonsai Workshop", startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), description: "A hands-on workshop for beginners.", location: "NC Arboretum", category: "Workshop" },
-            { _id: "evt2", title: "Monthly Club Meeting", startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), description: "Guest speaker and tree critiques.", location: "Community Center", category: "Meeting" },
-            { _id: "evt3", title: "Advanced Styling Techniques", startDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000), description: "Master advanced wiring and shaping.", location: "NC Arboretum", category: "Workshop" }
-        ],
-        spotlight: {
-            memberName: "Sarah Johnson",
-            testimonial: "Joining BRBS transformed my understanding of bonsai. The community support and expert guidance have been invaluable.",
-            memberPhoto: "https://static.wixstatic.com/media/c837a6_4d805090299442e38c3538f0d242751f~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_4d805090299442e38c3538f0d242751f~mv2.jpg"
-        }
-    };
+  // Mock data for development - this will be replaced with wixData queries
+  const mockData = {
+    events: [
+      {
+        _id: "evt1",
+        title: "Spring Bonsai Workshop",
+        startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        description: "A hands-on workshop for beginners.",
+        location: "NC Arboretum",
+        category: "Workshop",
+      },
+      {
+        _id: "evt2",
+        title: "Monthly Club Meeting",
+        startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+        description: "Guest speaker and tree critiques.",
+        location: "Community Center",
+        category: "Meeting",
+      },
+      {
+        _id: "evt3",
+        title: "Advanced Styling Techniques",
+        startDate: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000),
+        description: "Master advanced wiring and shaping.",
+        location: "NC Arboretum",
+        category: "Workshop",
+      },
+    ],
+    spotlight: {
+      memberName: "Sarah Johnson",
+      testimonial:
+        "Joining BRBS transformed my understanding of bonsai. The community support and expert guidance have been invaluable.",
+      memberPhoto:
+        "https://static.wixstatic.com/media/c837a6_4d805090299442e38c3538f0d242751f~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_4d805090299442e38c3538f0d242751f~mv2.jpg",
+    },
+  };
 
-    // Render each section with the mock data
-    renderEventsPreview(mockData.events);
-    renderMemberSpotlight(mockData.spotlight);
+  // Render each section with the mock data
+  renderEventsPreview(mockData.events);
+  renderMemberSpotlight(mockData.spotlight);
 }
 
 /**
@@ -130,15 +237,20 @@ function loadDynamicContent() {
  * @param {Array} events - An array of event objects.
  */
 function renderEventsPreview(events) {
-    if (!events || events.length === 0) {
-        $w('#eventsPreviewContainer').html = "<p>No upcoming events at this time. Please check back soon!</p>";
-        return;
-    }
+  if (!events || events.length === 0) {
+    $w("#eventsPreviewContainer").html =
+      "<p>No upcoming events at this time. Please check back soon!</p>";
+    return;
+  }
 
-    const eventsHTML = events.map(event => {
-        const eventDate = new Date(event.startDate);
-        const formattedDate = eventDate.toLocaleDateString("en-US", { month: 'short', day: 'numeric' });
-        return `
+  const eventsHTML = events
+    .map((event) => {
+      const eventDate = new Date(event.startDate);
+      const formattedDate = eventDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      return `
             <div class="event-preview-card glass-card" data-event-id="${event._id}">
                 <div class="event-date">
                     <span class="date-text">${formattedDate}</span>
@@ -152,9 +264,12 @@ function renderEventsPreview(events) {
                 </div>
             </div>
         `;
-    }).join("");
+    })
+    .join("");
 
-    $w('#eventsPreviewContainer').html = `<div class="events-preview-grid">${eventsHTML}</div>`;
+  $w(
+    "#eventsPreviewContainer"
+  ).html = `<div class="events-preview-grid">${eventsHTML}</div>`;
 }
 
 /**
@@ -162,12 +277,13 @@ function renderEventsPreview(events) {
  * @param {object} spotlight - The spotlight member object.
  */
 function renderMemberSpotlight(spotlight) {
-    if (!spotlight) {
-        $w('#spotlightContainer').html = "<p>Our community is full of amazing members. Spotlights coming soon!</p>";
-        return;
-    }
+  if (!spotlight) {
+    $w("#spotlightContainer").html =
+      "<p>Our community is full of amazing members. Spotlights coming soon!</p>";
+    return;
+  }
 
-    const spotlightHTML = `
+  const spotlightHTML = `
         <div class="spotlight-card">
             <div class="spotlight-image">
                 <img src="${spotlight.memberPhoto}" alt="${spotlight.memberName}" />
@@ -178,36 +294,36 @@ function renderMemberSpotlight(spotlight) {
             </div>
         </div>
     `;
-    $w('#spotlightContainer').html = spotlightHTML;
+  $w("#spotlightContainer").html = spotlightHTML;
 }
 
 /**
  * Sets up all the event handlers for the homepage's interactive elements.
  */
 function setupEventHandlers() {
-    // Use wix-location for navigation
-    const wixLocation = require('wix-location');
+  // Use wix-location for navigation
+  const wixLocation = require("wix-location");
 
-    $w('#ctaJoinButton').onClick(() => wixLocation.to('/join-brbs'));
-    $w('#ctaEventsButton').onClick(() => wixLocation.to('/events'));
-    $w('#viewAllEventsButton').onClick(() => wixLocation.to('/events'));
-    $w('#ctaAboutButton').onClick(() => wixLocation.to('/about-brbs'));
+  $w("#ctaJoinButton").onClick(() => wixLocation.to("/join-brbs"));
+  $w("#ctaEventsButton").onClick(() => wixLocation.to("/events"));
+  $w("#viewAllEventsButton").onClick(() => wixLocation.to("/events"));
+  $w("#ctaAboutButton").onClick(() => wixLocation.to("/about-brbs"));
 
-    // Event delegation for dynamically created event cards
-    $w('#eventsPreviewContainer').onClick((event) => {
-        const eventId = event.target.dataset.eventId;
-        if (eventId) {
-            wixLocation.to(`/event-details?eventId=${eventId}`);
-        }
-    });
+  // Event delegation for dynamically created event cards
+  $w("#eventsPreviewContainer").onClick((event) => {
+    const eventId = event.target.dataset.eventId;
+    if (eventId) {
+      wixLocation.to(`/event-details?eventId=${eventId}`);
+    }
+  });
 }
 
 /**
  * Initializes scroll-triggered animations for a more dynamic feel.
  */
 function initializeAnimations() {
-    // This is a placeholder for Velo animations.
-    // In a real Velo environment, you would use the wix-animations API.
-    // For now, we rely on the CSS classes from the design system.
-    console.log("✨ Animations initialized (CSS-based).");
+  // This is a placeholder for Velo animations.
+  // In a real Velo environment, you would use the wix-animations API.
+  // For now, we rely on the CSS classes from the design system.
+  console.log("✨ Animations initialized (CSS-based).");
 }

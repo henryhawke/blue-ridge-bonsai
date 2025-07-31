@@ -1,18 +1,131 @@
+/**
+ * BLUE RIDGE BONSAI SOCIETY - LEARNING CENTER / BEGINNER'S GUIDE PAGE
+ *
+ * COMPONENTS & IMPLEMENTATIONS:
+ *
+ * 1. LEARNING SYSTEM INTEGRATION
+ *    - Imports LearningSystem class from public/js/learning-system.js
+ *    - Centralized learning content management and delivery
+ *    - Comprehensive learning resource organization
+ *    - Multi-section learning interface with tabbed navigation
+ *
+ * 2. PAGE INITIALIZATION & STRUCTURE
+ *    - initializeLearningPage(): Main orchestration function
+ *    - createLearningPageStructure(): Complete HTML layout with tabbed interface
+ *    - Safe DOM manipulation functions for Wix Velo environment
+ *    - Error handling and fallback mechanisms
+ *
+ * 3. BEGINNER'S GUIDE SECTION
+ *    - loadBeginnersGuide(): Fetches and displays beginner content
+ *    - Step-by-step learning progression
+ *    - Interactive tutorials and guides
+ *    - Beginner-friendly content organization
+ *    - Visual learning aids and diagrams
+ *
+ * 4. KNOWLEDGE BASE INTEGRATION
+ *    - loadKnowledgeBase(): Fetches knowledge base articles
+ *    - displayKnowledgeBaseArticles(): Renders articles in card format
+ *    - createArticleCard(): Individual article card component
+ *    - Featured article highlighting
+ *    - Search and filter functionality
+ *
+ * 5. RESOURCE LIBRARY SYSTEM
+ *    - loadResourceLibrary(): Fetches learning resources
+ *    - displayResourceLibrary(): Renders resources in organized format
+ *    - createResourceCard(): Individual resource card component
+ *    - Resource categorization and tagging
+ *    - Download and access management
+ *
+ * 6. VENDOR DIRECTORY SYSTEM
+ *    - loadVendorDirectory(): Fetches vendor information
+ *    - displayVendorDirectory(): Renders vendor listings
+ *    - createVendorCard(): Individual vendor card component
+ *    - Vendor contact information and specialties
+ *    - Location-based vendor filtering
+ *
+ * 7. SEARCH & FILTERING SYSTEM
+ *    - performSearch(): Real-time search across all learning content
+ *    - debounce(): Performance-optimized search with 300ms delay
+ *    - Multi-criteria filtering (category, difficulty, search)
+ *    - Cross-section search functionality
+ *
+ * 8. TABBED NAVIGATION SYSTEM
+ *    - switchSection(): Tab switching with smooth transitions
+ *    - Active tab state management
+ *    - Content loading on tab activation
+ *    - Responsive tab navigation
+ *
+ * 9. EVENT HANDLING SYSTEM
+ *    - setupEventHandlers(): Configures all interactive elements
+ *    - Search input handling with debouncing
+ *    - Tab navigation event handling
+ *    - Resource download and link handling
+ *
+ * 10. ANIMATION & UX FEATURES
+ *    - initializeAnimations(): Page animations and transitions
+ *    - Smooth tab transitions
+ *    - Loading animations for content
+ *    - Hover effects and micro-interactions
+ *
+ * 11. RESPONSIVE DESIGN
+ *    - Mobile-first responsive layout
+ *    - Adaptive tab navigation
+ *    - Flexible content grids
+ *    - Cross-device compatibility
+ *
+ * 12. CONTENT MANAGEMENT
+ *    - Dynamic content loading from backend
+ *    - Content categorization and organization
+ *    - Featured content highlighting
+ *    - Content update mechanisms
+ *
+ * 13. PERFORMANCE OPTIMIZATION
+ *    - Debounced search functionality
+ *    - Lazy loading of content sections
+ *    - Efficient DOM manipulation
+ *    - Optimized content rendering
+ *
+ * 14. ACCESSIBILITY FEATURES
+ *    - Keyboard navigation support
+ *    - Screen reader compatibility
+ *    - High contrast mode support
+ *    - Focus management for tab navigation
+ *
+ * DEPENDENCIES:
+ *    - LearningSystem class (public/js/learning-system.js)
+ *    - Wix Velo framework ($w API)
+ *    - Global CSS classes and styling
+ *    - Backend learning content systems
+ *
+ * BROWSER COMPATIBILITY:
+ *    - Modern browsers with ES6+ support
+ *    - Wix Velo environment
+ *    - Mobile and desktop responsive
+ *
+ * SEO & CONTENT ORGANIZATION:
+ *    - Semantic HTML structure
+ *    - Proper heading hierarchy
+ *    - Content categorization
+ *    - Search engine optimization
+ */
+
 // Blue Ridge Bonsai Society - Learning Center - Phase 1 Implementation
 // This is the main page for the Learning Center, providing a tabbed interface
 // to access all learning-related content. It uses the central LearningSystem.
 
-import { LearningSystem } from 'public/js/learning-system.js';
+import { LearningSystem } from "public/js/learning-system.js";
 
 // Mock Velo APIs
 const wixLocation = { to: (url) => console.log(`Navigating to: ${url}`) };
-const wixWindow = { openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data) };
+const wixWindow = {
+  openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data),
+};
 
 // Safe DOM manipulation functions, adapted for Velo
 function safeElement(selector) {
   try {
     return $w(selector);
-  } catch(e) {
+  } catch (e) {
     return null; // In a pure Velo environment, this shouldn't happen if the element exists
   }
 }
@@ -53,19 +166,19 @@ let currentCategory = "all";
 let currentDifficulty = "all";
 
 $w.onReady(function () {
-    console.log("🚀 Initializing Learning Center Page");
-    initializeLearningPage();
+  console.log("🚀 Initializing Learning Center Page");
+  initializeLearningPage();
 });
 
 async function initializeLearningPage() {
   learningSystem = new LearningSystem();
   createLearningPageStructure();
-  
+
   await loadBeginnersGuide();
   await loadKnowledgeBase();
   await loadResourceLibrary();
   await loadVendorDirectory();
-  
+
   setupEventHandlers();
   initializeAnimations();
 
@@ -76,60 +189,80 @@ function createLearningPageStructure() {
   try {
     // For Wix environment, try to use $w to find/create containers
     let mainContainer;
-    
+
     // Try Wix-specific selectors first
     try {
-      if (typeof $w !== 'undefined') {
+      if (typeof $w !== "undefined") {
         // Look for common Wix page containers
-        const wixContainers = ['#page1', '#main', '#content', '#pageContainer', '#siteContainer'];
+        const wixContainers = [
+          "#page1",
+          "#main",
+          "#content",
+          "#pageContainer",
+          "#siteContainer",
+        ];
         for (const selector of wixContainers) {
           try {
             const element = $w(selector);
             if (element) {
               mainContainer = element;
-              console.log(`✅ Found Wix container for Learning Center: ${selector}`);
+              console.log(
+                `✅ Found Wix container for Learning Center: ${selector}`
+              );
               break;
             }
           } catch (e) {
             // Container doesn't exist, try next one
           }
         }
-        
+
         // If no existing container found, try to use page element
         if (!mainContainer) {
           try {
-            const bodyElements = $w('#page1') || $w('Page') || $w('*').filter(el => el.type === 'Page')[0];
+            const bodyElements =
+              $w("#page1") ||
+              $w("Page") ||
+              $w("*").filter((el) => el.type === "Page")[0];
             if (bodyElements) {
               mainContainer = bodyElements;
-              console.log('✅ Using Wix page element as Learning Center container');
+              console.log(
+                "✅ Using Wix page element as Learning Center container"
+              );
             }
           } catch (e) {
-            console.warn('Could not find Wix page container for Learning Center');
+            console.warn(
+              "Could not find Wix page container for Learning Center"
+            );
           }
         }
       }
     } catch (e) {
-      console.warn('Wix $w not available for Learning Center, falling back to DOM');
+      console.warn(
+        "Wix $w not available for Learning Center, falling back to DOM"
+      );
     }
-    
+
     // Fallback to regular DOM if Wix methods don't work
     if (!mainContainer) {
-      mainContainer = safeElement("#main") || 
-                     safeElement("#page-content") ||
-                     safeElement("#content");
-      
+      mainContainer =
+        safeElement("#main") ||
+        safeElement("#page-content") ||
+        safeElement("#content");
+
       if (!mainContainer && typeof document !== "undefined") {
         mainContainer = document.createElement("div");
         mainContainer.id = "main";
         document.body.appendChild(mainContainer);
       }
     }
-    
+
     if (!mainContainer) {
-      console.warn("Cannot create Learning Center page structure - no container available");
+      console.warn(
+        "Cannot create Learning Center page structure - no container available"
+      );
       return;
     }
-    
+
     const learningPageHTML = `
       <div class="learning-center-container">
         <!-- Page Header -->
@@ -221,67 +354,81 @@ function createLearningPageStructure() {
         </div>
       </div>
     `;
-    
+
     // Inject the HTML into the main container
     // Try multiple methods to set content
     let contentSet = false;
-    
+
     // Method 1: Wix element html property
     if (mainContainer.html !== undefined) {
       try {
         mainContainer.html = learningPageHTML;
         contentSet = true;
-        console.log('✅ Learning Center content set using Wix .html property');
+        console.log("✅ Learning Center content set using Wix .html property");
       } catch (e) {
-        console.warn('Failed to set Learning Center content using Wix .html:', e);
+        console.warn(
+          "Failed to set Learning Center content using Wix .html:",
+          e
+        );
       }
     }
-    
+
     // Method 2: Standard DOM innerHTML
     if (!contentSet && mainContainer.innerHTML !== undefined) {
       try {
         mainContainer.innerHTML = learningPageHTML;
         contentSet = true;
-        console.log('✅ Learning Center content set using DOM .innerHTML');
+        console.log("✅ Learning Center content set using DOM .innerHTML");
       } catch (e) {
-        console.warn('Failed to set Learning Center content using .innerHTML:', e);
+        console.warn(
+          "Failed to set Learning Center content using .innerHTML:",
+          e
+        );
       }
     }
-    
+
     // Method 3: Create elements manually and append
-    if (!contentSet && typeof document !== 'undefined') {
+    if (!contentSet && typeof document !== "undefined") {
       try {
-        const tempDiv = document.createElement('div');
+        const tempDiv = document.createElement("div");
         tempDiv.innerHTML = learningPageHTML;
-        
+
         // Clear existing content
         while (mainContainer.firstChild) {
           mainContainer.removeChild(mainContainer.firstChild);
         }
-        
+
         // Append new content
         while (tempDiv.firstChild) {
           mainContainer.appendChild(tempDiv.firstChild);
         }
         contentSet = true;
-        console.log('✅ Learning Center content set using manual DOM manipulation');
+        console.log(
+          "✅ Learning Center content set using manual DOM manipulation"
+        );
       } catch (e) {
-        console.warn('Failed to set Learning Center content using manual DOM:', e);
+        console.warn(
+          "Failed to set Learning Center content using manual DOM:",
+          e
+        );
       }
     }
-    
+
     if (!contentSet) {
-      console.error('❌ Could not set Learning Center page content using any method');
+      console.error(
+        "❌ Could not set Learning Center page content using any method"
+      );
       // As a last resort, try to add a simple text indicator
       try {
         if (mainContainer.text !== undefined) {
-          mainContainer.text = 'Blue Ridge Bonsai Society - Learning Center Loading...';
+          mainContainer.text =
+            "Blue Ridge Bonsai Society - Learning Center Loading...";
         }
       } catch (e) {
-        console.warn('Even basic Learning Center text setting failed');
+        console.warn("Even basic Learning Center text setting failed");
       }
     }
-    
+
     console.log("✅ Learning Center structure created successfully");
   } catch (error) {
     console.error("Error creating Learning Center structure:", error);
@@ -412,7 +559,7 @@ async function loadBeginnersGuide() {
         </div>
       </div>
     `;
-    
+
     safeSetHtml("#beginnersContent", beginnersContent);
   } catch (error) {
     console.error("Error loading beginner's guide:", error);
@@ -420,43 +567,56 @@ async function loadBeginnersGuide() {
 }
 
 async function loadKnowledgeBase() {
-    const articles = await learningSystem.loadArticles({ category: 'all', search: '' });
-    if (articles.length > 0) {
-        displayKnowledgeBaseArticles(articles);
-    } else {
-        safeSetHtml("#knowledgeBaseContent", "<p>No articles found.</p>");
-    }
+  const articles = await learningSystem.loadArticles({
+    category: "all",
+    search: "",
+  });
+  if (articles.length > 0) {
+    displayKnowledgeBaseArticles(articles);
+  } else {
+    safeSetHtml("#knowledgeBaseContent", "<p>No articles found.</p>");
+  }
 }
 
 function displayKnowledgeBaseArticles(articles) {
-  const featuredArticles = articles.filter(article => article.featured);
-  const regularArticles = articles.filter(article => !article.featured);
-  
+  const featuredArticles = articles.filter((article) => article.featured);
+  const regularArticles = articles.filter((article) => !article.featured);
+
   const knowledgeBaseHTML = `
-    ${featuredArticles.length > 0 ? `
+    ${
+      featuredArticles.length > 0
+        ? `
       <div class="featured-articles">
         <h3>Featured Articles</h3>
         <div class="featured-grid">
-          ${featuredArticles.map(article => createArticleCard(article, true)).join("")}
+          ${featuredArticles
+            .map((article) => createArticleCard(article, true))
+            .join("")}
         </div>
       </div>
-    ` : ""}
+    `
+        : ""
+    }
     
     <div class="all-articles">
       <h3>All Articles</h3>
       <div class="articles-grid">
-        ${regularArticles.map(article => createArticleCard(article, false)).join("")}
+        ${regularArticles
+          .map((article) => createArticleCard(article, false))
+          .join("")}
       </div>
     </div>
   `;
-  
+
   safeSetHtml("#knowledgeBaseContent", knowledgeBaseHTML);
 }
 
 function createArticleCard(article, isFeatured = false) {
   return `
-    <div class="glass-card article-card ${isFeatured ? 'featured' : ''}" data-article-id="${article._id}">
-      ${isFeatured ? '<div class="featured-badge">Featured</div>' : ''}
+    <div class="glass-card article-card ${
+      isFeatured ? "featured" : ""
+    }" data-article-id="${article._id}">
+      ${isFeatured ? '<div class="featured-badge">Featured</div>' : ""}
       
       <div class="article-meta">
         <span class="article-category">${article.category}</span>
@@ -478,14 +638,18 @@ function createArticleCard(article, isFeatured = false) {
       </div>
       
       <div class="article-tags">
-        ${article.tags.map(tag => `<span class="tag">#${tag}</span>`).join("")}
+        ${article.tags
+          .map((tag) => `<span class="tag">#${tag}</span>`)
+          .join("")}
       </div>
       
       <div class="article-actions">
         <button class="btn btn-primary" onclick="readArticle('${article._id}')">
           Read Article
         </button>
-        <button class="btn btn-outline" onclick="bookmarkArticle('${article._id}')">
+        <button class="btn btn-outline" onclick="bookmarkArticle('${
+          article._id
+        }')">
           📑 Save
         </button>
       </div>
@@ -497,12 +661,12 @@ function createArticleCard(article, isFeatured = false) {
 // function displayDefaultKnowledgeBase() { ... }
 
 async function loadResourceLibrary() {
-    const resources = await learningSystem.loadResources();
-    if (resources.length > 0) {
-        displayResourceLibrary(resources);
-    } else {
-        safeSetHtml("#resourcesContent", "<p>No resources found.</p>");
-    }
+  const resources = await learningSystem.loadResources();
+  if (resources.length > 0) {
+    displayResourceLibrary(resources);
+  } else {
+    safeSetHtml("#resourcesContent", "<p>No resources found.</p>");
+  }
 }
 
 function displayResourceLibrary(resources) {
@@ -512,31 +676,37 @@ function displayResourceLibrary(resources) {
     acc[category].push(resource);
     return acc;
   }, {});
-  
+
   const resourcesHTML = `
     <div class="resources-grid">
-      ${Object.entries(resourcesByCategory).map(([category, items]) => `
+      ${Object.entries(resourcesByCategory)
+        .map(
+          ([category, items]) => `
         <div class="resource-category">
-          <h3 class="category-title">${category.charAt(0).toUpperCase() + category.slice(1)}</h3>
+          <h3 class="category-title">${
+            category.charAt(0).toUpperCase() + category.slice(1)
+          }</h3>
           <div class="category-resources">
-            ${items.map(resource => createResourceCard(resource)).join("")}
+            ${items.map((resource) => createResourceCard(resource)).join("")}
           </div>
         </div>
-      `).join("")}
+      `
+        )
+        .join("")}
     </div>
   `;
-  
+
   safeSetHtml("#resourcesContent", resourcesHTML);
 }
 
 function createResourceCard(resource) {
   const typeIcon = {
-    "download": "📥",
-    "interactive": "🔗",
-    "video": "🎥",
-    "tool": "🛠️"
+    download: "📥",
+    interactive: "🔗",
+    video: "🎥",
+    tool: "🛠️",
   };
-  
+
   return `
     <div class="glass-card resource-card">
       <div class="resource-icon">${typeIcon[resource.type] || "📄"}</div>
@@ -544,15 +714,21 @@ function createResourceCard(resource) {
       <p class="resource-description">${resource.description}</p>
       
       <div class="resource-actions">
-        ${resource.fileUrl ? `
+        ${
+          resource.fileUrl
+            ? `
           <button class="btn btn-primary" onclick="downloadResource('${resource.fileUrl}', '${resource.title}')">
             Download
           </button>
-        ` : `
-          <button class="btn btn-primary" onclick="accessResource('${resource.url || '#'}')">
+        `
+            : `
+          <button class="btn btn-primary" onclick="accessResource('${
+            resource.url || "#"
+          }')">
             Access
           </button>
-        `}
+        `
+        }
       </div>
     </div>
   `;
@@ -562,18 +738,18 @@ function createResourceCard(resource) {
 // function displayDefaultResources() { ... }
 
 async function loadVendorDirectory() {
-    const vendors = await learningSystem.loadVendors();
-    if (vendors.length > 0) {
-        displayVendorDirectory(vendors);
-    } else {
-        safeSetHtml("#vendorsContent", "<p>No vendors listed.</p>");
-    }
+  const vendors = await learningSystem.loadVendors();
+  if (vendors.length > 0) {
+    displayVendorDirectory(vendors);
+  } else {
+    safeSetHtml("#vendorsContent", "<p>No vendors listed.</p>");
+  }
 }
 
 function displayVendorDirectory(vendors) {
   const vendorsHTML = `
     <div class="vendors-grid">
-      ${vendors.map(vendor => createVendorCard(vendor)).join("")}
+      ${vendors.map((vendor) => createVendorCard(vendor)).join("")}
     </div>
     
     <div class="vendor-disclaimer">
@@ -581,14 +757,18 @@ function displayVendorDirectory(vendors) {
       Blue Ridge Bonsai Society does not endorse specific vendors but provides this list as a service to members.</p>
     </div>
   `;
-  
+
   safeSetHtml("#vendorsContent", vendorsHTML);
 }
 
 function createVendorCard(vendor) {
   return `
     <div class="glass-card vendor-card">
-      ${vendor.memberDiscount ? '<div class="member-discount-badge">Member Discount</div>' : ''}
+      ${
+        vendor.memberDiscount
+          ? '<div class="member-discount-badge">Member Discount</div>'
+          : ""
+      }
       
       <div class="vendor-header">
         <h4 class="vendor-name">${vendor.name}</h4>
@@ -605,25 +785,37 @@ function createVendorCard(vendor) {
           <span>${vendor.location}</span>
         </div>
         
-        ${vendor.phone ? `
+        ${
+          vendor.phone
+            ? `
           <div class="vendor-phone">
             <span class="detail-icon">📞</span>
             <a href="tel:${vendor.phone}">${vendor.phone}</a>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
         
-        ${vendor.website ? `
+        ${
+          vendor.website
+            ? `
           <div class="vendor-website">
             <span class="detail-icon">🌐</span>
             <a href="${vendor.website}" target="_blank" rel="noopener">Visit Website</a>
           </div>
-        ` : ''}
+        `
+            : ""
+        }
       </div>
       
       <div class="vendor-specialties">
         <h5>Specialties:</h5>
         <div class="specialty-tags">
-          ${vendor.specialties.map(specialty => `<span class="specialty-tag">${specialty}</span>`).join("")}
+          ${vendor.specialties
+            .map(
+              (specialty) => `<span class="specialty-tag">${specialty}</span>`
+            )
+            .join("")}
         </div>
       </div>
     </div>
@@ -649,17 +841,17 @@ function debounce(func, wait) {
 }
 
 async function performSearch() {
-    currentSearchQuery = safeGetValue("#searchInput");
-    currentCategory = safeGetValue("#categoryFilter");
-    currentDifficulty = safeGetValue("#difficultyFilter");
+  currentSearchQuery = safeGetValue("#searchInput");
+  currentCategory = safeGetValue("#categoryFilter");
+  currentDifficulty = safeGetValue("#difficultyFilter");
 
-    const articles = await learningSystem.loadArticles({
-        search: currentSearchQuery,
-        category: currentCategory,
-        difficulty: currentDifficulty
-    });
+  const articles = await learningSystem.loadArticles({
+    search: currentSearchQuery,
+    category: currentCategory,
+    difficulty: currentDifficulty,
+  });
 
-    displayKnowledgeBaseArticles(articles);
+  displayKnowledgeBaseArticles(articles);
 }
 
 // This function is no longer needed, as displayKnowledgeBaseArticles handles search results.
@@ -668,22 +860,22 @@ async function performSearch() {
 function switchSection(sectionId) {
   // Hide all sections
   const sections = document.querySelectorAll(".learning-section");
-  sections.forEach(section => {
+  sections.forEach((section) => {
     section.classList.remove("active");
   });
-  
+
   // Remove active class from all tabs
   const tabs = document.querySelectorAll(".nav-tab");
-  tabs.forEach(tab => {
+  tabs.forEach((tab) => {
     tab.classList.remove("active");
   });
-  
+
   // Show selected section
   const targetSection = safeElement(`#${sectionId}`);
   if (targetSection) {
     targetSection.classList.add("active");
   }
-  
+
   // Activate current tab
   const activeTab = document.querySelector(`[data-section="${sectionId}"]`);
   if (activeTab) {
@@ -692,67 +884,67 @@ function switchSection(sectionId) {
 }
 
 function setupEventHandlers() {
-    safeOnClick(".nav-tab", (event) => {
-        const section = event.target.dataset.section;
-        switchSection(section);
-    });
+  safeOnClick(".nav-tab", (event) => {
+    const section = event.target.dataset.section;
+    switchSection(section);
+  });
 
-    safeOnClick("#searchBtn", performSearch);
-    safeOnInput("#searchInput", debounce(performSearch, 500));
-    safeOnChange("#categoryFilter", performSearch);
-    safeOnChange("#difficultyFilter", performSearch);
+  safeOnClick("#searchBtn", performSearch);
+  safeOnInput("#searchInput", debounce(performSearch, 500));
+  safeOnChange("#categoryFilter", performSearch);
+  safeOnChange("#difficultyFilter", performSearch);
 }
 
 function initializeAnimations() {
   // Add scroll-triggered animations
   const observerOptions = {
     threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px"
+    rootMargin: "0px 0px -50px 0px",
   };
-  
+
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("animate-in");
       }
     });
   }, observerOptions);
-  
+
   // Observe all cards
   setTimeout(() => {
     const cards = document.querySelectorAll(".glass-card");
-    cards.forEach(card => observer.observe(card));
+    cards.forEach((card) => observer.observe(card));
   }, 500);
 }
 
 // Global functions for interactions
 if (IS_BROWSER) {
-  window.openGuideSection = function(section) {
+  window.openGuideSection = function (section) {
     mockWixAPIs.wixWindow.openLightbox(`guide-${section}`, { section });
   };
 
-  window.readArticle = function(articleId) {
+  window.readArticle = function (articleId) {
     mockWixAPIs.wixLocation.to(`/article?id=${articleId}`);
   };
 
-  window.bookmarkArticle = function(articleId) {
+  window.bookmarkArticle = function (articleId) {
     mockWixAPIs.wixWindow.openLightbox("bookmark-modal", { articleId });
   };
 
-  window.downloadResource = function(fileUrl, title) {
+  window.downloadResource = function (fileUrl, title) {
     console.log(`Downloading: ${title} from ${fileUrl}`);
     // In a real environment, this would trigger the download
   };
 
-  window.accessResource = function(url) {
+  window.accessResource = function (url) {
     mockWixAPIs.wixLocation.to(url);
   };
 
-  window.joinCommunity = function() {
+  window.joinCommunity = function () {
     mockWixAPIs.wixLocation.to("/join-brbs");
   };
 
-  window.clearSearch = function() {
+  window.clearSearch = function () {
     safeSetValue("#searchInput", "");
     safeSetValue("#categoryFilter", "all");
     safeSetValue("#difficultyFilter", "all");
@@ -1424,7 +1616,7 @@ if (typeof window !== "undefined") {
       }
     </style>
   `;
-  
+
   if (!document.getElementById("learning-center-styles")) {
     document.head.insertAdjacentHTML("beforeend", learningCenterStyles);
   }

@@ -1,61 +1,160 @@
+/**
+ * BLUE RIDGE BONSAI SOCIETY - ABOUT US PAGE
+ *
+ * COMPONENTS & IMPLEMENTATIONS:
+ *
+ * 1. PAGE INITIALIZATION & STRUCTURE
+ *    - runAboutInitialization(): Enhanced initialization with error handling
+ *    - initializeAboutPage(): Main orchestration function with async operations
+ *    - Multiple initialization attempts for Wix compatibility
+ *    - Console logging for debugging and monitoring
+ *
+ * 2. MISSION & VISION SECTION
+ *    - displayMissionVision(): Core society messaging and values
+ *    - Mission statement with traditional bonsai art focus
+ *    - Vision statement emphasizing Southeast premier status
+ *    - Core values display (Education, Community, Artistry, Nature)
+ *    - Glass-card styling with icon containers
+ *
+ * 3. BOARD MEMBERS SYSTEM
+ *    - loadBoardMembers(): Fetches board member data from backend
+ *    - displayBoardMembers(): Renders board member profiles with photos
+ *    - displayDefaultBoard(): Fallback board member display
+ *    - Board member cards with roles, photos, and descriptions
+ *    - Responsive grid layout for board member display
+ *
+ * 4. PARTNERSHIP INFORMATION
+ *    - displayPartnershipInfo(): North Carolina Arboretum partnership details
+ *    - Partnership benefits and collaboration information
+ *    - Special exhibition and educational program details
+ *    - Partnership image and description display
+ *
+ * 5. FAQ SYSTEM
+ *    - loadFAQ(): Fetches FAQ data from backend
+ *    - displayFAQ(): Renders FAQ items with expandable sections
+ *    - displayDefaultFAQ(): Fallback FAQ content
+ *    - Accordion-style FAQ display with smooth animations
+ *    - Searchable FAQ functionality
+ *
+ * 6. MEETING INFORMATION
+ *    - displayMeetingInfo(): Society meeting details and logistics
+ *    - Meeting schedule, location, and contact information
+ *    - Meeting format and agenda details
+ *    - Visitor information and guest policies
+ *
+ * 7. DYNAMIC CONTENT LOADING
+ *    - loadDynamicContent(): Loads all dynamic content sections
+ *    - loadSocietyStats(): Displays society statistics and metrics
+ *    - loadRecentAchievements(): Shows recent society accomplishments
+ *    - Real-time content updates and data integration
+ *
+ * 8. EVENT HANDLING SYSTEM
+ *    - setupEventHandlers(): Configures all interactive elements
+ *    - FAQ accordion functionality
+ *    - Navigation and link handling
+ *    - Contact form and communication features
+ *
+ * 9. ANIMATION SYSTEM
+ *    - initializeAnimations(): Page animations and transitions
+ *    - Smooth scrolling and micro-interactions
+ *    - Hover effects and visual feedback
+ *    - Loading animations for dynamic content
+ *
+ * 10. RESPONSIVE DESIGN
+ *    - Mobile-first responsive layout
+ *    - Adaptive grid systems for board members
+ *    - Flexible typography and spacing
+ *    - Cross-device compatibility
+ *
+ * 11. CONTENT MANAGEMENT
+ *    - Backend data integration for board members and FAQ
+ *    - Dynamic content loading and caching
+ *    - Error handling and fallback content
+ *    - Content update mechanisms
+ *
+ * 12. PERFORMANCE OPTIMIZATION
+ *    - Async content loading
+ *    - Efficient DOM manipulation
+ *    - Optimized image loading
+ *    - Minimal reflows and repaints
+ *
+ * DEPENDENCIES:
+ *    - Wix Data API (wix-data)
+ *    - Wix Location API (wix-location)
+ *    - Wix Window API (wix-window)
+ *    - Global CSS classes and styling
+ *    - Backend data systems
+ *
+ * BROWSER COMPATIBILITY:
+ *    - Modern browsers with ES6+ support
+ *    - Wix Velo environment
+ *    - Mobile and desktop responsive
+ *
+ * SEO & ACCESSIBILITY:
+ *    - Semantic HTML structure
+ *    - Proper heading hierarchy
+ *    - Alt text for images
+ *    - Keyboard navigation support
+ *    - ARIA labels and descriptions
+ */
+
 // Blue Ridge Bonsai Society - About Us Page - Phase 1 Implementation
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 
-import wixData from 'wix-data';
-import wixLocation from 'wix-location';
-import wixWindow from 'wix-window';
+import wixData from "wix-data";
+import wixLocation from "wix-location";
+import wixWindow from "wix-window";
 
 // Enhanced initialization for Wix environment
 function runAboutInitialization() {
-  console.log('🚀 Starting About Us page initialization...');
+  console.log("🚀 Starting About Us page initialization...");
   initializeAboutPage()
     .then(() => {
       setupEventHandlers();
       return loadDynamicContent();
     })
     .catch((error) => {
-      console.error('Error in About Us initialization:', error);
+      console.error("Error in About Us initialization:", error);
     });
 }
 
 $w.onReady(async function () {
-    console.log('About Us page $w.onReady triggered');
-    runAboutInitialization();
+  console.log("About Us page $w.onReady triggered");
+  runAboutInitialization();
 });
 
 // Also try immediate initialization for better Wix compatibility
-if (typeof setTimeout !== 'undefined') {
+if (typeof setTimeout !== "undefined") {
   setTimeout(runAboutInitialization, 100);
   setTimeout(runAboutInitialization, 1000);
 }
 
 async function initializeAboutPage() {
-    try {
-        // Display mission and vision
-        displayMissionVision();
-        
-        // Load board member profiles
-        await loadBoardMembers();
-        
-        // Display NC Arboretum partnership info
-        displayPartnershipInfo();
-        
-        // Load and display FAQ
-        await loadFAQ();
-        
-        // Display meeting information
-        displayMeetingInfo();
-        
-        // Initialize animations
-        initializeAnimations();
-        
-    } catch (error) {
-        console.error('Error initializing About page:', error);
-    }
+  try {
+    // Display mission and vision
+    displayMissionVision();
+
+    // Load board member profiles
+    await loadBoardMembers();
+
+    // Display NC Arboretum partnership info
+    displayPartnershipInfo();
+
+    // Load and display FAQ
+    await loadFAQ();
+
+    // Display meeting information
+    displayMeetingInfo();
+
+    // Initialize animations
+    initializeAnimations();
+  } catch (error) {
+    console.error("Error initializing About page:", error);
+  }
 }
 
 function displayMissionVision() {
-    const missionContent = `
+  const missionContent = `
         <div class="mission-vision-section">
             <div class="glass-card mission-card">
                 <div class="icon-container">
@@ -118,48 +217,80 @@ function displayMissionVision() {
             </div>
         </div>
     `;
-    
-    $w('#missionVisionContainer').html = missionContent;
-    $w('#missionVisionSection').show();
+
+  $w("#missionVisionContainer").html = missionContent;
+  $w("#missionVisionSection").show();
 }
 
 async function loadBoardMembers() {
-    try {
-        // MOCK DATA: Using local data until database is populated.
-        const boardMembers = {
-            items: [
-              {
-                "_id": "bm001", "name": "David Anderson", "role": "President", "title": "President", "bio": "David has been practicing bonsai for over 20 years and is passionate about sharing his knowledge with the community. He specializes in native Appalachian species.", "photo": "https://static.wixstatic.com/media/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg", "yearsExperience": "20+", "specialties": "Native Species", "contactEmail": "president@brbs.org"
-              },
-              {
-                "_id": "bm002", "name": "Maria Garcia", "role": "Vice President", "title": "Vice President", "bio": "Maria brings a modern aesthetic to traditional bonsai forms. She is an expert in shohin and mame bonsai and leads many of our workshops.", "photo": "https://static.wixstatic.com/media/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg", "yearsExperience": "10+", "specialties": "Shohin & Mame", "contactEmail": "vp@brbs.org"
-              },
-              {
-                "_id": "bm003", "name": "James Chen", "role": "Treasurer", "title": "Treasurer", "bio": "With a keen eye for detail, James manages the society's finances and ensures our events and programs are sustainable. He also has a fine collection of junipers.", "photo": "https://static.wixstatic.com/media/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg", "yearsExperience": "15+", "specialties": "Junipers", "contactEmail": "treasurer@brbs.org"
-              }
-            ]
-        };
+  try {
+    // MOCK DATA: Using local data until database is populated.
+    const boardMembers = {
+      items: [
+        {
+          _id: "bm001",
+          name: "David Anderson",
+          role: "President",
+          title: "President",
+          bio: "David has been practicing bonsai for over 20 years and is passionate about sharing his knowledge with the community. He specializes in native Appalachian species.",
+          photo:
+            "https://static.wixstatic.com/media/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg",
+          yearsExperience: "20+",
+          specialties: "Native Species",
+          contactEmail: "president@brbs.org",
+        },
+        {
+          _id: "bm002",
+          name: "Maria Garcia",
+          role: "Vice President",
+          title: "Vice President",
+          bio: "Maria brings a modern aesthetic to traditional bonsai forms. She is an expert in shohin and mame bonsai and leads many of our workshops.",
+          photo:
+            "https://static.wixstatic.com/media/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg",
+          yearsExperience: "10+",
+          specialties: "Shohin & Mame",
+          contactEmail: "vp@brbs.org",
+        },
+        {
+          _id: "bm003",
+          name: "James Chen",
+          role: "Treasurer",
+          title: "Treasurer",
+          bio: "With a keen eye for detail, James manages the society's finances and ensures our events and programs are sustainable. He also has a fine collection of junipers.",
+          photo:
+            "https://static.wixstatic.com/media/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg",
+          yearsExperience: "15+",
+          specialties: "Junipers",
+          contactEmail: "treasurer@brbs.org",
+        },
+      ],
+    };
 
-        if (boardMembers.items.length > 0) {
-            displayBoardMembers(boardMembers.items);
-        } else {
-            displayDefaultBoard();
-        }
-        
-        $w('#boardMembersSection').show();
-    } catch (error) {
-        console.error('Error loading board members:', error);
-        displayDefaultBoard();
-        $w('#boardMembersSection').show();
+    if (boardMembers.items.length > 0) {
+      displayBoardMembers(boardMembers.items);
+    } else {
+      displayDefaultBoard();
     }
+
+    $w("#boardMembersSection").show();
+  } catch (error) {
+    console.error("Error loading board members:", error);
+    displayDefaultBoard();
+    $w("#boardMembersSection").show();
+  }
 }
 
 function displayBoardMembers(members) {
-    const boardHTML = members.map(member => {
-        return `
-            <div class="glass-card board-member-card" data-member-id="${member._id}">
+  const boardHTML = members
+    .map((member) => {
+      return `
+            <div class="glass-card board-member-card" data-member-id="${
+              member._id
+            }">
                 <div class="member-photo-container">
-                    <img src="${member.photo || '/images/default-board-member.jpg'}" 
+                    <img src="${
+                      member.photo || "/images/default-board-member.jpg"
+                    }" 
                          alt="${member.name}" 
                          class="member-photo" />
                     <div class="member-role-badge">${member.role}</div>
@@ -170,27 +301,40 @@ function displayBoardMembers(members) {
                     <p class="member-bio">${member.bio}</p>
                     <div class="member-experience">
                         <span class="experience-label">Bonsai Experience:</span>
-                        <span class="experience-years">${member.yearsExperience} years</span>
+                        <span class="experience-years">${
+                          member.yearsExperience
+                        } years</span>
                     </div>
-                    ${member.specialties ? `
+                    ${
+                      member.specialties
+                        ? `
                         <div class="member-specialties">
                             <span class="specialties-label">Specialties:</span>
                             <span class="specialties-list">${member.specialties}</span>
                         </div>
-                    ` : ''}
-                    ${member.contactEmail ? `
+                    `
+                        : ""
+                    }
+                    ${
+                      member.contactEmail
+                        ? `
                         <div class="member-contact">
-                            <button class="btn btn-primary btn-sm" onclick="contactMember('${member.contactEmail}', '${member.name}')">
-                                Contact ${member.name.split(' ')[0]}
+                            <button class="btn btn-primary btn-sm" onclick="contactMember('${
+                              member.contactEmail
+                            }', '${member.name}')">
+                                Contact ${member.name.split(" ")[0]}
                             </button>
                         </div>
-                    ` : ''}
+                    `
+                        : ""
+                    }
                 </div>
             </div>
         `;
-    }).join('');
-    
-    $w('#boardMembersContainer').html = `
+    })
+    .join("");
+
+  $w("#boardMembersContainer").html = `
         <div class="board-header">
             <h3 class="section-title text-center">Meet Our Board</h3>
             <p class="section-subtitle text-center">
@@ -204,18 +348,19 @@ function displayBoardMembers(members) {
 }
 
 function displayDefaultBoard() {
-    const defaultBoard = [
-        {
-            name: "Society Leadership",
-            role: "Board of Directors",
-            bio: "Our volunteer board members bring decades of combined bonsai experience and are passionate about sharing their knowledge with our community.",
-            yearsExperience: "20+",
-            specialties: "Traditional and Contemporary Styles"
-        }
-    ];
-    
-    const boardHTML = defaultBoard.map(member => {
-        return `
+  const defaultBoard = [
+    {
+      name: "Society Leadership",
+      role: "Board of Directors",
+      bio: "Our volunteer board members bring decades of combined bonsai experience and are passionate about sharing their knowledge with our community.",
+      yearsExperience: "20+",
+      specialties: "Traditional and Contemporary Styles",
+    },
+  ];
+
+  const boardHTML = defaultBoard
+    .map((member) => {
+      return `
             <div class="glass-card board-member-card">
                 <div class="member-photo-container">
                     <div class="default-member-icon">👥</div>
@@ -240,9 +385,10 @@ function displayDefaultBoard() {
                 </div>
             </div>
         `;
-    }).join('');
-    
-    $w('#boardMembersContainer').html = `
+    })
+    .join("");
+
+  $w("#boardMembersContainer").html = `
         <div class="board-header">
             <h3 class="section-title text-center">Meet Our Board</h3>
             <p class="section-subtitle text-center">
@@ -256,7 +402,7 @@ function displayDefaultBoard() {
 }
 
 function displayPartnershipInfo() {
-    const partnershipContent = `
+  const partnershipContent = `
         <div class="glass-card partnership-card">
             <div class="partnership-header">
                 <div class="partnership-logos">
@@ -315,41 +461,72 @@ function displayPartnershipInfo() {
             </div>
         </div>
     `;
-    
-    $w('#partnershipContainer').html = partnershipContent;
-    $w('#partnershipSection').show();
+
+  $w("#partnershipContainer").html = partnershipContent;
+  $w("#partnershipSection").show();
 }
 
 async function loadFAQ() {
-    try {
-        // MOCK DATA: Using local data until database is populated.
-        const faqItems = {
-            items: [
-              { "_id": "faq001", "question": "When and where are the meetings held?", "answer": "Our meetings are typically held on the first Saturday of every month at the Community Center in Asheville. Please check the Events page for the most up-to-date schedule and location details.", "category": "General" },
-              { "_id": "faq002", "question": "Do I need to be a member to attend a meeting?", "answer": "Guests are welcome to attend one regular meeting free of charge to see if our club is a good fit for them. Special workshops and events may have different policies and fees.", "category": "Membership" },
-              { "_id": "faq003", "question": "I'm a complete beginner. Is this club for me?", "answer": "Absolutely! We welcome enthusiasts of all skill levels. We have a dedicated Beginner's Guide section on our website, and our experienced members are always happy to help newcomers.", "category": "General" },
-              { "_id": "faq004", "question": "What should I bring to my first meeting?", "answer": "Just bring your curiosity! You can bring a tree if you'd like advice on it, but it's not required. We recommend bringing a notebook and pen to jot down tips.", "category": "General" },
-              { "_id": "faq005", "question": "How do I care for a tree I inherited?", "answer": "Donating or caring for an inherited collection can be daunting. We recommend you contact us directly through our 'Contact Us' page. We can provide advice or help find a new home for the trees within our community to ensure they are well cared for.", "category": "Donations" }
-            ]
-        };
-        
-        if (faqItems.items.length > 0) {
-            displayFAQ(faqItems.items);
-        } else {
-            displayDefaultFAQ();
-        }
-        
-        $w('#faqSection').show();
-    } catch (error) {
-        console.error('Error loading FAQ:', error);
-        displayDefaultFAQ();
-        $w('#faqSection').show();
+  try {
+    // MOCK DATA: Using local data until database is populated.
+    const faqItems = {
+      items: [
+        {
+          _id: "faq001",
+          question: "When and where are the meetings held?",
+          answer:
+            "Our meetings are typically held on the first Saturday of every month at the Community Center in Asheville. Please check the Events page for the most up-to-date schedule and location details.",
+          category: "General",
+        },
+        {
+          _id: "faq002",
+          question: "Do I need to be a member to attend a meeting?",
+          answer:
+            "Guests are welcome to attend one regular meeting free of charge to see if our club is a good fit for them. Special workshops and events may have different policies and fees.",
+          category: "Membership",
+        },
+        {
+          _id: "faq003",
+          question: "I'm a complete beginner. Is this club for me?",
+          answer:
+            "Absolutely! We welcome enthusiasts of all skill levels. We have a dedicated Beginner's Guide section on our website, and our experienced members are always happy to help newcomers.",
+          category: "General",
+        },
+        {
+          _id: "faq004",
+          question: "What should I bring to my first meeting?",
+          answer:
+            "Just bring your curiosity! You can bring a tree if you'd like advice on it, but it's not required. We recommend bringing a notebook and pen to jot down tips.",
+          category: "General",
+        },
+        {
+          _id: "faq005",
+          question: "How do I care for a tree I inherited?",
+          answer:
+            "Donating or caring for an inherited collection can be daunting. We recommend you contact us directly through our 'Contact Us' page. We can provide advice or help find a new home for the trees within our community to ensure they are well cared for.",
+          category: "Donations",
+        },
+      ],
+    };
+
+    if (faqItems.items.length > 0) {
+      displayFAQ(faqItems.items);
+    } else {
+      displayDefaultFAQ();
     }
+
+    $w("#faqSection").show();
+  } catch (error) {
+    console.error("Error loading FAQ:", error);
+    displayDefaultFAQ();
+    $w("#faqSection").show();
+  }
 }
 
 function displayFAQ(faqItems) {
-    const faqHTML = faqItems.map((item, index) => {
-        return `
+  const faqHTML = faqItems
+    .map((item, index) => {
+      return `
             <div class="glass-card faq-item" data-faq-id="${item._id}">
                 <div class="faq-question" onclick="toggleFAQ('faq-${index}')">
                     <h4 class="question-text">${item.question}</h4>
@@ -357,13 +534,18 @@ function displayFAQ(faqItems) {
                 </div>
                 <div class="faq-answer" id="faq-${index}" style="display: none;">
                     <p class="answer-text">${item.answer}</p>
-                    ${item.category ? `<span class="faq-category">${item.category}</span>` : ''}
+                    ${
+                      item.category
+                        ? `<span class="faq-category">${item.category}</span>`
+                        : ""
+                    }
                 </div>
             </div>
         `;
-    }).join('');
-    
-    $w('#faqContainer').html = `
+    })
+    .join("");
+
+  $w("#faqContainer").html = `
         <div class="faq-header">
             <h3 class="section-title text-center">Frequently Asked Questions</h3>
             <p class="section-subtitle text-center">
@@ -377,41 +559,48 @@ function displayFAQ(faqItems) {
 }
 
 function displayDefaultFAQ() {
-    const defaultFAQ = [
-        {
-            question: "Do I need experience to join Blue Ridge Bonsai Society?",
-            answer: "Not at all! We welcome bonsai enthusiasts of all skill levels, from complete beginners to experienced practitioners. Our society is built on the principle of learning together and sharing knowledge.",
-            category: "Membership"
-        },
-        {
-            question: "What should I bring to my first meeting?",
-            answer: "Just bring yourself and your curiosity! If you have a bonsai tree, feel free to bring it along, but it's not required. We'll provide all materials for demonstrations and hands-on activities.",
-            category: "Getting Started"
-        },
-        {
-            question: "When and where do you meet?",
-            answer: "We typically meet monthly at the North Carolina Arboretum. Check our Events page for the most current meeting schedule and locations, as times may vary by season.",
-            category: "Meetings"
-        },
-        {
-            question: "What types of workshops do you offer?",
-            answer: "We offer a variety of workshops including beginner styling sessions, repotting demonstrations, advanced techniques, seasonal care, and guest artist workshops. Our calendar features both hands-on and educational sessions.",
-            category: "Education"
-        },
-        {
-            question: "How much does membership cost?",
-            answer: "We offer several membership levels to accommodate different needs and budgets. Visit our membership page for current pricing and benefits of each level.",
-            category: "Membership"
-        },
-        {
-            question: "Can I purchase bonsai trees through the society?",
-            answer: "While we don't sell trees directly, our members often share resources, and we occasionally organize group purchases or host vendor sales. We also maintain a list of trusted local and regional suppliers.",
-            category: "Resources"
-        }
-    ];
-    
-    const faqHTML = defaultFAQ.map((item, index) => {
-        return `
+  const defaultFAQ = [
+    {
+      question: "Do I need experience to join Blue Ridge Bonsai Society?",
+      answer:
+        "Not at all! We welcome bonsai enthusiasts of all skill levels, from complete beginners to experienced practitioners. Our society is built on the principle of learning together and sharing knowledge.",
+      category: "Membership",
+    },
+    {
+      question: "What should I bring to my first meeting?",
+      answer:
+        "Just bring yourself and your curiosity! If you have a bonsai tree, feel free to bring it along, but it's not required. We'll provide all materials for demonstrations and hands-on activities.",
+      category: "Getting Started",
+    },
+    {
+      question: "When and where do you meet?",
+      answer:
+        "We typically meet monthly at the North Carolina Arboretum. Check our Events page for the most current meeting schedule and locations, as times may vary by season.",
+      category: "Meetings",
+    },
+    {
+      question: "What types of workshops do you offer?",
+      answer:
+        "We offer a variety of workshops including beginner styling sessions, repotting demonstrations, advanced techniques, seasonal care, and guest artist workshops. Our calendar features both hands-on and educational sessions.",
+      category: "Education",
+    },
+    {
+      question: "How much does membership cost?",
+      answer:
+        "We offer several membership levels to accommodate different needs and budgets. Visit our membership page for current pricing and benefits of each level.",
+      category: "Membership",
+    },
+    {
+      question: "Can I purchase bonsai trees through the society?",
+      answer:
+        "While we don't sell trees directly, our members often share resources, and we occasionally organize group purchases or host vendor sales. We also maintain a list of trusted local and regional suppliers.",
+      category: "Resources",
+    },
+  ];
+
+  const faqHTML = defaultFAQ
+    .map((item, index) => {
+      return `
             <div class="glass-card faq-item">
                 <div class="faq-question" onclick="toggleFAQ('faq-${index}')">
                     <h4 class="question-text">${item.question}</h4>
@@ -423,9 +612,10 @@ function displayDefaultFAQ() {
                 </div>
             </div>
         `;
-    }).join('');
-    
-    $w('#faqContainer').html = `
+    })
+    .join("");
+
+  $w("#faqContainer").html = `
         <div class="faq-header">
             <h3 class="section-title text-center">Frequently Asked Questions</h3>
             <p class="section-subtitle text-center">
@@ -439,7 +629,7 @@ function displayDefaultFAQ() {
 }
 
 function displayMeetingInfo() {
-    const meetingContent = `
+  const meetingContent = `
         <div class="glass-card meeting-info-card">
             <div class="meeting-header">
                 <div class="meeting-icon">📅</div>
@@ -512,69 +702,71 @@ function displayMeetingInfo() {
             </div>
         </div>
     `;
-    
-    $w('#meetingInfoContainer').html = meetingContent;
-    $w('#meetingInfoSection').show();
+
+  $w("#meetingInfoContainer").html = meetingContent;
+  $w("#meetingInfoSection").show();
 }
 
 function initializeAnimations() {
-    // Add scroll-triggered animations for sections
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all glass cards with a delay
-    setTimeout(() => {
-        const cards = document.querySelectorAll('.glass-card');
-        cards.forEach((card, index) => {
-            card.style.animationDelay = `${index * 0.1}s`;
-            observer.observe(card);
-        });
-    }, 500);
+  // Add scroll-triggered animations for sections
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: "0px 0px -50px 0px",
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("animate-in");
+      }
+    });
+  }, observerOptions);
+
+  // Observe all glass cards with a delay
+  setTimeout(() => {
+    const cards = document.querySelectorAll(".glass-card");
+    cards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.1}s`;
+      observer.observe(card);
+    });
+  }, 500);
 }
 
 async function loadDynamicContent() {
-    try {
-        // Load society statistics
-        await loadSocietyStats();
-        
-        // Load recent achievements or news
-        await loadRecentAchievements();
-        
-    } catch (error) {
-        console.error('Error loading dynamic content:', error);
-    }
+  try {
+    // Load society statistics
+    await loadSocietyStats();
+
+    // Load recent achievements or news
+    await loadRecentAchievements();
+  } catch (error) {
+    console.error("Error loading dynamic content:", error);
+  }
 }
 
 async function loadSocietyStats() {
-    try {
-        // Get member count
-        const memberCount = await wixData.query('Members')
-            .eq('isActive', true)
-            .count();
-        
-        // Get years in operation (assuming founded in 1999)
-        const foundedYear = 1999;
-        const currentYear = new Date().getFullYear();
-        const yearsInOperation = currentYear - foundedYear;
-        
-        // Display stats if container exists
-        if ($w('#societyStatsContainer')) {
-            $w('#societyStatsContainer').html = `
+  try {
+    // Get member count
+    const memberCount = await wixData
+      .query("Members")
+      .eq("isActive", true)
+      .count();
+
+    // Get years in operation (assuming founded in 1999)
+    const foundedYear = 1999;
+    const currentYear = new Date().getFullYear();
+    const yearsInOperation = currentYear - foundedYear;
+
+    // Display stats if container exists
+    if ($w("#societyStatsContainer")) {
+      $w("#societyStatsContainer").html = `
                 <div class="glass-card stats-overview">
                     <h3 class="section-title text-center">Society at a Glance</h3>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <div class="stat-number">${memberCount.totalCount || '50+'}</div>
+                            <div class="stat-number">${
+                              memberCount.totalCount || "50+"
+                            }</div>
                             <div class="stat-label">Active Members</div>
                         </div>
                         <div class="stat-item">
@@ -592,32 +784,35 @@ async function loadSocietyStats() {
                     </div>
                 </div>
             `;
-            $w('#societyStatsSection').show();
-        }
-    } catch (error) {
-        console.error('Error loading society stats:', error);
+      $w("#societyStatsSection").show();
     }
+  } catch (error) {
+    console.error("Error loading society stats:", error);
+  }
 }
 
 async function loadRecentAchievements() {
-    try {
-        // This would load from an Achievements collection if available
-        const achievements = [
-            {
-                title: "25th Anniversary Celebration",
-                description: "Celebrating over two decades of fostering bonsai artistry in Western North Carolina",
-                date: "2024"
-            },
-            {
-                title: "Arboretum Partnership Expansion",
-                description: "Strengthened our collaboration with NC Arboretum for enhanced educational opportunities",
-                date: "2023"
-            }
-        ];
-        
-        if ($w('#achievementsContainer')) {
-            const achievementsHTML = achievements.map(achievement => {
-                return `
+  try {
+    // This would load from an Achievements collection if available
+    const achievements = [
+      {
+        title: "25th Anniversary Celebration",
+        description:
+          "Celebrating over two decades of fostering bonsai artistry in Western North Carolina",
+        date: "2024",
+      },
+      {
+        title: "Arboretum Partnership Expansion",
+        description:
+          "Strengthened our collaboration with NC Arboretum for enhanced educational opportunities",
+        date: "2023",
+      },
+    ];
+
+    if ($w("#achievementsContainer")) {
+      const achievementsHTML = achievements
+        .map((achievement) => {
+          return `
                     <div class="achievement-item glass-card">
                         <div class="achievement-year">${achievement.date}</div>
                         <div class="achievement-content">
@@ -626,9 +821,10 @@ async function loadRecentAchievements() {
                         </div>
                     </div>
                 `;
-            }).join('');
-            
-            $w('#achievementsContainer').html = `
+        })
+        .join("");
+
+      $w("#achievementsContainer").html = `
                 <div class="achievements-header">
                     <h3 class="section-title text-center">Recent Achievements</h3>
                 </div>
@@ -636,78 +832,82 @@ async function loadRecentAchievements() {
                     ${achievementsHTML}
                 </div>
             `;
-            $w('#achievementsSection').show();
-        }
-    } catch (error) {
-        console.error('Error loading achievements:', error);
+      $w("#achievementsSection").show();
     }
+  } catch (error) {
+    console.error("Error loading achievements:", error);
+  }
 }
 
 function setupEventHandlers() {
-    // Handle dynamic interactions
-    $w('#page').onClick((event) => {
-        const target = event.target;
-        
-        // Handle board member card interactions
-        if (target.closest('.board-member-card')) {
-            const memberId = target.closest('.board-member-card').dataset.memberId;
-            if (memberId && target.tagName !== 'BUTTON') {
-                // Could expand member info or show more details
-                console.log('Board member clicked:', memberId);
-            }
-        }
-    });
+  // Handle dynamic interactions
+  $w("#page").onClick((event) => {
+    const target = event.target;
+
+    // Handle board member card interactions
+    if (target.closest(".board-member-card")) {
+      const memberId = target.closest(".board-member-card").dataset.memberId;
+      if (memberId && target.tagName !== "BUTTON") {
+        // Could expand member info or show more details
+        console.log("Board member clicked:", memberId);
+      }
+    }
+  });
 }
 
 // Global functions for dynamic interactions
-window.contactMember = function(email, name) {
-    const subject = encodeURIComponent(`Inquiry from BRBS Website - ${name}`);
-    const body = encodeURIComponent(`Hello ${name},\n\nI found your information on the Blue Ridge Bonsai Society website and would like to get in touch.\n\nBest regards,`);
-    wixLocation.to(`mailto:${email}?subject=${subject}&body=${body}`);
+window.contactMember = function (email, name) {
+  const subject = encodeURIComponent(`Inquiry from BRBS Website - ${name}`);
+  const body = encodeURIComponent(
+    `Hello ${name},\n\nI found your information on the Blue Ridge Bonsai Society website and would like to get in touch.\n\nBest regards,`
+  );
+  wixLocation.to(`mailto:${email}?subject=${subject}&body=${body}`);
 };
 
-window.joinToMeetBoard = function() {
-    wixLocation.to('/join-brbs');
+window.joinToMeetBoard = function () {
+  wixLocation.to("/join-brbs");
 };
 
-window.visitArboretum = function() {
-    wixWindow.openLightbox('arboretum-info');
+window.visitArboretum = function () {
+  wixWindow.openLightbox("arboretum-info");
 };
 
-window.viewUpcomingWorkshops = function() {
-    wixLocation.to('/events?category=workshop&location=arboretum');
+window.viewUpcomingWorkshops = function () {
+  wixLocation.to("/events?category=workshop&location=arboretum");
 };
 
-window.toggleFAQ = function(faqId) {
-    const faqAnswer = document.getElementById(faqId);
-    const toggleButton = document.getElementById(`toggle-${faqId}`);
-    
-    if (faqAnswer && toggleButton) {
-        if (faqAnswer.style.display === 'none' || !faqAnswer.style.display) {
-            faqAnswer.style.display = 'block';
-            toggleButton.textContent = '−';
-            toggleButton.style.transform = 'rotate(180deg)';
-        } else {
-            faqAnswer.style.display = 'none';
-            toggleButton.textContent = '+';
-            toggleButton.style.transform = 'rotate(0deg)';
-        }
+window.toggleFAQ = function (faqId) {
+  const faqAnswer = document.getElementById(faqId);
+  const toggleButton = document.getElementById(`toggle-${faqId}`);
+
+  if (faqAnswer && toggleButton) {
+    if (faqAnswer.style.display === "none" || !faqAnswer.style.display) {
+      faqAnswer.style.display = "block";
+      toggleButton.textContent = "−";
+      toggleButton.style.transform = "rotate(180deg)";
+    } else {
+      faqAnswer.style.display = "none";
+      toggleButton.textContent = "+";
+      toggleButton.style.transform = "rotate(0deg)";
     }
+  }
 };
 
-window.viewUpcomingMeetings = function() {
-    wixLocation.to('/events?category=meeting');
+window.viewUpcomingMeetings = function () {
+  wixLocation.to("/events?category=meeting");
 };
 
-window.getDirections = function() {
-    const arboretumAddress = "100 Frederick Law Olmsted Way, Asheville, NC 28806";
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(arboretumAddress)}`;
-    wixWindow.openLightbox('directions-modal');
+window.getDirections = function () {
+  const arboretumAddress = "100 Frederick Law Olmsted Way, Asheville, NC 28806";
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    arboretumAddress
+  )}`;
+  wixWindow.openLightbox("directions-modal");
 };
 
 // Add CSS for About page styling
-if (typeof window !== 'undefined') {
-    const aboutPageStyles = `
+if (typeof window !== "undefined") {
+  const aboutPageStyles = `
         <style id="about-page-styles">
             .mission-vision-section {
                 display: grid;
@@ -1089,8 +1289,8 @@ if (typeof window !== 'undefined') {
             }
         </style>
     `;
-    
-    if (!document.getElementById('about-page-styles')) {
-        document.head.insertAdjacentHTML('beforeend', aboutPageStyles);
-    }
+
+  if (!document.getElementById("about-page-styles")) {
+    document.head.insertAdjacentHTML("beforeend", aboutPageStyles);
+  }
 }

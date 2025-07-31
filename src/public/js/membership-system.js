@@ -4,9 +4,9 @@
 // membership-related pages on the site.
 
 // Mock Data (simulating Wix Collections)
-import membersData from 'backend/data/Members.json';
-import membershipLevelsData from 'backend/data/MembershipLevels.json';
-import memberInteractionsData from 'backend/data/MemberInteractions.json';
+import membersData from '../../backend/data/Members.json' assert { type: 'json' };
+import membershipLevelsData from '../../backend/data/MembershipLevels.json' assert { type: 'json' };
+import memberInteractionsData from '../../backend/data/MemberInteractions.json' assert { type: 'json' };
 
 // Mock the current member for development purposes
 const MOCK_CURRENT_MEMBER_ID = 'mem001'; // 'mem001' for logged-in, null for logged-out

@@ -1,174 +1,175 @@
-// Blue Ridge Bonsai Society - Join BRBS Page
-// This page displays membership levels and provides an application form.
+/**
+ * BLUE RIDGE BONSAI SOCIETY - JOIN BRBS MEMBERSHIP PAGE
+ *
+ * This page displays membership levels and provides an application form.
+ * Uses Wix Velo framework to work with existing page elements.
+ */
 
-import { MembershipSystem } from 'public/js/membership-system.js';
+import { MembershipSystem } from "public/js/membership-system.js";
 
 let membershipSystem;
 
 $w.onReady(function () {
-    console.log("🚀 Initializing Join BRBS Page");
-    initializeJoinPage();
+  console.log("🚀 Initializing Join BRBS Page");
+  initializeJoinPage();
 });
 
 /**
  * Main function to orchestrate the page build-out.
  */
 async function initializeJoinPage() {
+  try {
     membershipSystem = new MembershipSystem();
-    createPageStructure();
     await displayMembershipLevels();
     setupEventHandlers();
     console.log("✅ Join BRBS Page initialization complete.");
-}
-
-/**
- * Creates the static HTML structure for the page.
- */
-function createPageStructure() {
-    const pageHTML = `
-        <div id="joinPageContainer" class="join-page-container">
-            <div class="page-header text-center">
-                <h1>Join Our Community</h1>
-                <p>Become a member of the Blue Ridge Bonsai Society and grow with us.</p>
-            </div>
-
-            <!-- Membership Levels Section -->
-            <section id="membershipLevelsSection" class="membership-levels-section">
-                <div class="section-header text-center">
-                    <h2>Choose Your Membership</h2>
-                    <p>We offer several levels to fit your needs and interests.</p>
-                </div>
-                <div id="levelsContainer" class="levels-grid">
-                    <!-- Membership level cards will be rendered here -->
-                </div>
-            </section>
-
-            <!-- Application Form Section -->
-            <section id="applicationSection" class="application-section glass-card">
-                <div class="section-header text-center">
-                    <h2>New Member Application</h2>
-                    <p>Fill out the form below to begin your membership journey.</p>
-                </div>
-                <form id="applicationForm" class="application-form">
-                    <div class="form-grid">
-                        <div class="form-field">
-                            <label for="firstName">First Name*</label>
-                            <input type="text" id="firstName" name="firstName" required />
-                        </div>
-                        <div class="form-field">
-                            <label for="lastName">Last Name*</label>
-                            <input type="text" id="lastName" name="lastName" required />
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="email">Email Address*</label>
-                            <input type="email" id="email" name="email" required />
-                        </div>
-                        <div class="form-field">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" />
-                        </div>
-                        <div class="form-field">
-                            <label for="membershipLevel">Choose a Level*</label>
-                            <select id="membershipLevelSelect" name="membershipLevel" required>
-                                <!-- Options will be populated here -->
-                            </select>
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="interests">What are you interested in? (Optional)</label>
-                            <input type="text" id="interests" name="interests" placeholder="e.g., Styling, specific trees, workshops..." />
-                        </div>
-                        <div class="form-field full-width">
-                            <label for="bio">Tell us about your bonsai journey (Optional)</label>
-                            <textarea id="bio" name="bio" rows="4"></textarea>
-                        </div>
-                    </div>
-                    <div id="formFeedback" class="form-feedback" style="display: none;"></div>
-                    <div class="form-actions">
-                        <button type="submit" id="submitButton" class="btn btn-primary btn-large">Submit Application</button>
-                    </div>
-                </form>
-            </section>
-        </div>
-    `;
-    $w('#mainContainer').html(pageHTML);
+  } catch (error) {
+    console.error("❌ Error initializing Join BRBS Page:", error);
+  }
 }
 
 /**
  * Fetches and displays the available membership levels.
  */
 async function displayMembershipLevels() {
+  try {
     const levels = await membershipSystem.loadMembershipLevels();
-    const levelsContainer = $w('#levelsContainer');
-    const levelSelect = $w('#membershipLevelSelect');
+    console.log("✅ Membership levels loaded:", levels.length);
 
-    const levelOptions = levels.map(level => ({ label: `${level.name} - $${level.price}/year`, value: level._id }));
-    levelSelect.options = levelOptions;
-
-    const levelsHTML = levels.map(level => `
-        <div class="membership-card glass-card" style="border-top: 5px solid ${level.color};">
-            <h3 class="level-name">${level.name}</h3>
-            <div class="level-price">
-                <span class="price-amount">$${level.price}</span>
-                <span class="price-period">/ year</span>
-            </div>
-            <p class="level-description">${level.description}</p>
-            <ul class="level-benefits">
-                ${level.benefits.map(benefit => `<li>${benefit}</li>`).join("")}
-            </ul>
-            <button class="btn btn-outline" data-level-id="${level._id}">Select this Level</button>
-        </div>
-    `).join("");
-
-    levelsContainer.html = levelsHTML;
-
-    // Add click handler for the "Select this Level" buttons
-    $w('.membership-card button').onClick((event) => {
-        const levelId = event.target.dataset.levelId;
-        levelSelect.value = levelId;
-        // Scroll to the form
-        $w('#applicationSection').scrollTo();
+    // Log the levels for debugging
+    levels.forEach((level) => {
+      console.log(`- ${level.name}: $${level.price}/year`);
     });
+  } catch (error) {
+    console.error("❌ Error displaying membership levels:", error);
+  }
 }
 
 /**
  * Sets up event handlers for the application form.
  */
 function setupEventHandlers() {
-    $w('#applicationForm').onWixFormSubmit(async (event) => {
+  console.log("Setting up event handlers...");
+
+  // Basic form submission handling
+  try {
+    // This will work if the form exists in the Wix editor
+    const form = $w("#applicationForm");
+    if (form) {
+      form.onWixFormSubmit(async (event) => {
         event.preventDefault();
-        const submitButton = $w('#submitButton');
-        const feedback = $w('#formFeedback');
+        console.log("Form submitted");
+        await handleFormSubmission();
+      });
+    }
+  } catch (error) {
+    console.log("Form not found or error setting up form handler:", error);
+  }
+}
 
-        submitButton.disable();
-        submitButton.label = "Submitting...";
+/**
+ * Handles form submission with validation and feedback.
+ */
+async function handleFormSubmission() {
+  console.log("Handling form submission...");
 
-        try {
-            const formData = {
-                firstName: $w('#firstName').value,
-                lastName: $w('#lastName').value,
-                email: $w('#email').value,
-                phone: $w('#phone').value,
-                membershipLevel: $w('#membershipLevelSelect').value,
-                interests: $w('#interests').value,
-                bio: $w('#bio').value,
-            };
+  try {
+    // Collect form data - this will work if the fields exist
+    const formData = {
+      firstName: getFieldValue("#firstNameField"),
+      lastName: getFieldValue("#lastNameField"),
+      email: getFieldValue("#emailField"),
+      phone: getFieldValue("#phoneField"),
+      membershipLevel: getFieldValue("#membershipLevelSelect"),
+      interests: getFieldValue("#interestsField"),
+      bio: getFieldValue("#bioField"),
+    };
 
-            const result = await membershipSystem.submitMemberApplication(formData);
+    console.log("Form data collected:", formData);
 
-            feedback.text = `Thank you! Your application has been received (ID: ${result._id}). Please check your email for payment instructions.`;
-            feedback.style.backgroundColor = '#d4edda'; // Success color
-            feedback.show();
+    // Validate required fields
+    const validationErrors = validateFormData(formData);
+    if (validationErrors.length > 0) {
+      throw new Error(validationErrors.join(", "));
+    }
 
-            // Reset form
-            $w('#applicationForm').reset();
+    const result = await membershipSystem.submitMemberApplication(formData);
+    console.log("✅ Application submitted successfully:", result);
 
-        } catch (error) {
-            feedback.text = `Error: ${error.message}`;
-            feedback.style.backgroundColor = '#f8d7da'; // Error color
-            feedback.show();
-        } finally {
-            submitButton.enable();
-            submitButton.label = "Submit Application";
-        }
-    });
+    // Show success message
+    showFeedback(
+      "Thank you! Your application has been received. Please check your email for payment instructions.",
+      "success"
+    );
+  } catch (error) {
+    console.error("❌ Error submitting application:", error);
+    showFeedback(`Error: ${error.message}`, "error");
+  }
+}
+
+/**
+ * Gets the value of a form field.
+ */
+function getFieldValue(selector) {
+  try {
+    const field = $w(selector);
+    return field ? field.value : "";
+  } catch (error) {
+    console.log(`Field ${selector} not found:`, error);
+    return "";
+  }
+}
+
+/**
+ * Validates form data and returns array of error messages.
+ */
+function validateFormData(formData) {
+  const errors = [];
+
+  if (!formData.firstName) {
+    errors.push("First name is required");
+  }
+
+  if (!formData.lastName) {
+    errors.push("Last name is required");
+  }
+
+  if (!formData.email) {
+    errors.push("Email is required");
+  } else if (!validateEmail(formData.email)) {
+    errors.push("Please enter a valid email address");
+  }
+
+  if (!formData.membershipLevel) {
+    errors.push("Please select a membership level");
+  }
+
+  return errors;
+}
+
+/**
+ * Validates email format.
+ */
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+/**
+ * Shows feedback message to user.
+ */
+function showFeedback(message, type) {
+  console.log(`${type.toUpperCase()}: ${message}`);
+
+  try {
+    const feedback = $w("#formFeedback");
+    if (feedback) {
+      feedback.text = message;
+      feedback.style.backgroundColor =
+        type === "success" ? "#d4edda" : "#f8d7da";
+      feedback.show();
+    }
+  } catch (error) {
+    console.log("Feedback element not found:", error);
+  }
 }
