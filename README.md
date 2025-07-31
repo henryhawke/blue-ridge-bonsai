@@ -1,118 +1,94 @@
-# Blue Ridge Bonsai Society Website 🌸
-## Phase 2: Atmospheric UI & Design System - COMPLETE ✅
+# Blue Ridge Bonsai Society 🌸
 
-### 🌟 Advanced Bonsai-Themed Website with Liquid Glass Navigation
+This repository contains the code for the Blue Ridge Bonsai Society website, built on the Wix platform and using Velo.
 
-This is the Blue Ridge Bonsai Society website built with Wix Velo, featuring cutting-edge atmospheric UI design, liquid glass navigation, and comprehensive accessibility.
+This guide provides the correct instructions for setting up your local development environment, making changes, and seeing them on your Wix site.
 
-## Set up this repository in your IDE
-This repo is connected to a Wix site. That site tracks this repo's default branch. Any code committed and pushed to that branch from your local IDE appears on the site.
+**Please follow these instructions carefully. Previous documentation in this repository was incorrect.**
 
-Before getting started, make sure you have the following things installed:
-* [Git](https://git-scm.com/download)
-* [Node](https://nodejs.org/en/download/), version 14.8 or later.
-* [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) or [yarn](https://yarnpkg.com/getting-started/install)
-* An SSH key [added to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
+## How Velo Integration Works
 
-To set up your local environment and start coding locally, do the following:
+Your Wix site is connected to this GitHub repository. However, simply committing and pushing changes to the `main` branch is **not** enough to make them appear on your live site.
 
-1. Open your terminal and navigate to where you want to store the repo.
-1. Clone the repo by running `git clone <your-repository-url>`.
-1. Navigate to the repo's directory by running `cd <directory-name>`.
-1. Install the repo's dependencies by running `npm install` or `yarn install`.
-1. Install the Wix CLI by running `npm install -g @wix/cli` or `yarn global add @wix/cli`.  
-   Once you've installed the CLI globally, you can use it with any Wix site's repo.
+You must use the **Wix Local Editor** to see your code changes and then **publish** the site from the Wix Editor to make them live.
 
-For more information, see [Setting up Git Integration & Wix CLI](https://support.wix.com/en/article/velo-setting-up-git-integration-wix-cli-beta).
+## Step 1: Set Up Your Local Environment
 
-## Write Velo code in your IDE
-Once your repo is set up, you can write code in it as you would in any other non-Wix project. The repo's file structure matches the [public](https://support.wix.com/en/article/velo-working-with-the-velo-sidebar#public), [backend](https://support.wix.com/en/article/velo-working-with-the-velo-sidebar#backend), and [page code](https://support.wix.com/en/article/velo-working-with-the-velo-sidebar#page-code) sections in Editor X.
+First, you need to set up your computer to work with Velo.
 
-Learn more about [this repo's file structure](https://support.wix.com/en/article/velo-understanding-your-sites-github-repository-beta).
+1.  **Install Prerequisites:**
+    *   [Git](https://git-scm.com/download)
+    *   [Node.js](https://nodejs.org/en/download/) (version 14.8 or later)
+    *   [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) (comes with Node.js)
 
-## Test your code with the Local Editor
-The Local Editor allows you test changes made to your site in real time. The code in your local IDE is synced with the Local Editor, so you can test your changes before committing them to your repo. You can also change the site design in the Local Editor and sync it with your IDE.
+2.  **Clone the Repository:**
+    Open your terminal, navigate to where you want to store your project, and run:
+    ```bash
+    git clone <your-repository-url>
+    cd <repository-directory-name>
+    ```
 
-Start the Local Editor by navigating to this repo's directory in your terminal and running `wix dev`.
+3.  **Install Dependencies:**
+    Install the necessary packages for the project:
+    ```bash
+    npm install
+    ```
 
-For more information, see [Working with the Local Editor](https://support.wix.com/en/article/velo-working-with-the-local-editor-beta).
+4.  **Install the Wix CLI:**
+    The Wix Command Line Interface (CLI) is required to work with your site locally. Install it globally:
+    ```bash
+    npm install -g @wix/cli
+    ```
 
-## Preview and publish with the Wix CLI
-The Wix CLI is a tool that allows you to work with your site locally from your computer's terminal. You can use it to build a preview version of your site and publish it. You can also use the CLI to install [approved npm packages](https://support.wix.com/en/article/velo-working-with-npm-packages) to your site.
+## Step 2: Start the Local Development Server
 
-Learn more about [working with the Wix CLI](https://support.wix.com/en/article/velo-working-with-the-wix-cli-beta).
+The Wix Local Editor is a local version of the Wix Editor that runs on your computer and syncs with your local code files. This is where you will see your changes reflected in real-time.
 
-## 🚀 Features Implemented
+1.  **Log in to Wix:**
+    In your terminal, run the following command to log in to your Wix account:
+    ```bash
+    wix login
+    ```
+    This will open a browser window for you to log in.
 
-**Phase 1: Liquid Glass Navigation & Information Architecture**
-- ✅ Advanced liquid glass navigation with backdrop-filter effects
-- ✅ Content-aware theming and auto-hide functionality  
-- ✅ Complete information architecture with 50+ mapped pages
-- ✅ Comprehensive accessibility (WCAG 2.1 AA compliance)
-- ✅ Wix Velo integration with member authentication
+2.  **Start the Dev Server:**
+    From the root directory of your project, run:
+    ```bash
+    wix dev
+    ```
+    This command will do two things:
+    *   It will open the **Wix Local Editor** on your computer.
+    *   It will watch your local files for changes and sync them with the Local Editor instantly.
 
-**Phase 2: Atmospheric UI & Design System**
-- ✅ Comprehensive design system with Blue Ridge color palette
-- ✅ Glassmorphism components (cards, buttons, modals, forms)
-- ✅ Advanced animation system with performance optimization
-- ✅ Responsive grid and layout system
-- ✅ Micro-interactions and hover effects
-- ✅ Interactive component library with auto-initialization
-- ✅ Seasonal atmospheric effects (floating leaves/petals)
-- ✅ Time-based theming (morning/day/evening)
+## Step 3: Making and Viewing Code Changes
 
-## 🎨 Design System
+Now you can start coding!
 
-**Color Palette:**
-- Primary: Mountain Sage (#6B8E6F)
-- Secondary: Cloud White (#FEFFFE), Mountain Haze (#E8EDE9)
-- Accent: Autumn Gold (#D4A574)
-- Semantic: Success, Warning, Error, Info colors
+1.  **Edit the Code:**
+    Open the project in your favorite code editor (like VS Code). You can now edit the files in the `src` directory. For example, you can change styles in `src/public/global.css` or add logic to `src/pages/masterPage.js`.
 
-**Typography:**
-- Font: Inter (300-800 weights)
-- Modular scale (1.250 ratio)
-- Responsive sizing
+2.  **View Changes in the Local Editor:**
+    As you save your files, the `wix dev` command will automatically sync them to the Local Editor. You can see your changes reflected there immediately. Use the "Preview" mode in the Local Editor to see the site as a visitor would.
 
-**Components:**
-- Glass Cards (12+ variants)
-- Atmospheric Buttons
-- Interactive Forms
-- Progress Indicators
-- Notifications/Toasts
-- Modals with backdrop effects
+    This is the primary way you should be developing and testing your code.
 
-## 📱 Usage for Wix Elements
+## Step 4: Publishing Your Site
 
-```html
-<!-- Convert any element to a glass card -->
-<div data-card-type="feature" data-component="card">Content</div>
+When you are happy with your changes in the Local Editor, you need to publish them to make them live on your actual website.
 
-<!-- Make buttons atmospheric -->
-<button data-component="button" data-variant="primary">Click Me</button>
+1.  **Sync to the Wix Editor:**
+    In the Local Editor, your changes are synced automatically. You can open your live site editor on wix.com to see the changes there as well.
 
-<!-- Add progress bars -->
-<div data-component="progress" data-progress="75" data-progress-max="100"></div>
-```
+2.  **Publish:**
+    Click the **Publish** button in the main Wix Editor (the one in your browser) to make your changes live for everyone to see.
 
-## 🌐 Live Integration
+## Summary of the Correct Workflow
 
-The website automatically applies:
+1.  Run `wix dev` in your terminal.
+2.  Edit code in your local IDE.
+3.  See changes in the Local Editor that opened.
+4.  When ready, go to the main Wix Editor online and click **Publish**.
 
-1. **Atmospheric Theming**: Pages detect theme based on content
-2. **Seasonal Effects**: Animations change based on current month
-3. **Time-based Adjustments**: Different looks for morning/day/evening
-4. **Component Auto-Discovery**: Elements become interactive automatically
-5. **Full Accessibility**: WCAG 2.1 AA compliance with screen reader support
+---
 
-## 📊 Performance & Accessibility
-
-- Hardware-accelerated animations
-- Intersection Observers for scroll effects
-- WCAG 2.1 AA compliant
-- Screen reader support
-- Keyboard navigation
-- Reduced motion preferences
-- High contrast mode support
-
-**Ready for real-time viewing in Wix Studio! 🚀**
+This repository has been updated to use a simpler, more robust method for applying styles and custom functionality that follows Velo best practices. The previous complex "workaround system" has been removed.
