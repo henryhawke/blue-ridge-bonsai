@@ -90,7 +90,7 @@ import { initAnalytics, trackPageView } from "public/js/analytics-tracking.js";
 
 // Initialize the master page when ready
 try {
-  if (typeof $w !== 'undefined' && $w.onReady) {
+  if (typeof $w !== "undefined" && $w.onReady) {
     $w.onReady(function () {
       // This function runs on every page of your site.
       console.log("Master page script loaded.");

@@ -5,9 +5,11 @@
  * Uses Wix Velo framework to work with existing page elements.
  */
 
-import { MembershipSystem } from "public/js/membership-system.js";
-
-let membershipSystem;
+// Import backend functions
+import {
+  getMembershipLevels,
+  submitMemberApplication,
+} from "backend/membership-backend.jsw";
 
 $w.onReady(function () {
   console.log("🚀 Initializing Join BRBS Page");
@@ -19,7 +21,6 @@ $w.onReady(function () {
  */
 async function initializeJoinPage() {
   try {
-    membershipSystem = new MembershipSystem();
     await displayMembershipLevels();
     setupEventHandlers();
     console.log("✅ Join BRBS Page initialization complete.");
@@ -33,13 +34,27 @@ async function initializeJoinPage() {
  */
 async function displayMembershipLevels() {
   try {
-    const levels = await membershipSystem.loadMembershipLevels();
+    const levels = await getMembershipLevels();
     console.log("✅ Membership levels loaded:", levels.length);
 
     // Log the levels for debugging
     levels.forEach((level) => {
       console.log(`- ${level.name}: $${level.price}/year`);
     });
+
+    // Populate dropdown if it exists
+    try {
+      const levelSelect = $w("#membershipLevelSelect");
+      if (levelSelect) {
+        const levelOptions = levels.map((level) => ({
+          label: `${level.name} - $${level.price}/year`,
+          value: level._id,
+        }));
+        levelSelect.options = levelOptions;
+      }
+    } catch (error) {
+      console.log("Membership level dropdown not found:", error);
+    }
   } catch (error) {
     console.error("❌ Error displaying membership levels:", error);
   }
@@ -93,7 +108,7 @@ async function handleFormSubmission() {
       throw new Error(validationErrors.join(", "));
     }
 
-    const result = await membershipSystem.submitMemberApplication(formData);
+    const result = await submitMemberApplication(formData);
     console.log("✅ Application submitted successfully:", result);
 
     // Show success message

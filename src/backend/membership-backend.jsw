@@ -1,0 +1,182 @@
+// Blue Ridge Bonsai Society - Membership Backend
+// This file contains backend functions for membership operations
+
+import wixData from 'wix-data';
+import wixUsers from 'wix-users';
+import { sendEmail } from 'wix-email';
+
+/**
+ * Gets all active membership levels
+ */
+export async function getMembershipLevels() {
+  try {
+    const levels = await wixData.query('MembershipLevels')
+      .eq('isActive', true)
+      .ascending('sortOrder')
+      .find();
+    
+    return levels.items;
+  } catch (error) {
+    console.error('Error getting membership levels:', error);
+    throw new Error('Failed to load membership levels');
+  }
+}
+
+/**
+ * Submits a new member application
+ */
+export async function submitMemberApplication(applicationData) {
+  try {
+    // Basic validation
+    if (!applicationData.email || !applicationData.firstName || !applicationData.lastName) {
+      throw new Error("Email, first name, and last name are required.");
+    }
+
+    // Check if member already exists
+    const existingMember = await wixData.query('Members')
+      .eq('email', applicationData.email)
+      .find();
+    
+    if (existingMember.items.length > 0) {
+      throw new Error("A member with this email already exists.");
+    }
+
+    // Create the application record
+    const newApplication = {
+      ...applicationData,
+      applicationDate: new Date(),
+      status: 'pending_payment',
+      source: 'website_application'
+    };
+
+    const result = await wixData.insert('MemberApplications', newApplication);
+    
+    // Send confirmation email
+    await sendApplicationConfirmation(applicationData.email, applicationData.firstName);
+    
+    return result;
+  } catch (error) {
+    console.error('Error submitting application:', error);
+    throw error;
+  }
+}
+
+/**
+ * Gets the current member's profile
+ */
+export async function getCurrentMemberProfile() {
+  try {
+    const currentUser = wixUsers.currentUser;
+    if (!currentUser || !currentUser.email) {
+      return null;
+    }
+
+    const memberQuery = await wixData.query('Members')
+      .eq('loginEmail', currentUser.email)
+      .find();
+    
+    return memberQuery.items.length > 0 ? memberQuery.items[0] : null;
+  } catch (error) {
+    console.error('Error getting current member profile:', error);
+    return null;
+  }
+}
+
+/**
+ * Checks membership status
+ */
+export async function checkMembershipStatus() {
+  try {
+    const member = await getCurrentMemberProfile();
+    if (!member) {
+      return { 
+        isActive: false, 
+        needsRenewal: false, 
+        daysUntilExpiry: 0, 
+        isExpired: true 
+      };
+    }
+
+    const now = new Date();
+    const expirationDate = new Date(member.expirationDate);
+    const diffTime = expirationDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return {
+      isActive: member.isActive && diffDays > 0,
+      needsRenewal: diffDays <= 30 && diffDays > 0,
+      daysUntilExpiry: diffDays > 0 ? diffDays : 0,
+      isExpired: diffDays <= 0,
+      levelName: member.membershipLevel,
+      memberId: member._id
+    };
+  } catch (error) {
+    console.error('Error checking membership status:', error);
+    return { 
+      isActive: false, 
+      needsRenewal: false, 
+      daysUntilExpiry: 0, 
+      isExpired: true 
+    };
+  }
+}
+
+/**
+ * Sends application confirmation email
+ */
+async function sendApplicationConfirmation(email, firstName) {
+  try {
+    await sendEmail({
+      to: email,
+      subject: "Welcome to Blue Ridge Bonsai Society - Application Received",
+      body: `
+        Dear ${firstName},
+        
+        Thank you for your application to join the Blue Ridge Bonsai Society!
+        
+        We have received your application and will review it shortly. You will receive 
+        payment instructions within 24-48 hours.
+        
+        If you have any questions, please don't hesitate to contact us.
+        
+        Best regards,
+        The Blue Ridge Bonsai Society Team
+      `
+    });
+  } catch (error) {
+    console.error('Error sending confirmation email:', error);
+  }
+}
+
+/**
+ * Gets all members (admin function)
+ */
+export async function getAllMembers() {
+  try {
+    const members = await wixData.query('Members')
+      .ascending('lastName')
+      .find();
+    
+    return members.items;
+  } catch (error) {
+    console.error('Error getting all members:', error);
+    return [];
+  }
+}
+
+/**
+ * Gets pending applications (admin function)
+ */
+export async function getPendingApplications() {
+  try {
+    const applications = await wixData.query('MemberApplications')
+      .eq('status', 'pending_payment')
+      .descending('applicationDate')
+      .find();
+    
+    return applications.items;
+  } catch (error) {
+    console.error('Error getting pending applications:', error);
+    return [];
+  }
+} 

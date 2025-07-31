@@ -2,31 +2,60 @@
   {
     "_id": "int001",
     "memberId": "mem001",
-    "type": "Workshop Registration",
-    "description": "Registered for Beginner's Bonsai Workshop (evt001)",
-    "date": "2025-07-22T10:00:00Z",
-    "relatedItem": "evt001",
-    "staffMember": "admin",
-    "followUpRequired": false
+    "type": "workshop_attended",
+    "date": "2024-11-15T10:00:00Z",
+    "details": {
+      "workshopName": "Basic Styling Workshop",
+      "instructor": "John Smith",
+      "duration": "3 hours",
+      "location": "Arboretum Education Center"
+    }
   },
   {
     "_id": "int002",
-    "memberId": "mem002",
-    "type": "New Member Application",
-    "description": "Submitted application for Standard Membership.",
-    "date": "2024-02-28T11:00:00Z",
-    "relatedItem": "lvl001",
-    "staffMember": "admin",
-    "followUpRequired": false
+    "memberId": "mem001",
+    "type": "forum_post",
+    "date": "2024-11-10T14:30:00Z",
+    "details": {
+      "forumCategory": "General Discussion",
+      "postTitle": "My first styling attempt",
+      "postContent": "Just tried my first wiring on a juniper...",
+      "replies": 5
+    }
   },
   {
     "_id": "int003",
     "memberId": "mem001",
-    "type": "Membership Renewal",
-    "description": "Renewed Premium Membership for another year.",
-    "date": "2025-01-10T11:00:00Z",
-    "relatedItem": "lvl002",
-    "staffMember": "system",
-    "followUpRequired": false
+    "type": "meeting_attended",
+    "date": "2024-11-08T19:00:00Z",
+    "details": {
+      "meetingType": "Monthly Meeting",
+      "topic": "Winter Care for Bonsai",
+      "speaker": "Dr. Emily Wilson",
+      "attendance": 45
+    }
+  },
+  {
+    "_id": "int004",
+    "memberId": "mem002",
+    "type": "resource_downloaded",
+    "date": "2024-11-12T09:15:00Z",
+    "details": {
+      "resourceName": "Beginner's Guide to Bonsai",
+      "resourceType": "PDF",
+      "fileSize": "2.3 MB"
+    }
+  },
+  {
+    "_id": "int005",
+    "memberId": "mem002",
+    "type": "workshop_registered",
+    "date": "2024-11-13T16:45:00Z",
+    "details": {
+      "workshopName": "Watering Techniques",
+      "date": "2024-12-05T10:00:00Z",
+      "instructor": "Sarah Johnson",
+      "status": "confirmed"
+    }
   }
 ]
