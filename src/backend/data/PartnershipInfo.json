@@ -1,0 +1,19 @@
+{
+  "_id": "pi001",
+  "partnerName": "The North Carolina Arboretum",
+  "content": "The Blue Ridge Bonsai Society is proud to have a long-standing partnership with The North Carolina Arboretum. This collaboration allows us to host our annual Spring Exhibition in their world-class facilities, surrounded by one of the most beautiful and diverse natural settings in the Appalachians. The Arboretum's commitment to education and horticulture aligns perfectly with our mission. Together, we work to bring the art of bonsai to a wider audience and provide unique learning opportunities for our members and the public.",
+  "images": [
+    "https://static.wixstatic.com/media/c837a6_f82fed81323f4b86a333f11082f55979~mv2.jpg/v1/fill/w_980,h_654,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/c837a6_f82fed81323f4b86a333f11082f55979~mv2.jpg",
+    "https://static.wixstatic.com/media/nsplsh_6f6c6d326e4b47514a3951~mv2.jpg/v1/fill/w_980,h_1470,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/nsplsh_6f6c6d326e4b47514a3951~mv2.jpg"
+  ],
+  "links": [
+    {
+      "title": "Visit the NC Arboretum Website",
+      "url": "https://www.ncarboretum.org/"
+    },
+    {
+      "title": "View Upcoming Joint Events",
+      "url": "/events?partner=nc-arboretum"
+    }
+  ]
+}

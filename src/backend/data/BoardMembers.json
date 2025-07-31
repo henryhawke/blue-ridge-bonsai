@@ -1,0 +1,34 @@
+[
+  {
+    "_id": "bm001",
+    "name": "David Anderson",
+    "role": "President",
+    "bio": "David has been practicing bonsai for over 20 years and is passionate about sharing his knowledge with the community. He specializes in native Appalachian species.",
+    "photo": "https://static.wixstatic.com/media/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e9e6a757613c49e495e5a1b5d9a9a3f9~mv2.jpg",
+    "contactInfo": "president@brbs.org"
+  },
+  {
+    "_id": "bm002",
+    "name": "Maria Garcia",
+    "role": "Vice President",
+    "bio": "Maria brings a modern aesthetic to traditional bonsai forms. She is an expert in shohin and mame bonsai and leads many of our workshops.",
+    "photo": "https://static.wixstatic.com/media/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_a2e8c8b0553743a68a5c3a2f8c5b6b8b~mv2.jpg",
+    "contactInfo": "vp@brbs.org"
+  },
+  {
+    "_id": "bm003",
+    "name": "James Chen",
+    "role": "Treasurer",
+    "bio": "With a keen eye for detail, James manages the society's finances and ensures our events and programs are sustainable. He also has a fine collection of junipers.",
+    "photo": "https://static.wixstatic.com/media/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_e5b5a0b7e3a54b78a4b8a2b5c8b5b8b6~mv2.jpg",
+    "contactInfo": "treasurer@brbs.org"
+  },
+  {
+    "_id": "bm004",
+    "name": "Susan White",
+    "role": "Secretary",
+    "bio": "Susan is the organizational heart of our society, managing communications and recording our history. Her flowering bonsai are a highlight of our annual show.",
+    "photo": "https://static.wixstatic.com/media/c837a6_f82fed81323f4b86a333f11082f55979~mv2.jpg/v1/fill/w_200,h_200,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/c837a6_f82fed81323f4b86a333f11082f55979~mv2.jpg",
+    "contactInfo": "secretary@brbs.org"
+  }
+]

@@ -1,13 +1,16 @@
 // Member Dashboard Page - Blue Ridge Bonsai Society
-// Phase 3: Member Dashboard and Authentication Flows
+// This page provides a personalized dashboard for logged-in members.
 
-import { currentMember } from 'wix-members';
-import wixLocationFrontend from 'wix-location-frontend';
+import { MembershipSystem } from 'public/js/membership-system.js';
+import { EventSystem } from 'public/js/event-system.js';
+import wixLocationFrontend from 'wix-location-frontend'; // Keep for navigation
+
+let membershipSystem;
+let eventSystem;
+let currentMember;
 
 $w.onReady(function () {
     console.log('🏡 Member Dashboard Page Loaded');
-    
-    // Initialize member dashboard
     initializeMemberDashboard();
 });
 
@@ -15,131 +18,81 @@ $w.onReady(function () {
  * Initialize member dashboard with authentication checks
  */
 async function initializeMemberDashboard() {
+    membershipSystem = new MembershipSystem();
+    eventSystem = new EventSystem();
+
     try {
-        // Check if user is logged in
-        const member = await currentMember.getMember();
+        currentMember = await membershipSystem.getCurrentMemberProfile();
         
-        if (!member) {
-            // Redirect to login if not authenticated
-            wixLocationFrontend.to('/login');
+        if (!currentMember) {
+            // In a real site, this would redirect to a login page.
+            console.log("No member logged in. Showing public view or redirecting.");
+            $w('#mainContainer').html = "<h1>Please log in to view your dashboard.</h1>";
+            // wixLocationFrontend.to('/login');
             return;
         }
         
         // Setup dashboard for authenticated member
-        await setupMemberDashboard(member);
+        await setupMemberDashboard();
         
     } catch (error) {
         console.error('❌ Error initializing member dashboard:', error);
-        // Redirect to home page on error
-        wixLocationFrontend.to('/');
+        $w('#mainContainer').html = "<h1>Error loading dashboard.</h1>";
+        // wixLocationFrontend.to('/');
     }
 }
 
 /**
  * Setup member dashboard interface
  */
-async function setupMemberDashboard(member) {
-    // Display member information
-    displayMemberInfo(member);
-    
-    // Setup dashboard sections
-    setupDashboardSections();
-    
-    // Load member's bonsai portfolio
-    await loadMemberPortfolio(member);
-    
-    // Setup dashboard navigation
-    setupDashboardNavigation();
-    
-    // Initialize dashboard widgets
+async function setupMemberDashboard() {
+    createDashboardStructure();
+    displayMemberInfo();
+    await loadUpcomingEvents();
     initializeDashboardWidgets();
-    
+    setupDashboardNavigation();
     console.log('✅ Member dashboard initialized successfully');
+}
+
+/**
+ * Creates the HTML structure for the dashboard.
+ */
+function createDashboardStructure() {
+    const dashboardHTML = `
+        <div class="dashboard-container">
+            <div id="welcomeMessage"></div>
+            <div class="dashboard-grid">
+                <div id="memberInfo" class="dashboard-widget"></div>
+                <div id="membershipStatus" class="dashboard-widget"></div>
+                <div id="quickActions" class="dashboard-widget full-width"></div>
+                <div id="upcomingEvents" class="dashboard-widget"></div>
+                <div id="memberStats" class="dashboard-widget"></div>
+                <div id="recentActivity" class="dashboard-widget"></div>
+            </div>
+        </div>
+    `;
+    $w('#mainContainer').html = dashboardHTML;
 }
 
 /**
  * Display member information in the dashboard
  */
-function displayMemberInfo(member) {
-    try {
-        // Update welcome message
-        const welcomeText = $w('#welcomeText');
-        if (welcomeText) {
-            welcomeText.text = `Welcome back, ${member.profile.nickname || member.loginEmail}!`;
-        }
-        
-        // Update member avatar
-        const memberAvatar = $w('#memberAvatar');
-        if (memberAvatar && member.profile.photo) {
-            memberAvatar.src = member.profile.photo;
-        }
-        
-        // Display member details
-        const memberDetails = $w('#memberDetails');
-        if (memberDetails) {
-            memberDetails.html = `
-                <div class="glass-card member-info">
-                    <h3>Member Information</h3>
-                    <p><strong>Email:</strong> ${member.loginEmail}</p>
-                    <p><strong>Member Since:</strong> ${new Date(member.dateCreated).toLocaleDateString()}</p>
-                    <p><strong>Status:</strong> Active Member</p>
-                </div>
-            `;
-        }
-        
-    } catch (error) {
-        console.error('❌ Error displaying member info:', error);
-    }
+function displayMemberInfo() {
+    $w('#welcomeMessage').html = `<h1>Welcome back, ${currentMember.firstName}!</h1>`;
+
+    $w('#memberInfo').html = `
+        <div class="glass-card">
+            <h3>Your Information</h3>
+            <img src="${currentMember.profileImage}" alt="Profile" style="width: 80px; height: 80px; border-radius: 50%;"/>
+            <p><strong>Name:</strong> ${currentMember.firstName} ${currentMember.lastName}</p>
+            <p><strong>Email:</strong> ${currentMember.email}</p>
+            <p><strong>Member Since:</strong> ${new Date(currentMember.joinDate).toLocaleDateString()}</p>
+        </div>
+    `;
 }
 
-/**
- * Setup dashboard sections with atmospheric styling
- */
-function setupDashboardSections() {
-    // Quick Actions Section
-    const quickActions = $w('#quickActions');
-    if (quickActions) {
-        quickActions.html = `
-            <div class="glass-card dashboard-section">
-                <h3>Quick Actions</h3>
-                <div class="action-buttons">
-                    <button class="btn-atmospheric" data-action="add-bonsai">Add New Bonsai</button>
-                    <button class="btn-atmospheric" data-action="view-events">View Events</button>
-                    <button class="btn-atmospheric" data-action="forum">Visit Forum</button>
-                    <button class="btn-atmospheric" data-action="resources">Learning Resources</button>
-                </div>
-            </div>
-        `;
-        
-        // Setup quick action handlers
-        setupQuickActionHandlers();
-    }
-    
-    // Recent Activity Section
-    const recentActivity = $w('#recentActivity');
-    if (recentActivity) {
-        recentActivity.html = `
-            <div class="glass-card dashboard-section">
-                <h3>Recent Activity</h3>
-                <div class="activity-feed">
-                    <div class="activity-item">
-                        <span class="activity-icon">🌱</span>
-                        <div class="activity-content">
-                            <p>Welcome to Blue Ridge Bonsai Society!</p>
-                            <small>Just now</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-    
-    // Upcoming Events Section
-    const upcomingEvents = $w('#upcomingEvents');
-    if (upcomingEvents) {
-        loadUpcomingEvents();
-    }
-}
+// This function is merged into createDashboardStructure and individual render functions.
+// function setupDashboardSections() { ... }
 
 /**
  * Setup quick action button handlers
@@ -290,55 +243,24 @@ async function loadMemberPortfolio(member) {
 }
 
 /**
- * Load upcoming events for member
+ * Load upcoming events for member using the EventSystem
  */
 async function loadUpcomingEvents() {
-    try {
-        const eventsSection = $w('#upcomingEvents');
-        if (!eventsSection) return;
-        
-        // Mock events data (replace with actual database query)
-        const events = [
-            {
-                title: 'Spring Repotting Workshop',
-                date: new Date('2025-03-15'),
-                description: 'Learn proper repotting techniques for spring'
-            },
-            {
-                title: 'Monthly Club Meeting',
-                date: new Date('2025-02-20'),
-                description: 'General club meeting and bonsai show-and-tell'
-            }
-        ];
-        
-        const eventsHTML = `
-            <div class="glass-card dashboard-section">
-                <h3>Upcoming Events</h3>
-                <div class="events-list">
-                    ${events.map(event => `
-                        <div class="event-item glass-card">
-                            <div class="event-date">
-                                <span class="month">${event.date.toLocaleDateString('en', {month: 'short'})}</span>
-                                <span class="day">${event.date.getDate()}</span>
-                            </div>
-                            <div class="event-details">
-                                <h4>${event.title}</h4>
-                                <p>${event.description}</p>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="btn-atmospheric" onclick="window.location.href='/events'">
-                    View All Events
-                </button>
+    const registrations = await eventSystem.getUserRegistrations();
+    const upcomingEvents = registrations.filter(reg => new Date(reg.startDate) > new Date());
+
+    let eventsHTML = '<h3>Your Upcoming Registered Events</h3>';
+    if (upcomingEvents.length > 0) {
+        eventsHTML += upcomingEvents.map(event => `
+            <div class="event-item-widget glass-card">
+                <p><strong>${event.title}</strong></p>
+                <p>${new Date(event.startDate).toLocaleDateString()}</p>
             </div>
-        `;
-        
-        eventsSection.html = eventsHTML;
-        
-    } catch (error) {
-        console.error('❌ Error loading upcoming events:', error);
+        `).join('');
+    } else {
+        eventsHTML += '<p>You have no upcoming registered events.</p>';
     }
+    $w('#upcomingEvents').html = `<div class="glass-card">${eventsHTML}</div>`;
 }
 
 /**
@@ -392,83 +314,56 @@ function initializeDashboardWidgets() {
 }
 
 /**
- * Initialize member statistics widget
+ * Initialize dashboard widgets using data from the member and other systems
  */
-function initializeMemberStats() {
-    const statsWidget = $w('#memberStats');
-    if (statsWidget) {
-        const stats = {
-            bonsaiCount: 2,
-            eventsAttended: 5,
-            forumPosts: 12,
-            memberSince: '2024'
-        };
-        
-        statsWidget.html = `
-            <div class="glass-card stats-widget">
-                <h3>Your Statistics</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number">${stats.bonsaiCount}</span>
-                        <span class="stat-label">Bonsai in Portfolio</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">${stats.eventsAttended}</span>
-                        <span class="stat-label">Events Attended</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">${stats.forumPosts}</span>
-                        <span class="stat-label">Forum Contributions</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">${stats.memberSince}</span>
-                        <span class="stat-label">Member Since</span>
-                    </div>
-                </div>
+async function initializeDashboardWidgets() {
+    // Membership Status Widget
+    const status = await membershipSystem.checkMembershipStatus();
+    $w('#membershipStatus').html = `
+        <div class="glass-card">
+            <h3>Membership Status</h3>
+            <p><strong>Level:</strong> ${status.levelName}</p>
+            <p><strong>Status:</strong> ${status.isActive ? 'Active' : 'Expired'}</p>
+            ${status.isActive ? `<p>Expires in ${status.daysUntilExpiry} days.</p>` : ''}
+            ${status.needsRenewal ? '<button class="btn btn-primary">Renew Now</button>' : ''}
+        </div>
+    `;
+
+    // Quick Actions
+    $w('#quickActions').html = `
+        <div class="glass-card">
+            <h3>Quick Actions</h3>
+            <div class="action-buttons">
+                <button id="goToEvents" class="btn-atmospheric">View Events</button>
+                <button id="goToLearn" class="btn-atmospheric">Learning Center</button>
+                <button id="editProfile" class="btn-atmospheric">Edit Profile</button>
             </div>
-        `;
+        </div>
+    `;
+
+    // Member Stats
+    const interactions = await membershipSystem.getMemberInteractions();
+    $w('#memberStats').html = `
+        <div class="glass-card">
+            <h3>Your Stats</h3>
+            <p><strong>Trees in Portfolio:</strong> ${currentMember.bonsaiCollection ? currentMember.bonsaiCollection.split(',').length : 0}</p>
+            <p><strong>Years of Experience:</strong> ${currentMember.yearsExperience || 'New'}</p>
+            <p><strong>Total Interactions:</strong> ${interactions.length}</p>
+        </div>
+    `;
+
+    // Recent Activity
+    let activityHTML = '<h3>Recent Activity</h3>';
+    if(interactions.length > 0) {
+        activityHTML += interactions.slice(0, 3).map(item => `<p>${item.type}: ${item.description}</p>`).join('');
+    } else {
+        activityHTML += '<p>No recent activity.</p>';
     }
+    $w('#recentActivity').html = `<div class="glass-card">${activityHTML}</div>`;
 }
 
-/**
- * Initialize learning progress widget
- */
-function initializeLearningProgress() {
-    const progressWidget = $w('#learningProgress');
-    if (progressWidget) {
-        progressWidget.html = `
-            <div class="glass-card progress-widget">
-                <h3>Learning Progress</h3>
-                <div class="progress-items">
-                    <div class="progress-item">
-                        <span class="progress-label">Basic Bonsai Care</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 80%"></div>
-                        </div>
-                        <span class="progress-percent">80%</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">Wiring Techniques</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 45%"></div>
-                        </div>
-                        <span class="progress-percent">45%</span>
-                    </div>
-                    <div class="progress-item">
-                        <span class="progress-label">Styling & Design</span>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 25%"></div>
-                        </div>
-                        <span class="progress-percent">25%</span>
-                    </div>
-                </div>
-                <button class="btn-atmospheric" onclick="window.location.href='/learn'">
-                    Continue Learning
-                </button>
-            </div>
-        `;
-    }
-}
+// This function is simplified and included in initializeDashboardWidgets
+// function initializeLearningProgress() { ... }
 
 /**
  * Initialize community engagement widget

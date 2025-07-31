@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "faq001",
+    "question": "When and where are the meetings held?",
+    "answer": "Our meetings are typically held on the first Saturday of every month at the Community Center in Asheville. Please check the Events page for the most up-to-date schedule and location details.",
+    "category": "General"
+  },
+  {
+    "_id": "faq002",
+    "question": "Do I need to be a member to attend a meeting?",
+    "answer": "Guests are welcome to attend one regular meeting free of charge to see if our club is a good fit for them. Special workshops and events may have different policies and fees.",
+    "category": "Membership"
+  },
+  {
+    "_id": "faq003",
+    "question": "I'm a complete beginner. Is this club for me?",
+    "answer": "Absolutely! We welcome enthusiasts of all skill levels. We have a dedicated Beginner's Guide section on our website, and our experienced members are always happy to help newcomers.",
+    "category": "General"
+  },
+  {
+    "_id": "faq004",
+    "question": "What should I bring to my first meeting?",
+    "answer": "Just bring your curiosity! You can bring a tree if you'd like advice on it, but it's not required. We recommend bringing a notebook and pen to jot down tips.",
+    "category": "General"
+  },
+  {
+    "_id": "faq005",
+    "question": "How do I care for a tree I inherited?",
+    "answer": "Donating or caring for an inherited collection can be daunting. We recommend you contact us directly through our 'Contact Us' page. We can provide advice or help find a new home for the trees within our community to ensure they are well cared for.",
+    "category": "Donations"
+  }
+]

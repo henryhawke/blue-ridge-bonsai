@@ -1,0 +1,58 @@
+[
+  {
+    "_id": "art001",
+    "title": "Choosing Your First Bonsai Tree",
+    "content": "Selecting your first bonsai is an exciting step. Look for a species that is forgiving and well-suited to your local climate. Junipers, Ficus, and Chinese Elms are excellent choices for beginners. When inspecting a potential tree, look for a healthy root system, a tapering trunk, and good branch placement. Don't worry about perfect styling initially; focus on a healthy plant with good potential.",
+    "category": "Beginner Guide",
+    "difficulty": "Beginner",
+    "author": "David Anderson",
+    "publishDate": "2025-07-10T10:00:00Z",
+    "tags": ["beginner", "tree selection", "juniper", "ficus"],
+    "featured": true,
+    "images": [
+      "https://static.wixstatic.com/media/nsplsh_b28663b715a3461287e134a0a27d94b3~mv2.jpg/v1/fill/w_980,h_654,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/nsplsh_b28663b715a3461287e134a0a27d94b3~mv2.jpg"
+    ],
+    "downloadableFiles": []
+  },
+  {
+    "_id": "art002",
+    "title": "The Basics of Bonsai Watering",
+    "content": "Proper watering is the most critical skill in bonsai care. Never water on a schedule. Instead, check the soil daily by touching it. If the top half-inch is dry, it's time to water. Water thoroughly until it drains freely from the bottom of the pot. This ensures the entire root mass is hydrated. The type of soil, pot size, and weather will all affect how often you need to water.",
+    "category": "Care & Maintenance",
+    "difficulty": "Beginner",
+    "author": "Maria Garcia",
+    "publishDate": "2025-07-15T11:00:00Z",
+    "tags": ["watering", "care", "beginner", "soil"],
+    "featured": true,
+    "images": [],
+    "downloadableFiles": []
+  },
+  {
+    "_id": "art003",
+    "title": "Introduction to Bonsai Soil",
+    "content": "Bonsai soil is very different from regular potting soil. It needs to provide excellent drainage, aeration, and water retention. A common mixture for beginners is equal parts of Akadama (a baked clay), pumice, and lava rock. This mix provides a stable environment for roots to thrive. You can buy pre-mixed bonsai soil or create your own to suit your specific trees and climate.",
+    "category": "Soil & Repotting",
+    "difficulty": "Intermediate",
+    "author": "James Chen",
+    "publishDate": "2025-07-20T12:00:00Z",
+    "tags": ["soil", "repotting", "akadama", "pumice"],
+    "featured": false,
+    "images": [],
+    "downloadableFiles": [
+      { "name": "Bonsai Soil Recipes", "url": "/downloads/soil-recipes.pdf" }
+    ]
+  },
+  {
+    "_id": "art004",
+    "title": "Winter Care for Deciduous Bonsai",
+    "content": "Deciduous trees like maples and elms require a period of winter dormancy to survive. In our climate, they need protection from extreme cold and drying winds. An unheated garage, shed, or cold frame is ideal. While dormant, they need very little water, but the soil should never be allowed to dry out completely. Check them every week or two.",
+    "category": "Seasonal Care",
+    "difficulty": "Intermediate",
+    "author": "David Anderson",
+    "publishDate": "2025-08-01T09:00:00Z",
+    "tags": ["winter care", "dormancy", "deciduous", "maple"],
+    "featured": false,
+    "images": [],
+    "downloadableFiles": []
+  }
+]

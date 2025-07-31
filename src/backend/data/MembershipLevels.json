@@ -1,0 +1,63 @@
+[
+  {
+    "_id": "lvl001",
+    "name": "Standard Membership",
+    "price": 50.00,
+    "duration": 12,
+    "benefits": [
+      "Access to all monthly meetings",
+      "Monthly society newsletter",
+      "Access to the member-only section of the website",
+      "Borrowing privileges from the club's library"
+    ],
+    "description": "Our standard membership, perfect for enthusiasts of all levels.",
+    "isActive": true,
+    "sortOrder": 1,
+    "color": "#6B8E6F",
+    "maxEventsPerMonth": null,
+    "discountPercentage": 0,
+    "accessToForums": true,
+    "canDownloadResources": true
+  },
+  {
+    "_id": "lvl002",
+    "name": "Premium Membership",
+    "price": 85.00,
+    "duration": 12,
+    "benefits": [
+      "All Standard Membership benefits",
+      "Free entry to one paid workshop per year (up to $75 value)",
+      "10% discount on all other paid workshops",
+      "Early registration access for limited-space events",
+      "One-on-one consultation with a club expert"
+    ],
+    "description": "For the dedicated enthusiast looking to accelerate their learning.",
+    "isActive": true,
+    "sortOrder": 2,
+    "color": "#D4A574",
+    "maxEventsPerMonth": null,
+    "discountPercentage": 10,
+    "accessToForums": true,
+    "canDownloadResources": true
+  },
+  {
+    "_id": "lvl003",
+    "name": "Digital Membership",
+    "price": 30.00,
+    "duration": 12,
+    "benefits": [
+      "Access to member-only section of the website",
+      "Digital access to our monthly newsletter",
+      "Live streams of monthly meetings and select workshops",
+      "Access to our digital resource library"
+    ],
+    "description": "For our long-distance friends who want to be part of the community online.",
+    "isActive": true,
+    "sortOrder": 3,
+    "color": "#8B7355",
+    "maxEventsPerMonth": null,
+    "discountPercentage": 0,
+    "accessToForums": true,
+    "canDownloadResources": true
+  }
+]
