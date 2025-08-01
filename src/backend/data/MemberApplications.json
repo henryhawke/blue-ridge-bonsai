@@ -1,0 +1,30 @@
+[
+    {
+        "_id": "app001",
+        "firstName": "Sarah",
+        "lastName": "Johnson",
+        "email": "sarah.johnson@example.com",
+        "phone": "555-123-4567",
+        "membershipLevel": "Premium Membership",
+        "interests": "Styling, Repotting, Native Species",
+        "bio": "New to bonsai but very excited to learn from the community.",
+        "applicationDate": "2024-11-15T10:30:00Z",
+        "status": "pending_payment",
+        "source": "website_application",
+        "notes": "Interested in beginner workshops"
+    },
+    {
+        "_id": "app002",
+        "firstName": "Michael",
+        "lastName": "Chen",
+        "email": "michael.chen@example.com",
+        "phone": "555-987-6543",
+        "membershipLevel": "Standard Membership",
+        "interests": "Watering, Tools, Basic Care",
+        "bio": "Looking to start my bonsai journey with proper guidance.",
+        "applicationDate": "2024-11-14T14:20:00Z",
+        "status": "approved",
+        "source": "website_application",
+        "notes": "Payment received, membership activated"
+    }
+]

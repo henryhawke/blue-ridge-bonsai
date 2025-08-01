@@ -1,19 +1,27 @@
 // Blue Ridge Bonsai Society - Membership System
 // This file contains the core logic for managing members, including applications,
-// profiles, and membership levels. It's designed to be used by various
-// membership-related pages on the site.
+// profiles, and membership levels. It uses Wix Data API to interact with collections.
+
 
 import wixData from 'wix-data';
 import { currentMember } from 'wix-members-frontend';
 import { approveMemberApplication } from 'backend/membership-backend.jsw';
+import wixUsers from "wix-users";
+
 
 /**
  * A comprehensive class for managing all membership-related functionality.
  */
 export class MembershipSystem {
   constructor() {
+
     this.membershipLevels = [];
     this.currentProfile = null;
+    // Initialize collections
+    this.membersCollection = wixData.query("Members");
+    this.membershipLevelsCollection = wixData.query("MembershipLevels");
+    this.memberApplicationsCollection = wixData.query("MemberApplications");
+    this.memberInteractionsCollection = wixData.query("MemberInteractions");
   }
 
   /**
@@ -21,6 +29,7 @@ export class MembershipSystem {
    * @returns {Promise<object|null>} - The member object or null if not logged in.
    */
   async getCurrentMemberProfile() {
+
     if (this.currentProfile) return this.currentProfile;
 
     const member = await currentMember.getMember();
@@ -30,6 +39,26 @@ export class MembershipSystem {
 
     this.currentProfile = { ...member, ...extendedProfile };
     return this.currentProfile;
+
+    try {
+      const currentUser = /** @type {any} */ (wixUsers.currentUser);
+      if (!currentUser || !currentUser.email) {
+        return null;
+      }
+
+      const currentUserQuery = await wixData
+        .query("Members")
+        .eq("loginEmail", currentUser.email)
+        .find();
+
+      return currentUserQuery.items.length > 0
+        ? currentUserQuery.items[0]
+        : null;
+    } catch (error) {
+      console.error("Error getting current member profile:", error);
+      return null;
+    }
+
   }
 
   /**
@@ -37,6 +66,7 @@ export class MembershipSystem {
    * @returns {Promise<Array>} - A promise that resolves to the membership levels.
    */
   async loadMembershipLevels() {
+
     const results = await wixData.query('MembershipLevels')
         .eq('isActive', true)
         .ascending('sortOrder')
@@ -47,16 +77,47 @@ export class MembershipSystem {
 
   /**
    * Submits a new member application to the 'MemberApplications' collection.
+=======
+    try {
+      const levels = await wixData
+        .query("MembershipLevels")
+        .eq("isActive", true)
+        .ascending("sortOrder")
+        .find();
+
+      return levels.items;
+    } catch (error) {
+      console.error("Error loading membership levels:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Submits a new member application.
+>>>>>>> main
    * @param {object} applicationData - The data from the application form.
    * @returns {Promise<object>} - The newly created application record.
    */
   async submitMemberApplication(applicationData) {
-    console.log("Submitting application:", applicationData);
+    try {
+      // Basic validation
+      if (
+        !applicationData.email ||
+        !applicationData.firstName ||
+        !applicationData.lastName
+      ) {
+        throw new Error("Email, first name, and last name are required.");
+      }
 
-    // Basic validation
-    if (!applicationData.email || !applicationData.firstName || !applicationData.lastName) {
-      throw new Error("Email, first name, and last name are required.");
-    }
+      // Check if member already exists
+      const existingMember = await wixData
+        .query("Members")
+        .eq("email", applicationData.email)
+        .find();
+
+      if (existingMember.items.length > 0) {
+        throw new Error("A member with this email already exists.");
+      }
 
     const applicationToInsert = {
       ...applicationData,
@@ -65,6 +126,23 @@ export class MembershipSystem {
     };
 
     return wixData.insert('MemberApplications', applicationToInsert);
+
+      // Create the application record
+      const newApplication = {
+        ...applicationData,
+        applicationDate: new Date(),
+        status: "pending_payment",
+        source: "website_application",
+      };
+
+      const result = await wixData.insert("MemberApplications", newApplication);
+
+      console.log("Application submitted successfully:", result);
+      return result;
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      throw error;
+    }
   }
 
   /**
@@ -72,23 +150,61 @@ export class MembershipSystem {
    * @returns {Promise<object>} - An object containing membership status details.
    */
   async checkMembershipStatus() {
-    const member = await this.getCurrentMemberProfile();
-    if (!member || !member.expirationDate) {
-        return { isActive: false, needsRenewal: false, daysUntilExpiry: 0, isExpired: true };
+// <<<<<<< fix-velo-errors
+//     const member = await this.getCurrentMemberProfile();
+//     if (!member || !member.expirationDate) {
+//         return { isActive: false, needsRenewal: false, daysUntilExpiry: 0, isExpired: true };
+//     }
+
+//     const now = new Date();
+//     const expirationDate = new Date(member.expirationDate);
+//     const diffTime = expirationDate.getTime() - now.getTime();
+//     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+//     return {
+//       isActive: member.isActive && diffDays > 0,
+//       needsRenewal: diffDays <= 30 && diffDays > 0,
+//       daysUntilExpiry: diffDays > 0 ? diffDays : 0,
+//       isExpired: diffDays <= 0,
+//       levelName: member.membershipLevel
+//     };
+// =======
+    try {
+      const member = await this.getCurrentMemberProfile();
+      if (!member) {
+        return {
+          isActive: false,
+          needsRenewal: false,
+          daysUntilExpiry: 0,
+          isExpired: true,
+        };
+      }
+
+      const now = new Date();
+      const expirationDate = new Date(member.expirationDate);
+      const diffTime = /** @type {number} */ (
+        expirationDate.getTime() - now.getTime()
+      );
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      return {
+        isActive: member.isActive && diffDays > 0,
+        needsRenewal: diffDays <= 30 && diffDays > 0,
+        daysUntilExpiry: diffDays > 0 ? diffDays : 0,
+        isExpired: diffDays <= 0,
+        levelName: member.membershipLevel,
+        memberId: member._id,
+      };
+    } catch (error) {
+      console.error("Error checking membership status:", error);
+      return {
+        isActive: false,
+        needsRenewal: false,
+        daysUntilExpiry: 0,
+        isExpired: true,
+      };
     }
-
-    const now = new Date();
-    const expirationDate = new Date(member.expirationDate);
-    const diffTime = expirationDate.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    return {
-      isActive: member.isActive && diffDays > 0,
-      needsRenewal: diffDays <= 30 && diffDays > 0,
-      daysUntilExpiry: diffDays > 0 ? diffDays : 0,
-      isExpired: diffDays <= 0,
-      levelName: member.membershipLevel
-    };
+// >>>>>>> main
   }
 
   /**
@@ -97,26 +213,130 @@ export class MembershipSystem {
    * @returns {Promise<object>} - The updated member object.
    */
   async updateMemberProfile(updateData) {
-    const member = await this.getCurrentMemberProfile();
-    if (!member) {
-      throw new Error("No member logged in.");
+    try {
+      const currentMember = await this.getCurrentMemberProfile();
+      if (!currentMember) {
+        throw new Error("No current member found.");
+      }
+
+      const updatedMember = await wixData.update("Members", {
+        _id: currentMember._id,
+        ...updateData,
+      });
+
+      return updatedMember;
+    } catch (error) {
+      console.error("Error updating member profile:", error);
+      throw error;
     }
+  }
 
-    const dataToUpdate = {
-        _id: member._id,
-        ...updateData
-    };
+// <<<<<<< fix-velo-errors
+//     const dataToUpdate = {
+//         _id: member._id,
+//         ...updateData
+//     };
 
-    return wixData.update('Members', dataToUpdate);
+//     return wixData.update('Members', dataToUpdate);
+//   }
+
+//   /**
+//    * Calls the backend function to approve an application.
+//    * NOTE: This is an admin-only function.
+//    * @param {string} applicationId - The ID of the application to approve.
+//    * @returns {Promise<any>}
+//    */
+//   async approveApplication(applicationId) {
+//       return approveMemberApplication(applicationId);
+// =======
+  /**
+   * Gets member interactions and activity.
+   * @returns {Promise<Array>} - Array of member interactions.
+   */
+  async getMemberInteractions() {
+    try {
+      const currentMember = await this.getCurrentMemberProfile();
+      if (!currentMember) {
+        return [];
+      }
+
+      const interactions = await wixData
+        .query("MemberInteractions")
+        .eq("memberId", currentMember._id)
+        .descending("date")
+        .limit(50)
+        .find();
+
+      return interactions.items;
+    } catch (error) {
+      console.error("Error getting member interactions:", error);
+      return [];
+    }
   }
 
   /**
-   * Calls the backend function to approve an application.
-   * NOTE: This is an admin-only function.
-   * @param {string} applicationId - The ID of the application to approve.
-   * @returns {Promise<any>}
+   * Records a new member interaction.
+   * @param {string} type - The type of interaction.
+   * @param {object} details - Additional details about the interaction.
+   * @returns {Promise<object>} - The created interaction record.
    */
-  async approveApplication(applicationId) {
-      return approveMemberApplication(applicationId);
+  async recordInteraction(type, details = {}) {
+    try {
+      const currentMember = await this.getCurrentMemberProfile();
+      if (!currentMember) {
+        throw new Error("No current member found.");
+      }
+
+      const interaction = {
+        memberId: currentMember._id,
+        type: type,
+        date: new Date(),
+        details: details,
+      };
+
+      const result = await wixData.insert("MemberInteractions", interaction);
+      return result;
+    } catch (error) {
+      console.error("Error recording interaction:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Gets all members (admin function).
+   * @returns {Promise<Array>} - Array of all members.
+   */
+  async getAllMembers() {
+    try {
+      const members = await wixData
+        .query("Members")
+        .ascending("lastName")
+        .find();
+
+      return members.items;
+    } catch (error) {
+      console.error("Error getting all members:", error);
+      return [];
+    }
+  }
+
+  /**
+   * Gets pending applications (admin function).
+   * @returns {Promise<Array>} - Array of pending applications.
+   */
+  async getPendingApplications() {
+    try {
+      const applications = await wixData
+        .query("MemberApplications")
+        .eq("status", "pending_payment")
+        .descending("applicationDate")
+        .find();
+
+      return applications.items;
+    } catch (error) {
+      console.error("Error getting pending applications:", error);
+      return [];
+    }
+// >>>>>>> main
   }
 }

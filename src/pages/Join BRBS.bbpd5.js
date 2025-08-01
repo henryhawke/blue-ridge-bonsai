@@ -2,6 +2,12 @@
  * BLUE RIDGE BONSAI SOCIETY - JOIN BRBS MEMBERSHIP PAGE
  * This page displays membership levels and provides an application form.
  */
+
+// Import backend functions
+import {
+  getMembershipLevels,
+  submitMemberApplication
+} from "backend/membership-backend.jsw";
 import { MembershipSystem } from "public/js/membership-system.js";
 import wix_ui from 'wix-ui-core/ui';
 
@@ -14,7 +20,6 @@ $w.onReady(function () {
 
 async function initializeJoinPage() {
   try {
-    membershipSystem = new MembershipSystem();
     await displayMembershipLevels();
     setupEventHandlers();
     console.log("✅ Join BRBS Page initialization complete.");
@@ -26,20 +31,44 @@ async function initializeJoinPage() {
 
 async function displayMembershipLevels() {
   try {
-    const levels = await membershipSystem.loadMembershipLevels();
-    const options = levels.map(level => ({
-      label: `${level.name} - $${level.price}/year`,
-      value: level._id
-    }));
+// <<<<<<< fix-velo-errors
+//     const levels = await membershipSystem.loadMembershipLevels();
+//     const options = levels.map(level => ({
+//       label: `${level.name} - $${level.price}/year`,
+//       value: level._id
+//     }));
 
-    const membershipSelect = $w<wix_ui.Dropdown>("#membershipLevelSelect");
-    if (membershipSelect) {
-        membershipSelect.options = options;
-        membershipSelect.placeholder = "Choose a membership level";
-    } else {
-        console.warn("Warning: #membershipLevelSelect dropdown not found on page.");
+//     const membershipSelect = $w<wix_ui.Dropdown>("#membershipLevelSelect");
+//     if (membershipSelect) {
+//         membershipSelect.options = options;
+//         membershipSelect.placeholder = "Choose a membership level";
+//     } else {
+//         console.warn("Warning: #membershipLevelSelect dropdown not found on page.");
+//     }
+
+// =======
+    const levels = await getMembershipLevels();
+    console.log("✅ Membership levels loaded:", levels.length);
+
+    // Log the levels for debugging
+    levels.forEach((level) => {
+      console.log(`- ${level.name}: $${level.price}/year`);
+    });
+
+    // Populate dropdown if it exists
+    try {
+      const levelSelect = $w("#membershipLevelSelect");
+      if (levelSelect) {
+        const levelOptions = levels.map((level) => ({
+          label: `${level.name} - $${level.price}/year`,
+          value: level._id,
+        }));
+        levelSelect.options = levelOptions;
+      }
+    } catch (error) {
+      console.log("Membership level dropdown not found:", error);
     }
-
+// >>>>>>> main
   } catch (error) {
     console.error("❌ Error displaying membership levels:", error);
     showFeedback("Could not load membership levels.", "error");
@@ -78,7 +107,7 @@ async function handleFormSubmission() {
 "));
     }
 
-    const result = await membershipSystem.submitMemberApplication(formData);
+    const result = await submitMemberApplication(formData);
     console.log("✅ Application submitted successfully:", result);
     showFeedback("Thank you! Your application has been received. Please check your email for payment instructions.", "success");
 
