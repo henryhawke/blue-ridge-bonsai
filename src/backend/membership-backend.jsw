@@ -1,10 +1,71 @@
-// Blue Ridge Bonsai Society - Membership Backend
-// This file contains backend functions for membership operations
 
+import { webMethod, Permissions } from 'wix-web-module';
+import { members } from 'wix-members-backend';
+import { authorization } from 'wix-members-backend';
 import wixData from 'wix-data';
-import wixUsers from 'wix-users';
-import { sendEmail } from 'wix-email';
 
+export const approveMemberApplication = webMethod(Permissions.Admin, async (applicationId) => {
+  try {
+    // Get application
+    const application = await wixData.get('MemberApplications', applicationId);
+    if (!application) {
+        throw new Error('Application not found.');
+    }
+
+    // Create Wix member account
+    const newMember = await members.createMember({
+      email: application.email,
+      contactDetails: {
+        firstName: application.firstName,
+        lastName: application.lastName,
+        phone: application.phone
+      }
+    });
+
+    // Create extended member profile
+    const memberProfile = {
+      _id: newMember.member._id,
+      ...application,
+      isActive: true,
+      approvalDate: new Date(),
+      status: 'approved'
+    };
+
+    await wixData.insert('Members', memberProfile);
+
+    // Update application status
+    await wixData.update('MemberApplications', {
+      _id: applicationId,
+      status: 'approved',
+      memberId: newMember.member._id,
+      approvalDate: new Date()
+    });
+
+    return { success: true, memberId: newMember.member._id };
+
+  } catch (error) {
+    console.error('Error approving member application:', error);
+    throw error;
+  }
+});
+
+export const getMemberDirectory = webMethod(Permissions.SiteMember, async () => {
+    // In a real app, you might restrict this further to board members
+    const membersList = await wixData.query('Members')
+        .eq('isActive', true)
+        .ascending('lastName')
+        .find();
+
+    // Return limited member info for directory
+    return membersList.items.map(member => ({
+        _id: member._id,
+        name: `${member.firstName} ${member.lastName}`,
+        email: member.email,
+        phone: member.phone,
+        membershipLevel: member.membershipLevel,
+        joinDate: member.joinDate
+    }));
+  });
 /**
  * Gets all active membership levels
  */

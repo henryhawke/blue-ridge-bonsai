@@ -1,24 +1,23 @@
 /**
  * BLUE RIDGE BONSAI SOCIETY - JOIN BRBS MEMBERSHIP PAGE
- *
  * This page displays membership levels and provides an application form.
- * Uses Wix Velo framework to work with existing page elements.
  */
 
 // Import backend functions
 import {
   getMembershipLevels,
-  submitMemberApplication,
+  submitMemberApplication
 } from "backend/membership-backend.jsw";
+import { MembershipSystem } from "public/js/membership-system.js";
+import wix_ui from 'wix-ui-core/ui';
+
+let membershipSystem;
 
 $w.onReady(function () {
   console.log("🚀 Initializing Join BRBS Page");
   initializeJoinPage();
 });
 
-/**
- * Main function to orchestrate the page build-out.
- */
 async function initializeJoinPage() {
   try {
     await displayMembershipLevels();
@@ -26,14 +25,28 @@ async function initializeJoinPage() {
     console.log("✅ Join BRBS Page initialization complete.");
   } catch (error) {
     console.error("❌ Error initializing Join BRBS Page:", error);
+    showFeedback("Could not initialize the page. Please refresh and try again.", "error");
   }
 }
 
-/**
- * Fetches and displays the available membership levels.
- */
 async function displayMembershipLevels() {
   try {
+// <<<<<<< fix-velo-errors
+//     const levels = await membershipSystem.loadMembershipLevels();
+//     const options = levels.map(level => ({
+//       label: `${level.name} - $${level.price}/year`,
+//       value: level._id
+//     }));
+
+//     const membershipSelect = $w<wix_ui.Dropdown>("#membershipLevelSelect");
+//     if (membershipSelect) {
+//         membershipSelect.options = options;
+//         membershipSelect.placeholder = "Choose a membership level";
+//     } else {
+//         console.warn("Warning: #membershipLevelSelect dropdown not found on page.");
+//     }
+
+// =======
     const levels = await getMembershipLevels();
     console.log("✅ Membership levels loaded:", levels.length);
 
@@ -55,136 +68,79 @@ async function displayMembershipLevels() {
     } catch (error) {
       console.log("Membership level dropdown not found:", error);
     }
+// >>>>>>> main
   } catch (error) {
     console.error("❌ Error displaying membership levels:", error);
+    showFeedback("Could not load membership levels.", "error");
   }
 }
 
-/**
- * Sets up event handlers for the application form.
- */
 function setupEventHandlers() {
-  console.log("Setting up event handlers...");
-
-  // Basic form submission handling
   try {
-    // This will work if the form exists in the Wix editor
-    const form = $w("#applicationForm");
-    if (form) {
-      form.onWixFormSubmit(async (event) => {
-        event.preventDefault();
-        console.log("Form submitted");
-        await handleFormSubmission();
-      });
+    const form = $w<wix_ui.FormElement>("#applicationForm");
+    if (form && typeof form.onWixFormSubmit === 'function') {
+      form.onWixFormSubmit(handleFormSubmission);
+    } else {
+        console.error("❌ Critical Error: #applicationForm is not a Wix Form or does not exist. Form submission will not work.");
+        showFeedback("The application form is currently unavailable. Please contact support.", "error");
     }
   } catch (error) {
-    console.log("Form not found or error setting up form handler:", error);
+    console.error("❌ Error setting up form submission handler:", error);
   }
 }
 
-/**
- * Handles form submission with validation and feedback.
- */
 async function handleFormSubmission() {
-  console.log("Handling form submission...");
-
   try {
-    // Collect form data - this will work if the fields exist
+    showFeedback("Submitting application...", "info");
+
     const formData = {
-      firstName: getFieldValue("#firstNameField"),
-      lastName: getFieldValue("#lastNameField"),
-      email: getFieldValue("#emailField"),
-      phone: getFieldValue("#phoneField"),
-      membershipLevel: getFieldValue("#membershipLevelSelect"),
-      interests: getFieldValue("#interestsField"),
-      bio: getFieldValue("#bioField"),
+      firstName: ($w<wix_ui.TextInput>("#firstNameField")).value,
+      lastName: ($w<wix_ui.TextInput>("#lastNameField")).value,
+      email: ($w<wix_ui.TextInput>("#emailField")).value,
+      phone: ($w<wix_ui.TextInput>("#phoneField")).value,
+      membershipLevel: ($w<wix_ui.Dropdown>("#membershipLevelSelect")).value,
     };
 
-    console.log("Form data collected:", formData);
-
-    // Validate required fields
     const validationErrors = validateFormData(formData);
     if (validationErrors.length > 0) {
-      throw new Error(validationErrors.join(", "));
+      throw new Error(validationErrors.join("
+"));
     }
 
     const result = await submitMemberApplication(formData);
     console.log("✅ Application submitted successfully:", result);
+    showFeedback("Thank you! Your application has been received. Please check your email for payment instructions.", "success");
 
-    // Show success message
-    showFeedback(
-      "Thank you! Your application has been received. Please check your email for payment instructions.",
-      "success"
-    );
+    $w<wix_ui.FormElement>("#applicationForm").reset();
+
   } catch (error) {
     console.error("❌ Error submitting application:", error);
-    showFeedback(`Error: ${error.message}`, "error");
+    showFeedback(`Application Error: ${error.message}`, "error");
   }
 }
 
-/**
- * Gets the value of a form field.
- */
-function getFieldValue(selector) {
-  try {
-    const field = $w(selector);
-    return field ? field.value : "";
-  } catch (error) {
-    console.log(`Field ${selector} not found:`, error);
-    return "";
-  }
-}
-
-/**
- * Validates form data and returns array of error messages.
- */
 function validateFormData(formData) {
   const errors = [];
-
-  if (!formData.firstName) {
-    errors.push("First name is required");
-  }
-
-  if (!formData.lastName) {
-    errors.push("Last name is required");
-  }
-
-  if (!formData.email) {
-    errors.push("Email is required");
-  } else if (!validateEmail(formData.email)) {
-    errors.push("Please enter a valid email address");
-  }
-
-  if (!formData.membershipLevel) {
-    errors.push("Please select a membership level");
-  }
-
+  if (!formData.firstName) errors.push("First name is required.");
+  if (!formData.lastName) errors.push("Last name is required.");
+  if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.push("A valid email is required.");
+  if (!formData.membershipLevel) errors.push("Please select a membership level.");
   return errors;
 }
 
-/**
- * Validates email format.
- */
-function validateEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-/**
- * Shows feedback message to user.
- */
 function showFeedback(message, type) {
-  console.log(`${type.toUpperCase()}: ${message}`);
-
-  try {
-    const feedback = $w("#formFeedback");
-    if (feedback) {
-      feedback.text = message;
-      feedback.style.backgroundColor =
-        type === "success" ? "#d4edda" : "#f8d7da";
-      feedback.show();
-    }
-  } catch (error) {
-    console.log("Feedback element not found:", error);
+  const feedback = $w<wix_ui.Text>("#formFeedback");
+  if (!feedback) {
+    console.warn("Warning: #formFeedback element not found.");
+    return;
   }
+
+  feedback.text = message;
+  const colors = {
+      success: "#d4edda",
+      error: "#f8d7da",
+      info: "#cce5ff"
+  };
+  feedback.style.backgroundColor = colors[type] || "#ffffff";
+  feedback.expand();
 }
