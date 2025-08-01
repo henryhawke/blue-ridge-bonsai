@@ -79,7 +79,7 @@ class WixNavigationCore {
     if (!this.isWixEnvironment) return null;
 
     try {
-      const { currentMember } = await import("wix-members");
+      const { currentMember } = await import("wix-members-frontend");
       const member = await currentMember.getMember();
       return member;
     } catch (error) {
@@ -399,8 +399,8 @@ class WixNavigationCore {
       ) {
         loginButton.onClick(async () => {
           try {
-            const wixUsers = await import("wix-users");
-            await wixUsers.promptLogin();
+            const { authentication } = await import("wix-members-frontend");
+            await authentication.promptLogin();
             await this.init(); // Refresh navigation after login
           } catch (error) {
             console.error("Login error:", error);
@@ -416,8 +416,8 @@ class WixNavigationCore {
       ) {
         logoutButton.onClick(async () => {
           try {
-            const wixUsers = await import("wix-users");
-            await wixUsers.logout();
+            const { authentication } = await import("wix-members-frontend");
+            await authentication.logout();
             await this.init(); // Refresh navigation after logout
           } catch (error) {
             console.error("Logout error:", error);

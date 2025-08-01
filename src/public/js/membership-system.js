@@ -3,47 +3,50 @@
 // profiles, and membership levels. It's designed to be used by various
 // membership-related pages on the site.
 
-// Mock Data (simulating Wix Collections)
-import membersData from '../../backend/data/Members.json' assert { type: 'json' };
-import membershipLevelsData from '../../backend/data/MembershipLevels.json' assert { type: 'json' };
-import memberInteractionsData from '../../backend/data/MemberInteractions.json' assert { type: 'json' };
-
-// Mock the current member for development purposes
-const MOCK_CURRENT_MEMBER_ID = 'mem001'; // 'mem001' for logged-in, null for logged-out
+import wixData from 'wix-data';
+import { currentMember } from 'wix-members-frontend';
+import { approveMemberApplication } from 'backend/membership-backend.jsw';
 
 /**
  * A comprehensive class for managing all membership-related functionality.
  */
 export class MembershipSystem {
   constructor() {
-    this.members = membersData;
-    this.levels = membershipLevelsData;
-    this.interactions = memberInteractionsData;
+    this.membershipLevels = [];
+    this.currentProfile = null;
   }
 
   /**
-   * Gets the profile for the current member.
+   * Gets the profile for the current member, including extended data.
    * @returns {Promise<object|null>} - The member object or null if not logged in.
    */
   async getCurrentMemberProfile() {
-    if (!MOCK_CURRENT_MEMBER_ID) {
-      return null;
-    }
-    const member = this.members.find(m => m._id === MOCK_CURRENT_MEMBER_ID);
-    return member || null;
+    if (this.currentProfile) return this.currentProfile;
+
+    const member = await currentMember.getMember();
+    if (!member) return null;
+
+    const extendedProfile = await wixData.get('Members', member._id).catch(() => null);
+
+    this.currentProfile = { ...member, ...extendedProfile };
+    return this.currentProfile;
   }
 
   /**
-   * Loads all available membership levels.
+   * Loads all available membership levels from the database.
    * @returns {Promise<Array>} - A promise that resolves to the membership levels.
    */
   async loadMembershipLevels() {
-    return this.levels.filter(level => level.isActive);
+    const results = await wixData.query('MembershipLevels')
+        .eq('isActive', true)
+        .ascending('sortOrder')
+        .find();
+    this.membershipLevels = results.items;
+    return this.membershipLevels;
   }
 
   /**
-   * Simulates submitting a new member application.
-   * In a real app, this would insert into a 'MemberApplications' collection.
+   * Submits a new member application to the 'MemberApplications' collection.
    * @param {object} applicationData - The data from the application form.
    * @returns {Promise<object>} - The newly created application record.
    */
@@ -55,18 +58,13 @@ export class MembershipSystem {
       throw new Error("Email, first name, and last name are required.");
     }
 
-    const newApplication = {
-      _id: `app${new Date().getTime()}`,
+    const applicationToInsert = {
       ...applicationData,
-      applicationDate: new Date().toISOString(),
+      applicationDate: new Date(),
       status: 'pending_payment'
     };
 
-    // In a real system, you would save this to a database.
-    // For mock purposes, we just log it and return it.
-    console.log("Mock application created:", newApplication);
-
-    return newApplication;
+    return wixData.insert('MemberApplications', applicationToInsert);
   }
 
   /**
@@ -75,13 +73,13 @@ export class MembershipSystem {
    */
   async checkMembershipStatus() {
     const member = await this.getCurrentMemberProfile();
-    if (!member) {
+    if (!member || !member.expirationDate) {
         return { isActive: false, needsRenewal: false, daysUntilExpiry: 0, isExpired: true };
     }
 
     const now = new Date();
     const expirationDate = new Date(member.expirationDate);
-    const diffTime = expirationDate - now;
+    const diffTime = expirationDate.getTime() - now.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     return {
@@ -94,7 +92,7 @@ export class MembershipSystem {
   }
 
   /**
-   * Updates the current member's profile.
+   * Updates the current member's extended profile in the 'Members' collection.
    * @param {object} updateData - The data to update.
    * @returns {Promise<object>} - The updated member object.
    */
@@ -104,25 +102,21 @@ export class MembershipSystem {
       throw new Error("No member logged in.");
     }
 
-    // Find the member in our mock data and update them
-    const memberIndex = this.members.findIndex(m => m._id === member._id);
-    if (memberIndex > -1) {
-      this.members[memberIndex] = { ...this.members[memberIndex], ...updateData };
-      console.log("Updated member profile:", this.members[memberIndex]);
-      return this.members[memberIndex];
-    }
+    const dataToUpdate = {
+        _id: member._id,
+        ...updateData
+    };
 
-    throw new Error("Could not find member to update.");
+    return wixData.update('Members', dataToUpdate);
   }
 
   /**
-   * Gets the interaction history for the current member.
-   * @returns {Promise<Array>}
+   * Calls the backend function to approve an application.
+   * NOTE: This is an admin-only function.
+   * @param {string} applicationId - The ID of the application to approve.
+   * @returns {Promise<any>}
    */
-  async getMemberInteractions() {
-      const member = await this.getCurrentMemberProfile();
-      if (!member) return [];
-
-      return this.interactions.filter(i => i.memberId === member._id);
+  async approveApplication(applicationId) {
+      return approveMemberApplication(applicationId);
   }
 }
