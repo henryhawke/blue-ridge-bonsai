@@ -2,13 +2,7 @@
 
 This repository contains the code for the Blue Ridge Bonsai Society website, built on the Wix platform and using Velo.
 
-This guide provides the correct instructions for setting up your local development environment, making changes, and seeing them on your Wix site.
-
-**Please follow these instructions carefully. Previous documentation in this repository was incorrect.**
-
 ## Why Get Wix Studio?
-
-Wix Studio is essential for professional web development and design work. Here's why you need a Wix Studio account for basic development tasks:
 
 ### **Advanced Development Capabilities**
 
@@ -33,11 +27,6 @@ Wix Studio is essential for professional web development and design work. Here's
 
 ### **Performance & SEO**
 
-- **Optimized Performance**: Built-in performance optimization and caching
-- **SEO Tools**: Advanced SEO management and optimization features
-- **CDN Integration**: Global content delivery network for fast loading
-- **Mobile Optimization**: Automatic mobile responsiveness and optimization
-
 ### **Business & E-commerce Features**
 
 - **Advanced E-commerce**: Multi-channel selling, inventory management, and payment processing
@@ -51,13 +40,6 @@ Wix Studio is essential for professional web development and design work. Here's
 - **Client Management**: Professional client handoff and management tools
 - **Project Management**: Built-in project tracking and milestone management
 - **White-label Solutions**: Brand customization for agencies
-
-### **Security & Reliability**
-
-- **Enterprise Security**: SSL certificates, DDoS protection, and security monitoring
-- **99.9% Uptime**: Reliable hosting with guaranteed uptime
-- **Backup & Recovery**: Automatic backups and disaster recovery
-- **GDPR Compliance**: Built-in privacy and data protection features
 
 ### **Support & Resources**
 
@@ -495,3 +477,98 @@ When you are happy with your changes in the Local Editor, you need to publish th
 ---
 
 This repository has been updated to use a simpler, more robust method for applying styles and custom functionality that follows Velo best practices. The previous complex "workaround system" has been removed.
+
+## Current Website Breakdown
+
+- **Platform**: Wix Studio + Velo (frontend page code in `src/pages`, backend modules in `src/backend`, static assets in `src/public`).
+- **Core pages (`src/pages/`)**:
+  - `Home.c1dmp.js`: Builds homepage structure via injected HTML and listens for `postMessage` events for CTA navigation.
+  - `About BRBS.a28ns.js`: Renders mission/vision, board members, partnerships, FAQ, meeting info, stats, and achievements; uses `$w().html` and message handlers.
+  - `Join BRBS.bbpd5.js`: Membership levels display and application submission flow.
+  - Additional content pages: `Events.*.js`, `Photos.uutsy.js`, `FAQ.qlh1e.js`, `Discussion.g7d4o.js`, members area (`members/*.js`), and `blog/index.js`.
+- **Backend (`src/backend/`)**:
+  - `membership-backend.jsw`: Web module endpoints for membership flows (imported by frontend).
+  - `rss-generator.jsw`: RSS generation (server-side).
+  - `membership-backend.js`: Local/shared logic (non-web module).
+  - `data/*.json`: Local dataset mirrors for site features (Members, Events, FAQItems, Forum, Photos, etc.).
+  - `permissions.json`: Suggested collection permissions scaffolding.
+- **Public assets (`src/public/`)**:
+  - JS systems: `navigation.js`, `membership-system.js`, `event-system.js`, `forum-system.js`, `learning-system.js`, `analytics-tracking.js`, etc.
+  - Styles: `styles/design-system.css`, `styles/navigation.css`, `styles/animations.css`, `styles/atmospheric-components.css`, `styles/grid-layout.css`, plus `global.css`.
+  - Custom Elements: `custom-elements/brbs-styles.js`.
+- **Config & tooling**:
+  - `wix.config.json`, `eslint.config.mjs`, `package.json`.
+  - Docs: `README-Implementation-Guide.md`, `DESIGN.md`, `docs/`.
+
+## What It Needs (Prioritized)
+
+1. **Element-ID alignment in the Wix Editor**
+
+   - Ensure these elements exist with matching IDs and appropriate types:
+     - Containers/Text with `.html`: `#mainContainer`, `#missionVisionContainer`, `#boardMembersContainer`, `#partnershipContainer`, `#faqContainer`, `#meetingInfoContainer`, `#societyStatsContainer`, `#achievementsContainer`.
+     - Sections shown via `.show()`: `#missionVisionSection`, `#boardMembersSection`, `#partnershipSection`, `#faqSection`, `#meetingInfoSection`, `#societyStatsSection`, `#achievementsSection`.
+   - If any of the above are HtmlComponents instead of Text elements, switch to using `src` + `postMessage` per Velo HtmlComponent docs.
+
+2. **Replace mock/local data with Wix Collections**
+
+   - Create CMS Collections in Wix for: `Members`, `BoardMembers`, `FAQItems`, `Events`, `Photos`, `PhotoGalleries`, `Resources`, `VendorList`, `MembershipLevels`, `MemberApplications`, `ForumPosts`, `ForumCategories`, etc.
+   - Migrate from `src/backend/data/*.json` to live collections and update queries (`wix-data`) accordingly.
+   - Apply permissions per `src/backend/permissions.json` intent.
+
+3. **Membership flow hardening**
+
+   - Implement `getMembershipLevels` and `submitMemberApplication` in `membership-backend.jsw` to read/write real collections.
+   - Validate and sanitize form inputs server-side; store applications to `MemberApplications`.
+   - Confirm #applicationForm uses a Wix Form or appropriate elements with handlers.
+
+4. **Events system integration**
+
+   - Bind `event-system.js`/pages to `Events` collection; implement event details and registration flows (or use Wix Events app where appropriate).
+   - Add category/location filters to match code usage (e.g., `?category=workshop`).
+
+5. **FAQ rendering**
+
+   - Convert FAQ HTML shell to either:
+     - Repeater-based native elements; or
+     - HtmlComponent with dedicated hosted `src` and `postMessage` data binding.
+
+6. **CSS & design system wiring**
+
+   - Ensure `public/global.css` and `styles/*.css` are mirrored in Wix Studio’s CSS panel (global styles) and classes applied to elements.
+   - Verify classes like `glass-card`, navigation scroll states, and animations exist and are applied.
+
+7. **Accessibility & SEO**
+
+   - Alt text, heading hierarchy, focus states, color contrast (WCAG 2.1 AA).
+   - Page titles/meta, structured data where relevant (events, articles).
+
+8. **Analytics & monitoring**
+
+   - Hook `analytics-tracking.js` to Wix Analytics/Google Analytics 4; add event tracking for CTAs.
+   - Add error logging for backend (`wix-logging` or custom).
+
+9. **Performance**
+
+   - Minify assets, defer non-critical scripts, avoid heavy HTML injection where native elements suffice.
+   - Use repeaters/datasets to minimize DOM churn.
+
+10. **Security & secrets**
+
+- Move any API keys/email endpoints to Wix Secrets Manager; validate all inputs.
+
+11. **Testing & quality**
+
+- Add unit tests for data mappers/formatters; keep ESLint clean. Consider TypeScript or JSDoc types for critical modules.
+
+12. **Documentation parity**
+
+- Keep `README-Implementation-Guide.md` and `docs/` updated with any algorithm or flow changes.
+
+## Quick Verification Checklist (Wix Studio)
+
+- Elements with required IDs exist and are of the correct type (Text vs HtmlComponent).
+- CMS collections created and populated; permissions configured.
+- Membership form submits to backend and stores records.
+- Events list/detail pages pull data from collections.
+- Global CSS applied and classes present on elements.
+- Analytics events firing; no console errors; pages pass basic Lighthouse checks.

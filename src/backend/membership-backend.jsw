@@ -1,85 +1,112 @@
+import { webMethod, Permissions } from "wix-web-module";
+import { members } from "wix-members-backend";
+import { authorization } from "wix-members-backend";
+import wixData from "wix-data";
 
-import { webMethod, Permissions } from 'wix-web-module';
-import { members } from 'wix-members-backend';
-import { authorization } from 'wix-members-backend';
-import wixData from 'wix-data';
-
-export const approveMemberApplication = webMethod(Permissions.Admin, async (applicationId) => {
-  try {
-    // Get application
-    const application = await wixData.get('MemberApplications', applicationId);
-    if (!application) {
-        throw new Error('Application not found.');
-    }
-
-    // Create Wix member account
-    const newMember = await members.createMember({
-      email: application.email,
-      contactDetails: {
-        firstName: application.firstName,
-        lastName: application.lastName,
-        phone: application.phone
+export const approveMemberApplication = webMethod(
+  Permissions.Admin,
+  async (applicationId) => {
+    try {
+      // Get application
+      const application = await wixData.get(
+        "MemberApplications",
+        applicationId
+      );
+      if (!application) {
+        throw new Error("Application not found.");
       }
-    });
 
-    // Create extended member profile
-    const memberProfile = {
-      _id: newMember.member._id,
-      ...application,
-      isActive: true,
-      approvalDate: new Date(),
-      status: 'approved'
-    };
+      // Create Wix member account
+      const newMember = await members.createMember({
+        email: application.email,
+        contactDetails: {
+          firstName: application.firstName,
+          lastName: application.lastName,
+          phone: application.phone,
+        },
+      });
 
-    await wixData.insert('Members', memberProfile);
+      // Create extended member profile
+      const memberProfile = {
+        _id: newMember.member._id,
+        ...application,
+        isActive: true,
+        approvalDate: new Date(),
+        status: "approved",
+      };
 
-    // Update application status
-    await wixData.update('MemberApplications', {
-      _id: applicationId,
-      status: 'approved',
-      memberId: newMember.member._id,
-      approvalDate: new Date()
-    });
+      await wixData.insert("Members", memberProfile);
 
-    return { success: true, memberId: newMember.member._id };
+      // Update application status
+      await wixData.update("MemberApplications", {
+        _id: applicationId,
+        status: "approved",
+        memberId: newMember.member._id,
+        approvalDate: new Date(),
+      });
 
-  } catch (error) {
-    console.error('Error approving member application:', error);
-    throw error;
+      return { success: true, memberId: newMember.member._id };
+    } catch (error) {
+      console.error("Error approving member application:", error);
+      throw error;
+    }
   }
-});
+);
 
-export const getMemberDirectory = webMethod(Permissions.SiteMember, async () => {
+export const getMemberDirectory = webMethod(
+  Permissions.SiteMember,
+  async () => {
     // In a real app, you might restrict this further to board members
-    const membersList = await wixData.query('Members')
-        .eq('isActive', true)
-        .ascending('lastName')
-        .find();
+    const membersList = await wixData
+      .query("Members")
+      .eq("isActive", true)
+      .ascending("lastName")
+      .find();
 
     // Return limited member info for directory
-    return membersList.items.map(member => ({
-        _id: member._id,
-        name: `${member.firstName} ${member.lastName}`,
-        email: member.email,
-        phone: member.phone,
-        membershipLevel: member.membershipLevel,
-        joinDate: member.joinDate
+    return membersList.items.map((member) => ({
+      _id: member._id,
+      name: `${member.firstName} ${member.lastName}`,
+      email: member.email,
+      phone: member.phone,
+      membershipLevel: member.membershipLevel,
+      joinDate: member.joinDate,
     }));
-  });
+  }
+);
 /**
  * Gets all active membership levels
  */
 export async function getMembershipLevels() {
   try {
-    const levels = await wixData.query('MembershipLevels')
-      .eq('isActive', true)
-      .ascending('sortOrder')
+    const levels = await wixData
+      .query("MembershipLevels")
+      .eq("isActive", true)
+      .ascending("sortOrder")
       .find();
-    
+
     return levels.items;
   } catch (error) {
-    console.error('Error getting membership levels:', error);
-    throw new Error('Failed to load membership levels');
+    console.error("Error getting membership levels:", error);
+    // Safe fallback when collection is missing in dev/sandbox
+    const fallback = [
+      { _id: "basic", name: "Basic", price: 35, isActive: true, sortOrder: 1 },
+      {
+        _id: "family",
+        name: "Family",
+        price: 60,
+        isActive: true,
+        sortOrder: 2,
+      },
+      {
+        _id: "student",
+        name: "Student",
+        price: 20,
+        isActive: true,
+        sortOrder: 3,
+      },
+    ];
+    return fallback;
   }
 }
 
@@ -89,15 +116,20 @@ export async function getMembershipLevels() {
 export async function submitMemberApplication(applicationData) {
   try {
     // Basic validation
-    if (!applicationData.email || !applicationData.firstName || !applicationData.lastName) {
+    if (
+      !applicationData.email ||
+      !applicationData.firstName ||
+      !applicationData.lastName
+    ) {
       throw new Error("Email, first name, and last name are required.");
     }
 
     // Check if member already exists
-    const existingMember = await wixData.query('Members')
-      .eq('email', applicationData.email)
+    const existingMember = await wixData
+      .query("Members")
+      .eq("email", applicationData.email)
       .find();
-    
+
     if (existingMember.items.length > 0) {
       throw new Error("A member with this email already exists.");
     }
@@ -106,18 +138,21 @@ export async function submitMemberApplication(applicationData) {
     const newApplication = {
       ...applicationData,
       applicationDate: new Date(),
-      status: 'pending_payment',
-      source: 'website_application'
+      status: "pending_payment",
+      source: "website_application",
     };
 
-    const result = await wixData.insert('MemberApplications', newApplication);
-    
+    const result = await wixData.insert("MemberApplications", newApplication);
+
     // Send confirmation email
-    await sendApplicationConfirmation(applicationData.email, applicationData.firstName);
-    
+    await sendApplicationConfirmation(
+      applicationData.email,
+      applicationData.firstName
+    );
+
     return result;
   } catch (error) {
-    console.error('Error submitting application:', error);
+    console.error("Error submitting application:", error);
     throw error;
   }
 }
@@ -132,13 +167,14 @@ export async function getCurrentMemberProfile() {
       return null;
     }
 
-    const memberQuery = await wixData.query('Members')
-      .eq('loginEmail', currentUser.email)
+    const memberQuery = await wixData
+      .query("Members")
+      .eq("loginEmail", currentUser.email)
       .find();
-    
+
     return memberQuery.items.length > 0 ? memberQuery.items[0] : null;
   } catch (error) {
-    console.error('Error getting current member profile:', error);
+    console.error("Error getting current member profile:", error);
     return null;
   }
 }
@@ -150,11 +186,11 @@ export async function checkMembershipStatus() {
   try {
     const member = await getCurrentMemberProfile();
     if (!member) {
-      return { 
-        isActive: false, 
-        needsRenewal: false, 
-        daysUntilExpiry: 0, 
-        isExpired: true 
+      return {
+        isActive: false,
+        needsRenewal: false,
+        daysUntilExpiry: 0,
+        isExpired: true,
       };
     }
 
@@ -169,15 +205,15 @@ export async function checkMembershipStatus() {
       daysUntilExpiry: diffDays > 0 ? diffDays : 0,
       isExpired: diffDays <= 0,
       levelName: member.membershipLevel,
-      memberId: member._id
+      memberId: member._id,
     };
   } catch (error) {
-    console.error('Error checking membership status:', error);
-    return { 
-      isActive: false, 
-      needsRenewal: false, 
-      daysUntilExpiry: 0, 
-      isExpired: true 
+    console.error("Error checking membership status:", error);
+    return {
+      isActive: false,
+      needsRenewal: false,
+      daysUntilExpiry: 0,
+      isExpired: true,
     };
   }
 }
@@ -202,10 +238,10 @@ async function sendApplicationConfirmation(email, firstName) {
         
         Best regards,
         The Blue Ridge Bonsai Society Team
-      `
+      `,
     });
   } catch (error) {
-    console.error('Error sending confirmation email:', error);
+    console.error("Error sending confirmation email:", error);
   }
 }
 
@@ -214,13 +250,11 @@ async function sendApplicationConfirmation(email, firstName) {
  */
 export async function getAllMembers() {
   try {
-    const members = await wixData.query('Members')
-      .ascending('lastName')
-      .find();
-    
+    const members = await wixData.query("Members").ascending("lastName").find();
+
     return members.items;
   } catch (error) {
-    console.error('Error getting all members:', error);
+    console.error("Error getting all members:", error);
     return [];
   }
 }
@@ -230,14 +264,15 @@ export async function getAllMembers() {
  */
 export async function getPendingApplications() {
   try {
-    const applications = await wixData.query('MemberApplications')
-      .eq('status', 'pending_payment')
-      .descending('applicationDate')
+    const applications = await wixData
+      .query("MemberApplications")
+      .eq("status", "pending_payment")
+      .descending("applicationDate")
       .find();
-    
+
     return applications.items;
   } catch (error) {
-    console.error('Error getting pending applications:', error);
+    console.error("Error getting pending applications:", error);
     return [];
   }
-} 
+}

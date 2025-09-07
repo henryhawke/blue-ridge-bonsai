@@ -101,6 +101,36 @@ $w.onReady(function () {
   initializeGalleriesPage();
 });
 
+function stripHtml(input) {
+  return String(input)
+    .replace(/<[^>]*>/g, "")
+    .trim();
+}
+
+function setContent(selector, htmlString) {
+  try {
+    const el = $w(selector);
+    if (!el) {
+      console.warn(`Element not found: ${selector}`);
+      return;
+    }
+    console.log(`Rendering into ${selector} (type: ${el.type || "unknown"})`);
+    if (typeof el.html === "string" || typeof el.html === "undefined") {
+      if ("html" in el) {
+        el.html = htmlString;
+        return;
+      }
+    }
+    if ("text" in el) {
+      el.text = stripHtml(htmlString);
+      return;
+    }
+    console.warn(`Element ${selector} does not support html/text. Skipping.`);
+  } catch (e) {
+    console.error(`Failed to set content for ${selector}:`, e);
+  }
+}
+
 async function initializeGalleriesPage() {
   gallerySystem = new GallerySystem();
   createPageStructure();
@@ -120,7 +150,7 @@ function createPageStructure() {
             </div>
         </div>
     `;
-  $w("#mainContainer").html(pageHTML);
+  setContent("#mainContainer", pageHTML);
 }
 
 async function displayGalleries() {
@@ -128,7 +158,10 @@ async function displayGalleries() {
   const container = $w("#galleriesContainer");
 
   if (!galleries || galleries.length === 0) {
-    container.html = "<p>No photo galleries have been created yet.</p>";
+    setContent(
+      "#galleriesContainer",
+      "<p>No photo galleries have been created yet.</p>"
+    );
     return;
   }
 
@@ -153,5 +186,5 @@ async function displayGalleries() {
     )
     .join("");
 
-  container.html = galleriesHTML;
+  setContent("#galleriesContainer", galleriesHTML);
 }

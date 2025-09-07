@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * BLUE RIDGE BONSAI SOCIETY - HOMEPAGE
  *
@@ -81,7 +82,6 @@
  */
 
 // Blue Ridge Bonsai Society Homepage - Phase 1 Implementation
-import wix_ui from 'wix-ui-core/ui';
 import wixLocation from "wix-location";
 
 $w.onReady(function () {
@@ -89,16 +89,115 @@ $w.onReady(function () {
   initializeHomepage();
 });
 
+function stripHtml(input) {
+  return String(input)
+    .replace(/<[^>]*>/g, "")
+    .trim();
+}
+
+function setContent(selector, htmlString) {
+  try {
+    const el = $w(selector);
+    if (!el) {
+      console.warn(`Element not found: ${selector}`);
+      return false;
+    }
+    console.log(`Rendering into ${selector} (type: ${el.type || "unknown"})`);
+    if (typeof el.html === "string" || typeof el.html === "undefined") {
+      // In Velo, Text element exposes .html property; assignment is allowed
+      if ("html" in el) {
+        el.html = htmlString;
+        return true;
+      }
+    }
+    if ("text" in el) {
+      el.text = stripHtml(htmlString);
+      return true;
+    }
+    console.warn(`Element ${selector} does not support html/text. Skipping.`);
+    return false;
+  } catch (e) {
+    console.error(`Failed to set content for ${selector}:`, e);
+    return false;
+  }
+}
+
+function setContentAnywhere(preferredSelectors, htmlString) {
+  for (const selector of preferredSelectors) {
+    if (setContent(selector, htmlString)) return true;
+  }
+  try {
+    const texts = $w("Text");
+    if (texts && texts.length) {
+      const target = texts.find((t) => t.visible && "html" in t) || texts[0];
+      if (target && "html" in target) {
+        target.html = htmlString;
+        console.warn(
+          `Fallback: rendered into first Text element with id ${
+            target.id || "(unknown)"
+          }`
+        );
+        return true;
+      }
+      if (target && "text" in target) {
+        target.text = stripHtml(htmlString);
+        console.warn(
+          `Fallback: rendered text into first Text element with id ${
+            target.id || "(unknown)"
+          }`
+        );
+        return true;
+      }
+    }
+  } catch (e) {
+    console.error("Fallback rendering failed:", e);
+  }
+  console.warn("No writable container found for content.");
+  return false;
+}
+
+function injectDevBanner(message) {
+  try {
+    if (typeof document === "undefined") return;
+    if (document.getElementById("brbs-dev-banner")) return;
+    const banner = document.createElement("div");
+    banner.id = "brbs-dev-banner";
+    banner.style.position = "fixed";
+    banner.style.top = "0";
+    banner.style.left = "0";
+    banner.style.right = "0";
+    banner.style.zIndex = "2147483647";
+    banner.style.padding = "8px 16px";
+    banner.style.background = "rgba(0,0,0,0.8)";
+    banner.style.color = "#fff";
+    banner.style.fontFamily =
+      "Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif";
+    banner.style.fontSize = "12px";
+    banner.style.textAlign = "center";
+    banner.textContent = message || "BRBS: Runtime code executed";
+    document.body.appendChild(banner);
+    setTimeout(() => {
+      if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
+    }, 4000);
+  } catch (e) {
+    console.log("Dev banner injection skipped:", e);
+  }
+}
+
 async function initializeHomepage() {
   try {
     createHomePageStructure();
     await loadDynamicContent();
     setupEventHandlers();
     initializeAnimations();
+    injectDevBanner("BRBS: Homepage code injected content");
     console.log("✅ Homepage initialization complete.");
   } catch (error) {
     console.error("❌ Error initializing homepage:", error);
-    ($w("#mainContainer") as wix_ui.HtmlComponent).html = `<div style="text-align: center; padding: 4rem;"><h2>We're sorry, something went wrong.</h2><p>The homepage content could not be loaded. Please try refreshing the page.</p></div>`;
+    setContent(
+      "#mainContainer",
+      `<div style="text-align: center; padding: 4rem;"><h2>We're sorry, something went wrong.</h2><p>The homepage content could not be loaded. Please try refreshing the page.</p></div>`
+    );
   }
 }
 
@@ -142,53 +241,81 @@ function createHomePageStructure() {
   // DEVELOPER NOTE: The UI is built via HTML injection, which is an anti-pattern in Velo.
   // The type assertion below suppresses TypeScript errors. For a robust solution,
   // the page structure should be built in the Wix Editor. See README-Implementation-Guide.md.
-  ($w("#mainContainer") as wix_ui.HtmlComponent).html = homePageHTML;
+  setContentAnywhere(["#mainContainer"], homePageHTML);
 }
 
 function loadDynamicContent() {
-  const mockData = { /* ... */ };
+  const mockData = {
+    /* ... */
+  };
   renderEventsPreview(mockData.events);
   renderMemberSpotlight(mockData.spotlight);
 }
 
 function renderEventsPreview(events) {
   if (!events || events.length === 0) {
-    ($w("#eventsPreviewContainer") as wix_ui.HtmlComponent).html = "<p>No upcoming events...</p>";
+    setContentAnywhere(
+      ["#eventsPreviewContainer"],
+      "<p>No upcoming events...</p>"
+    );
     return;
   }
-  const eventsHTML = events.map(event => `...`).join('');
-  ($w("#eventsPreviewContainer") as wix_ui.HtmlComponent).html = `<div class="events-preview-grid">${eventsHTML}</div>`;
+  const eventsHTML = events.map((event) => `...`).join("");
+  setContentAnywhere(
+    ["#eventsPreviewContainer"],
+    `<div class="events-preview-grid">${eventsHTML}</div>`
+  );
 }
 
 function renderMemberSpotlight(spotlight) {
   if (!spotlight) {
-    ($w("#spotlightContainer") as wix_ui.HtmlComponent).html = "<p>Spotlights coming soon!</p>";
+    setContentAnywhere(
+      ["#spotlightContainer"],
+      "<p>Spotlights coming soon!</p>"
+    );
     return;
   }
   const spotlightHTML = `...`;
-  ($w("#spotlightContainer") as wix_ui.HtmlComponent).html = spotlightHTML;
+  setContentAnywhere(["#spotlightContainer"], spotlightHTML);
 }
 
 function setupEventHandlers() {
-    // DEVELOPER NOTE: The onClick handlers for buttons like #ctaJoinButton will NOT work
-    // because they are inside an HtmlComponent. The script injected by createHomePageStructure
-    // uses postMessage to communicate clicks. This onMessage handler receives them.
-    ($w("#mainContainer") as wix_ui.HtmlComponent).onMessage((event) => {
-        if(event.data.type === 'homeAction') {
-            const action = event.data.action;
-            if(action === 'join') wixLocation.to("/join-brbs");
-            else if(action === 'events') wixLocation.to("/events");
-            else if(action === 'about') wixLocation.to("/about-brbs");
-        }
+  // DEVELOPER NOTE: The onClick handlers for buttons like #ctaJoinButton will NOT work
+  // because they are inside an HtmlComponent. The script injected by createHomePageStructure
+  // uses postMessage to communicate clicks. This onMessage handler receives them.
+  const mainContainer = $w("#mainContainer");
+  if (mainContainer && typeof mainContainer.onMessage === "function") {
+    mainContainer.onMessage((event) => {
+      if (event.data.type === "homeAction") {
+        const action = event.data.action;
+        if (action === "join") wixLocation.to("/join-brbs");
+        else if (action === "events") wixLocation.to("/events");
+        else if (action === "about") wixLocation.to("/about-brbs");
+      }
     });
+  } else {
+    console.warn(
+      "#mainContainer does not support onMessage. Ensure it's an HtmlComponent if using postMessage."
+    );
+  }
 
-    // This handler for clicks within the events preview will also need to be
-    // refactored to use postMessage if the event cards are in an HtmlComponent.
-    ($w("#eventsPreviewContainer") as wix_ui.HtmlComponent).onMessage((event) => {
-        if(event.data.type === 'eventClick') {
-            wixLocation.to(`/event-details?eventId=${event.data.eventId}`);
-        }
+  // This handler for clicks within the events preview will also need to be
+  // refactored to use postMessage if the event cards are in an HtmlComponent.
+  const eventsPreviewContainer = $w("#eventsPreviewContainer");
+  if (
+    eventsPreviewContainer &&
+    typeof eventsPreviewContainer.onMessage === "function"
+  ) {
+    eventsPreviewContainer.onMessage((event) => {
+      if (event.data.type === "eventClick") {
+        wixLocation.to(`/event-details?eventId=${event.data.eventId}`);
+      }
     });
+  } else {
+    console.warn(
+      "#eventsPreviewContainer does not support onMessage. Ensure it's an HtmlComponent if using postMessage."
+    );
+  }
 }
 
 /**

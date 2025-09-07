@@ -1,0 +1,118 @@
+// Google Drive Gallery Web Module
+// Exposes functions to list galleries (subfolders) and photos (images) from a public Google Drive folder.
+// Requirements:
+// - Create a Wix Secret named GOOGLE_DRIVE_API_KEY that contains a Google API key with Drive API enabled.
+// - The Drive folders/files you want to read must be shared so that "Anyone with the link" can view.
+
+import { webMethod } from 'wix-web-module';
+import { getSecret } from 'wix-secrets-backend';
+import { fetch } from 'wix-fetch';
+
+const DRIVE_API_BASE = 'https://www.googleapis.com/drive/v3/files';
+
+async function getApiKey() {
+  const key = await getSecret('GOOGLE_DRIVE_API_KEY');
+  if (!key) throw new Error('Missing secret GOOGLE_DRIVE_API_KEY. Please add it in Wix Secrets Manager.');
+  return key;
+}
+
+async function driveList(params) {
+  const key = await getApiKey();
+  const qs = new URLSearchParams({ key });
+
+  if (params.q) qs.set('q', params.q);
+  if (params.fields) qs.set('fields', params.fields);
+  if (params.orderBy) qs.set('orderBy', params.orderBy);
+  qs.set('pageSize', String(params.pageSize || 1000));
+
+  // You can include supportsAllDrives/includeItemsFromAllDrives if needed
+  if (params.supportsAllDrives) qs.set('supportsAllDrives', 'true');
+  if (params.includeItemsFromAllDrives) qs.set('includeItemsFromAllDrives', 'true');
+
+  const url = `${DRIVE_API_BASE}?${qs.toString()}`;
+  const res = await fetch(url, { method: 'GET' });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Drive API error: ${res.status} ${res.statusText} - ${text}`);
+  }
+  return res.json();
+}
+
+function fileToImageItem(file) {
+  const id = file.id;
+  const originalUrl = `https://drive.google.com/uc?export=view&id=${id}`;
+  const thumbnailUrl = file.thumbnailLink || originalUrl;
+  return {
+    _id: id,
+    title: file.name,
+    description: file.description || '',
+    originalUrl,
+    thumbnailUrl,
+    altText: file.name,
+    mimeType: file.mimeType,
+    shootDate: file.modifiedTime || null
+  };
+}
+
+async function getFolderImages(folderId) {
+  const { files = [] } = await driveList({
+    q: `'${folderId}' in parents and mimeType contains 'image/' and trashed = false`,
+    fields: 'files(id,name,description,mimeType,modifiedTime,thumbnailLink)',
+    orderBy: 'modifiedTime desc,name',
+    pageSize: 1000
+  });
+  return files.map(fileToImageItem);
+}
+
+function chooseCover(images) {
+  if (!images || images.length === 0) return null;
+  // Prefer a file named like "cover*"
+  const preferred = images.find(img => /^(cover|thumbnail)[\._\-\s]?/i.test(img.title));
+  return preferred || images[0];
+}
+
+export const listGalleries = webMethod(async ({ rootFolderId }) => {
+  if (!rootFolderId) throw new Error('rootFolderId is required');
+
+  // 1) List subfolders (each subfolder is a gallery)
+  const { files: folders = [] } = await driveList({
+    q: `'${rootFolderId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
+    fields: 'files(id,name,modifiedTime,description,webViewLink)'
+  });
+
+  // 2) For each gallery folder, list images to get cover + count
+  const galleries = [];
+  for (const f of folders) {
+    let images = [];
+    try {
+      images = await getFolderImages(f.id);
+    } catch (e) {
+      // If a subfolder is empty or access fails, continue with empty images
+      images = [];
+    }
+    const cover = chooseCover(images);
+    galleries.push({
+      _id: f.id,
+      name: f.name,
+      description: f.description || '',
+      coverImageUrl: cover ? cover.originalUrl : '',
+      createdDate: f.modifiedTime || null,
+      isPublic: true,
+      totalPhotos: images.length,
+      viewCount: 0,
+      likes: 0,
+      webViewLink: f.webViewLink
+    });
+  }
+
+  // Sort alphabetically by name as a sane default
+  galleries.sort((a, b) => a.name.localeCompare(b.name));
+  return galleries;
+});
+
+export const listPhotos = webMethod(async ({ folderId }) => {
+  if (!folderId) throw new Error('folderId is required');
+  const images = await getFolderImages(folderId);
+  return images;
+});
+
