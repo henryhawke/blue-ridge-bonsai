@@ -87,6 +87,8 @@
 import wixWindow from "wix-window-frontend";
 import wixLocation from "wix-location-frontend";
 import { initAnalytics, trackPageView } from "public/js/analytics-tracking.js";
+import { initPhotosPage } from "public/js/pages/photos.js";
+import { initGalleryViewPage } from "public/js/pages/gallery-view.js";
 
 // Initialize the master page when ready
 try {
@@ -107,6 +109,21 @@ try {
 
       // Initialize liquid glass navigation enhancements
       setupLiquidGlassNav();
+
+      // Lightweight page router to ensure per-page code runs even if page files are empty
+      try {
+        const pathArr = (wixLocation.path || []).map((p) =>
+          String(p).toLowerCase()
+        );
+        const slug = "/" + pathArr.join("/");
+        if (slug.endsWith("/photos") || slug === "/photos") {
+          initPhotosPage();
+        } else if (slug.endsWith("/gallery-view") || slug === "/gallery-view") {
+          initGalleryViewPage();
+        }
+      } catch (e) {
+        console.log("Page init router failed:", e);
+      }
     });
   } else {
     console.log("$w API not available, initializing master page directly.");

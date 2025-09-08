@@ -48,7 +48,7 @@ export async function initPhotosPage() {
           typeof $item("#viewGalleryBtn").onClick === "function"
         ) {
           $item("#viewGalleryBtn").onClick(() =>
-            wixLocation.to(`/gallery-view?folderId=${itemData._id}`)
+            wixLocation.to(`/gallery-view?folderId=${itemData._id}&open=1`)
           );
         }
       } catch (e) {
