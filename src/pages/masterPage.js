@@ -104,6 +104,9 @@ try {
 
       // Add global elements like a dynamic footer link
       addGlobalFooterElements();
+
+      // Initialize liquid glass navigation enhancements
+      setupLiquidGlassNav();
     });
   } else {
     console.log("$w API not available, initializing master page directly.");
@@ -112,6 +115,7 @@ try {
     trackPageView(wixLocation.path.join("/"));
     ensureCustomElement();
     addGlobalFooterElements();
+    setupLiquidGlassNav();
   }
 } catch (error) {
   console.error("Error initializing master page:", error);
@@ -168,5 +172,94 @@ function addGlobalFooterElements() {
     }
   } catch (error) {
     console.log("Footer element check failed:", error);
+  }
+}
+
+/**
+ * Enhance and stabilize the liquid glass navigation.
+ * - Applies classes for atmospheric nav styles
+ * - Adds scroll hide/reveal and scrolled state
+ * - Adapts theme based on content brightness
+ */
+function setupLiquidGlassNav() {
+  try {
+    // Try DOM first for universal compatibility
+    if (typeof document !== "undefined") {
+      const nav =
+        document.querySelector("#liquid-glass-nav") ||
+        document.querySelector('header, [data-testid="siteHeader"]');
+      if (nav) {
+        nav.classList.add("liquid-glass-nav");
+
+        // Scroll hide/reveal + scrolled state
+        let lastY = window.scrollY;
+        let ticking = false;
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!ticking) {
+              window.requestAnimationFrame(() => {
+                const y = window.scrollY;
+                if (y > 24) nav.classList.add("nav-scrolled");
+                else nav.classList.remove("nav-scrolled");
+                if (y > lastY && y > 120) nav.classList.add("nav-hidden");
+                else nav.classList.remove("nav-hidden");
+                lastY = y;
+                ticking = false;
+              });
+              ticking = true;
+            }
+          },
+          { passive: true }
+        );
+
+        // Content-aware theming (light/dark) based on background
+        const checkTheme = () => {
+          try {
+            const main =
+              document.querySelector("main, #SITE_PAGES, #masterPage") ||
+              document.body;
+            const bg =
+              window.getComputedStyle(main).backgroundColor ||
+              "rgb(255,255,255)";
+            // Simple luminance heuristic
+            const m = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (m) {
+              const r = parseInt(m[1], 10),
+                g = parseInt(m[2], 10),
+                b = parseInt(m[3], 10);
+              const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+              if (lum < 140) {
+                nav.classList.add("content-dark");
+                nav.classList.remove("content-light");
+              } else {
+                nav.classList.add("content-light");
+                nav.classList.remove("content-dark");
+              }
+            }
+          } catch (_) {}
+        };
+        checkTheme();
+        window.addEventListener("resize", checkTheme, { passive: true });
+      }
+    }
+
+    // If $w exists, ensure header section gets class for CSS targeting
+    try {
+      if (typeof $w !== "undefined") {
+        const header = $w("Header");
+        if (
+          header &&
+          header.length > 0 &&
+          typeof header.addClass === "function"
+        ) {
+          header.addClass("liquid-glass-nav");
+        }
+      }
+    } catch (e) {
+      // Non-fatal
+    }
+  } catch (error) {
+    console.log("Navigation enhancement failed:", error);
   }
 }

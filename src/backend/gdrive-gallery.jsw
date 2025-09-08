@@ -1,0 +1,116 @@
+// @ts-nocheck
+// Google Drive-backed gallery backend for Wix
+// Exposes functions to list galleries (subfolders) and photos (images) using Drive API v3
+
+import { secrets } from 'wix-secrets-backend';
+import { fetch } from 'wix-fetch';
+
+const DRIVE_API_BASE = 'https://www.googleapis.com/drive/v3/files';
+
+/**
+ * Build a Drive API URL with query, fields and API key from Secrets Manager
+ */
+async function buildDriveUrl(params) {
+  const apiKey = await secrets.get('GOOGLE_DRIVE_API_KEY');
+  if (!apiKey) throw new Error('GOOGLE_DRIVE_API_KEY is not set in Secrets Manager');
+
+  const url = new URL(DRIVE_API_BASE);
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  url.searchParams.set('key', apiKey);
+  return url.toString();
+}
+
+/**
+ * List immediate subfolders under a root folder (each subfolder is a gallery)
+ * @param {string} rootFolderId
+ * @returns {Promise<Array<{_id: string, name: string, description?: string, coverImageUrl?: string, totalPhotos: number}>>}
+ */
+export async function listGalleries(rootFolderId) {
+  if (!rootFolderId) throw new Error('Missing rootFolderId');
+
+  try {
+    // List subfolders
+    const folderQuery = `('${rootFolderId}' in parents) and (mimeType = 'application/vnd.google-apps.folder') and trashed = false`;
+    const url = await buildDriveUrl({
+      q: folderQuery,
+      fields: 'files(id,name,description,modifiedTime)',
+      pageSize: '1000',
+      supportsAllDrives: 'true',
+      includeItemsFromAllDrives: 'true'
+    });
+    const res = await fetch(url, { method: 'get' });
+    if (!res.ok) throw new Error(`Drive list folders failed: ${res.status}`);
+    const data = await res.json();
+    const folders = Array.isArray(data.files) ? data.files : [];
+
+    // For each folder, get first image as cover and count images
+    const results = [];
+    for (const folder of folders) {
+      const { id, name, description } = folder;
+      const imageQuery = `('${id}' in parents) and (mimeType contains 'image/') and trashed = false`;
+      const imagesUrl = await buildDriveUrl({
+        q: imageQuery,
+        fields: 'files(id,name,description,mimeType,thumbnailLink)',
+        orderBy: 'createdTime',
+        pageSize: '1000',
+        supportsAllDrives: 'true',
+        includeItemsFromAllDrives: 'true'
+      });
+      const imgRes = await fetch(imagesUrl, { method: 'get' });
+      const imgData = imgRes.ok ? await imgRes.json() : { files: [] };
+      const files = Array.isArray(imgData.files) ? imgData.files : [];
+      const first = files[0];
+      const coverImageUrl = first ? driveFileToImageUrl(first.id) : undefined;
+      results.push({ _id: id, name, description, coverImageUrl, totalPhotos: files.length });
+    }
+
+    return results;
+  } catch (error) {
+    console.error('listGalleries error:', error);
+    return [];
+  }
+}
+
+/**
+ * List images within a gallery folder
+ * @param {string} folderId
+ * @returns {Promise<Array<{id: string, title: string, description?: string, src: string, thumbnail?: string, mimeType?: string}>>}
+ */
+export async function listPhotos(folderId) {
+  if (!folderId) throw new Error('Missing folderId');
+  try {
+    const imageQuery = `('${folderId}' in parents) and (mimeType contains 'image/') and trashed = false`;
+    const url = await buildDriveUrl({
+      q: imageQuery,
+      fields: 'files(id,name,description,mimeType,thumbnailLink,createdTime)',
+      orderBy: 'createdTime',
+      pageSize: '1000',
+      supportsAllDrives: 'true',
+      includeItemsFromAllDrives: 'true'
+    });
+    const res = await fetch(url, { method: 'get' });
+    if (!res.ok) throw new Error(`Drive list photos failed: ${res.status}`);
+    const data = await res.json();
+    const files = Array.isArray(data.files) ? data.files : [];
+    return files.map((f) => ({
+      id: f.id,
+      title: f.name,
+      description: f.description,
+      src: driveFileToImageUrl(f.id),
+      thumbnail: f.thumbnailLink,
+      mimeType: f.mimeType
+    }));
+  } catch (error) {
+    console.error('listPhotos error:', error);
+    return [];
+  }
+}
+
+/**
+ * Convert Drive file id to a direct image URL suitable for Wix Pro Gallery
+ */
+function driveFileToImageUrl(fileId) {
+  return `https://drive.google.com/uc?id=${fileId}`;
+}
+
+
