@@ -2,7 +2,7 @@
 
 ## Spirit of Blue Ridge Bonsai
 
-*"Like the ancient oak that bends in mountain winds yet never breaks, our design honors the timeless wisdom of Japanese aesthetics set against the natural beauty of the Blue Ridge Mountains."*
+_"Like the ancient oak that bends in mountain winds yet never breaks, our design honors the timeless wisdom of Japanese aesthetics set against the natural beauty of the Blue Ridge Mountains."_
 
 ### Fusion Philosophy
 
@@ -10,39 +10,43 @@ The Blue Ridge Bonsai Society design system emerges from the harmonious relation
 
 **Wabi-Sabi (侘寂)** - The Japanese aesthetic of finding beauty in imperfection and impermanence. Like the weathered bark of a centuries-old mountain pine, we embrace the authentic marks of time and nature.
 
-> *Sidebar: **Wabi-Sabi** (わび さび)*  
-> *Font: Noto Sans JP*  
-> *From "wabi" (humble simplicity) and "sabi" (natural aging), this philosophy teaches us that true beauty lies not in perfection, but in the honest expression of time's passage.*
+> _Sidebar: **Wabi-Sabi** (わび さび)_  
+> _Font: Noto Sans JP_  
+> _From "wabi" (humble simplicity) and "sabi" (natural aging), this philosophy teaches us that true beauty lies not in perfection, but in the honest expression of time's passage._
 
 **Ma (間)** - The powerful use of negative space and pregnant pauses. In our design, silence speaks as eloquently as content, creating breathing room for contemplation and discovery.
 
-> *Sidebar: **Ma** (ま)*  
-> *Font: Noto Sans JP*  
-> *The interval between sounds in music, the pause between words in conversation, the empty space that gives meaning to form. Ma teaches us that what is not there is as important as what is.*
+> _Sidebar: **Ma** (ま)_  
+> _Font: Noto Sans JP_  
+> _The interval between sounds in music, the pause between words in conversation, the empty space that gives meaning to form. Ma teaches us that what is not there is as important as what is._
 
 **Natural Rhythm** - The unhurried pace of mountain seasons and natural growth cycles. Our interface reflects the patient, contemplative rhythm found in both bonsai cultivation and mountain landscapes, guiding users through experiences with gentle, organic flow.
 
 ### Guiding Design Tenets
 
 #### 1. Balance of Void & Form (虚実のバランス)
-Inspired by the Japanese principle of *kyojitsu*, we understand that empty space is not absence but presence. Our layouts breathe with generous whitespace, allowing each element to exist in harmony with its surroundings, like a solitary tree on a mountain ridge.
+
+Inspired by the Japanese principle of _kyojitsu_, we understand that empty space is not absence but presence. Our layouts breathe with generous whitespace, allowing each element to exist in harmony with its surroundings, like a solitary tree on a mountain ridge.
 
 #### 2. Seasonal Impermanence (季節の無常)
-Following the concept of *mono no aware* (the pathos of existence), our design acknowledges the transient nature of digital experiences.
 
-> *Sidebar: **Mono no Aware** (物の哀れ)*  
-> *Font: Noto Sans JP*  
-> *The bittersweet awareness of the impermanence of all existence. This aesthetic philosophy finds beauty in the fleeting nature of life and experience.*
+Following the concept of _mono no aware_ (the pathos of existence), our design acknowledges the transient nature of digital experiences.
+
+> _Sidebar: **Mono no Aware** (物の哀れ)_  
+> _Font: Noto Sans JP_  
+> _The bittersweet awareness of the impermanence of all existence. This aesthetic philosophy finds beauty in the fleeting nature of life and experience._
 
 #### 3. Layered Horizons (重なる地平線)
+
 Like the Blue Ridge Mountains themselves, our visual hierarchy creates depth through overlapping layers. Content emerges from mist-like backgrounds, revealing itself gradually as users navigate deeper into their journey.
 
 #### 4. Crafted Naturalism (作られた自然)
-Our design celebrates the Japanese concept of *shu-ha-ri* (learn-adapt-transcend) and thoughtful digital craftsmanship. Every element shows intentional design while serving its purpose with quiet dignity.
 
-> *Sidebar: **Shu-Ha-Ri** (守破離)*  
-> *Font: Noto Sans JP*  
-> *The three stages of mastery: first learn the rules, then break the rules, then transcend the rules. This applies to both bonsai cultivation and design evolution.*
+Our design celebrates the Japanese concept of _shu-ha-ri_ (learn-adapt-transcend) and thoughtful digital craftsmanship. Every element shows intentional design while serving its purpose with quiet dignity.
+
+> _Sidebar: **Shu-Ha-Ri** (守破離)_  
+> _Font: Noto Sans JP_  
+> _The three stages of mastery: first learn the rules, then break the rules, then transcend the rules. This applies to both bonsai cultivation and design evolution._
 
 ## Overview
 
@@ -62,17 +66,17 @@ This design system creates a harmonious balance between traditional Japanese bon
 
 ### Primary Colors
 
-- **Mountain Sage**: `#6B8E6F` - Primary brand color, inspired by Blue Ridge mountain foliage
-- **Stone Gray**: `#4A4A4A` - Secondary text and UI elements
-- **Cloud White**: `#FEFFFE` - Background and negative space
-- **Earth Brown**: `#8B7355` - Accent color for traditional elements
+- **Mountain Sage**: ![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+) `#6B8E6F` - Primary brand color, inspired by Blue Ridge mountain foliage
+- **Stone Gray**: ![#4A4A4A](https://via.placeholder.com/15/4A4A4A/000000?text=+) `#4A4A4A` - Secondary text and UI elements
+- **Cloud White**: ![#FEFFFE](https://via.placeholder.com/15/FEFFFE/000000?text=+) `#FEFFFE` - Background and negative space
+- **Earth Brown**: ![#8B7355](https://via.placeholder.com/15/8B7355/000000?text=+) `#8B7355` - Accent color for traditional elements
 
 ### Extended Neutral Palette
 
-- **Fog Mist**: `#EBF1EE` - Light neutral for subtle backgrounds and gentle separations
-- **Dawn Sky**: `#DDE4EA` - Cool neutral for secondary content areas and muted borders
-- **Mountain Haze**: `#C8D2CE` - Mid-tone neutral for inactive states and subtle text
-- **Valley Shadow**: `#9BA5A1` - Deeper neutral for secondary text and disabled elements
+- **Fog Mist**: ![#EBF1EE](https://via.placeholder.com/15/EBF1EE/000000?text=+) `#EBF1EE` - Light neutral for subtle backgrounds and gentle separations
+- **Dawn Sky**: ![#DDE4EA](https://via.placeholder.com/15/DDE4EA/000000?text=+) `#DDE4EA` - Cool neutral for secondary content areas and muted borders
+- **Mountain Haze**: ![#C8D2CE](https://via.placeholder.com/15/C8D2CE/000000?text=+) `#C8D2CE` - Mid-tone neutral for inactive states and subtle text
+- **Valley Shadow**: ![#9BA5A1](https://via.placeholder.com/15/9BA5A1/000000?text=+) `#9BA5A1` - Deeper neutral for secondary text and disabled elements
 
 ### Gradient Tokens
 
@@ -83,42 +87,46 @@ This design system creates a harmonious balance between traditional Japanese bon
 
 ### Secondary Colors
 
-- **Moss Green**: `#7D8471` - Subtle highlights and hover states
-- **Slate Blue**: `#5C6B73` - Secondary buttons and links
-- **Warm Cream**: `#F9F7F4` - Alternative background for sections
-- **Copper Accent**: `#B08D57` - Call-to-action elements and pricing
+- **Moss Green**: ![#7D8471](https://via.placeholder.com/15/7D8471/000000?text=+) `#7D8471` - Subtle highlights and hover states
+- **Slate Blue**: ![#5C6B73](https://via.placeholder.com/15/5C6B73/000000?text=+) `#5C6B73` - Secondary buttons and links
+- **Warm Cream**: ![#F9F7F4](https://via.placeholder.com/15/F9F7F4/000000?text=+) `#F9F7F4` - Alternative background for sections
+- **Copper Accent**: ![#B08D57](https://via.placeholder.com/15/B08D57/000000?text=+) `#B08D57` - Call-to-action elements and pricing
 
 ### Semantic Colors
 
-- **Success**: `#4F7942` - Confirmations and positive actions
-- **Warning**: `#D4A574` - Alerts and cautionary information
-- **Error**: `#A85A5A` - Error states and critical information
-- **Info**: `#6B8CAE` - Informational content and tips
+- **Success**: ![#4F7942](https://via.placeholder.com/15/4F7942/000000?text=+) `#4F7942` - Confirmations and positive actions
+- **Warning**: ![#D4A574](https://via.placeholder.com/15/D4A574/000000?text=+) `#D4A574` - Alerts and cautionary information
+- **Error**: ![#A85A5A](https://via.placeholder.com/15/A85A5A/000000?text=+) `#A85A5A` - Error states and critical information
+- **Info**: ![#6B8CAE](https://via.placeholder.com/15/6B8CAE/000000?text=+) `#6B8CAE` - Informational content and tips
 
 ### Dark Mode Palette (WCAG AA Compliant)
 
 #### Primary Dark Colors
-- **Dark Mountain Sage**: `#8FA693` - Primary brand color (4.5:1 contrast on dark backgrounds)
-- **Dark Stone**: `#E8E8E8` - Primary text (14.8:1 contrast on #1A1D1B)
-- **Charcoal Base**: `#1A1D1B` - Primary dark background
-- **Dark Earth**: `#A68B6F` - Accent color for traditional elements
+
+- **Dark Mountain Sage**: ![#8FA693](https://via.placeholder.com/15/8FA693/000000?text=+) `#8FA693` - Primary brand color (4.5:1 contrast on dark backgrounds)
+- **Dark Stone**: ![#E8E8E8](https://via.placeholder.com/15/E8E8E8/000000?text=+) `#E8E8E8` - Primary text (14.8:1 contrast on #1A1D1B)
+- **Charcoal Base**: ![#1A1D1B](https://via.placeholder.com/15/1A1D1B/000000?text=+) `#1A1D1B` - Primary dark background
+- **Dark Earth**: ![#A68B6F](https://via.placeholder.com/15/A68B6F/000000?text=+) `#A68B6F` - Accent color for traditional elements
 
 #### Extended Dark Neutrals
-- **Shadow Mist**: `#2A2F2C` - Light dark neutral (12.1:1 contrast for text)
-- **Night Sky**: `#363B38` - Secondary dark areas (9.8:1 contrast for text)
-- **Deep Haze**: `#4A524E` - Mid-tone dark neutral (6.2:1 contrast for text)
-- **Moonlight**: `#8B9590` - Light neutral text (4.6:1 contrast on dark backgrounds)
+
+- **Shadow Mist**: ![#2A2F2C](https://via.placeholder.com/15/2A2F2C/000000?text=+) `#2A2F2C` - Light dark neutral (12.1:1 contrast for text)
+- **Night Sky**: ![#363B38](https://via.placeholder.com/15/363B38/000000?text=+) `#363B38` - Secondary dark areas (9.8:1 contrast for text)
+- **Deep Haze**: ![#4A524E](https://via.placeholder.com/15/4A524E/000000?text=+) `#4A524E` - Mid-tone dark neutral (6.2:1 contrast for text)
+- **Moonlight**: ![#8B9590](https://via.placeholder.com/15/8B9590/000000?text=+) `#8B9590` - Light neutral text (4.6:1 contrast on dark backgrounds)
 
 #### Dark Mode Gradients
+
 - **Dark Sage to Shadow**: `linear-gradient(135deg, #8FA693 0%, #2A2F2C 100%)`
 - **Night Mist**: `linear-gradient(180deg, #363B38 0%, #1A1D1B 60%)`
 - **Dark Mountain Breath**: `linear-gradient(45deg, #2A2F2C 0%, #363B38 50%, #4A524E 100%)`
 
 #### Dark Semantic Colors
-- **Dark Success**: `#7BA36C` - Success state (4.8:1 contrast)
-- **Dark Warning**: `#E6C088` - Warning state (7.2:1 contrast)
-- **Dark Error**: `#D4847A` - Error state (5.1:1 contrast)
-- **Dark Info**: `#8DB4D8` - Info state (6.8:1 contrast)
+
+- **Dark Success**: ![#7BA36C](https://via.placeholder.com/15/7BA36C/000000?text=+) `#7BA36C` - Success state (4.8:1 contrast)
+- **Dark Warning**: ![#E6C088](https://via.placeholder.com/15/E6C088/000000?text=+) `#E6C088` - Warning state (7.2:1 contrast)
+- **Dark Error**: ![#D4847A](https://via.placeholder.com/15/D4847A/000000?text=+) `#D4847A` - Error state (5.1:1 contrast)
+- **Dark Info**: ![#8DB4D8](https://via.placeholder.com/15/8DB4D8/000000?text=+) `#8DB4D8` - Info state (6.8:1 contrast)
 
 ### Color Usage Guidelines
 
@@ -136,16 +144,17 @@ This design system creates a harmonious balance between traditional Japanese bon
 **⚠️ Contrast Issues Identified:**
 The following color combinations do not meet WCAG AA standards and require adjustment:
 
-- **Mountain Sage (#6B8E6F) on white backgrounds** - Consider using `#5A7A5E` for improved contrast
-- **Earth Brown (#8B7355) on white backgrounds** - Consider using `#7A6248` for better readability
-- **Valley Shadow (#9BA5A1) text** - Reserve for decorative elements only, not readable text
-- **Warning Orange (#D4A574)** - Consider using `#C49356` for text on white backgrounds
-- **Info Blue (#6B8CAE)** - Consider using `#5A7B98` for better contrast
+- **Mountain Sage (![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+) #6B8E6F) on white backgrounds** - Consider using ![#5A7A5E](https://via.placeholder.com/15/5A7A5E/000000?text=+) `#5A7A5E` for improved contrast
+- **Earth Brown (![#8B7355](https://via.placeholder.com/15/8B7355/000000?text=+) #8B7355) on white backgrounds** - Consider using ![#7A6248](https://via.placeholder.com/15/7A6248/000000?text=+) `#7A6248` for better readability
+- **Valley Shadow (![#9BA5A1](https://via.placeholder.com/15/9BA5A1/000000?text=+) #9BA5A1) text** - Reserve for decorative elements only, not readable text
+- **Warning Orange (![#D4A574](https://via.placeholder.com/15/D4A574/000000?text=+) #D4A574)** - Consider using ![#C49356](https://via.placeholder.com/15/C49356/000000?text=+) `#C49356` for text on white backgrounds
+- **Info Blue (![#6B8CAE](https://via.placeholder.com/15/6B8CAE/000000?text=+) #6B8CAE)** - Consider using ![#5A7B98](https://via.placeholder.com/15/5A7B98/000000?text=+) `#5A7B98` for better contrast
 
 **✅ Colors That Pass WCAG AA:**
-- Stone Gray (#4A4A4A) - Excellent for body text
-- Success Green (#4F7942) - Safe for status messages
-- Error Red (#A85A5A) - Acceptable for error states
+
+- Stone Gray ( ![#4A4A4A](https://via.placeholder.com/15/4A4A4A/000000?text=+) `#4A4A4A`) - Excellent for body text
+- Success Green ( ![#4F7942](https://via.placeholder.com/15/4F7942/000000?text=+) `#4F7942`) - Safe for status messages
+- Error Red ( ![#A85A5A](https://via.placeholder.com/15/A85A5A/000000?text=+) `#A85A5A`) - Acceptable for error states
 - All dark mode color combinations pass AA standards
 
 ## Typography
@@ -374,13 +383,14 @@ large: 1200px+
 
 ### Shakkei (借景) - Borrowed Scenery Framing
 
-Inspired by the Japanese garden principle of *shakkei*, our imagery incorporates distant elements to create depth and context. Photographs should frame subjects against Blue Ridge mountain vistas, allowing the natural landscape to become part of the composition.
+Inspired by the Japanese garden principle of _shakkei_, our imagery incorporates distant elements to create depth and context. Photographs should frame subjects against Blue Ridge mountain vistas, allowing the natural landscape to become part of the composition.
 
-> *Sidebar: **Shakkei** (借景)*  
-> *Font: Noto Sans JP*  
-> *"Borrowed scenery" - the practice of incorporating distant landscapes into garden design. The Blue Ridge Mountains become our eternal backdrop, connecting every image to place.*
+> _Sidebar: **Shakkei** (借景)_  
+> _Font: Noto Sans JP_  
+> _"Borrowed scenery" - the practice of incorporating distant landscapes into garden design. The Blue Ridge Mountains become our eternal backdrop, connecting every image to place._
 
 **Shakkei Implementation:**
+
 - Frame bonsai against mountain silhouettes during golden hour
 - Use natural archways (tree branches, rock formations) to create depth
 - Include layers: foreground subject, middle-ground context, background mountains
@@ -388,9 +398,10 @@ Inspired by the Japanese garden principle of *shakkei*, our imagery incorporates
 
 ### Mist Overlay Techniques
 
-Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog, we employ subtle mist overlays to create atmospheric depth and seasonal connection.
+Drawing from both Japanese _kasumi_ (mist) aesthetics and Blue Ridge morning fog, we employ subtle mist overlays to create atmospheric depth and seasonal connection.
 
 **Mist Overlay Guidelines:**
+
 - Use semi-transparent white gradients (opacity: 0.1-0.3)
 - Apply from bottom-up or corner-diagonal directions
 - Seasonal variation: heavier mist in autumn/winter imagery
@@ -432,7 +443,7 @@ Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog
 }
 
 .image-shakkei::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -448,7 +459,7 @@ Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog
 }
 
 .mist-overlay-light::before {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
@@ -464,13 +475,17 @@ Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog
 }
 
 .mist-overlay-atmospheric::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   right: 0;
   width: 30%;
   height: 100%;
-  background: radial-gradient(ellipse at top right, rgba(255, 255, 255, 0.2), transparent 70%);
+  background: radial-gradient(
+    ellipse at top right,
+    rgba(255, 255, 255, 0.2),
+    transparent 70%
+  );
   pointer-events: none;
 }
 
@@ -594,12 +609,12 @@ Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog
 
 ### Design Token Table
 
-| Token Name         | Value                       | Description                             |
-|--------------------|-----------------------------|-----------------------------------------|
-| --color-mountain-sage   | #6B8E6F                    | Primary brand color                     |
-| --color-fog-mist   | #222724FF                    | Light neutral for backgrounds           |
-| --color-dawn-sky   | #DDE4EA                    | Cool neutral for content areas          |
-| --gradient-sage-fog| linear-gradient(135deg, #6B8E6F, #EBF1EE) | Brand gradient for prominent elements |
+| Token Name            | Value                                                                         | Description                           |
+| --------------------- | ----------------------------------------------------------------------------- | ------------------------------------- |
+| --color-mountain-sage | #6B8E6F ![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+)       | Primary brand color                   |
+| --color-fog-mist      | #222724FF ![#222724FF](https://via.placeholder.com/15/222724FF/000000?text=+) | Light neutral for backgrounds         |
+| --color-dawn-sky      | #DDE4EA ![#DDE4EA](https://via.placeholder.com/15/DDE4EA/000000?text=+)       | Cool neutral for content areas        |
+| --gradient-sage-fog   | linear-gradient(135deg, #6B8E6F, #EBF1EE)                                     | Brand gradient for prominent elements |
 
 ### Sample Tailwind CSS and Variables
 
@@ -609,12 +624,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        mountainSage: '#6B8E6F',
-        fogMist: '#EBF1EE',
-        dawnSky: '#DDE4EA',
+        mountainSage: "#6B8E6F",
+        fogMist: "#EBF1EE",
+        dawnSky: "#DDE4EA",
       },
       backgroundImage: {
-        'gradient-sage-fog': 'linear-gradient(135deg, #6B8E6F, #EBF1EE)',
+        "gradient-sage-fog": "linear-gradient(135deg, #6B8E6F, #EBF1EE)",
       },
     },
   },
@@ -624,10 +639,10 @@ module.exports = {
 ```css
 /* CSS Variables */
 :root {
-  --color-mountain-sage: #6B8E6F;
-  --color-fog-mist: #EBF1EE;
-  --color-dawn-sky: #DDE4EA;
-  --gradient-sage-fog: linear-gradient(135deg, #6B8E6F, #EBF1EE);
+  --color-mountain-sage: #6b8e6f;
+  --color-fog-mist: #ebf1ee;
+  --color-dawn-sky: #dde4ea;
+  --gradient-sage-fog: linear-gradient(135deg, #6b8e6f, #ebf1ee);
 }
 
 .element {
@@ -648,10 +663,22 @@ Inspired by the ensō brush stroke, motion timings should reflect harmony and in
 
 ```css
 @keyframes ensoMotion {
-  0% { transform: scale(0.8); opacity: 0; }
-  40% { transform: scale(1.05); opacity: 1; }
-  60% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 .element-motion {
   animation: ensoMotion 0.7s ease-in-out;
@@ -724,7 +751,7 @@ Inspired by the ensō brush stroke, motion timings should reflect harmony and in
 
 - **Style**: Minimal line icons with 2px stroke weight
 - **Size**: 24px standard, 32px for primary actions
-- **Color**: Stone Gray (#4A4A4A) with Mountain Sage (#6B8E6F) accents
+- **Color**: Stone Gray ( ![#4A4A4A](https://via.placeholder.com/15/4A4A4A/000000?text=+) `#4A4A4A`) with Mountain Sage ( ![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+) `#6B8E6F`) accents
 - **Library**: Feather Icons or custom SVG set
 
 ### Patterns & Textures
