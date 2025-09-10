@@ -609,12 +609,12 @@ Drawing from both Japanese _kasumi_ (mist) aesthetics and Blue Ridge morning fog
 
 ### Design Token Table
 
-| Token Name            | Value                                                                         | Description                           |
-| --------------------- | ----------------------------------------------------------------------------- | ------------------------------------- |
-| --color-mountain-sage | #6B8E6F ![#6B8E6F](https://placehold.co/15x15/6b8e6f/6b8e6f.png)       | Primary brand color                   |
+| Token Name            | Value                                                                    | Description                           |
+| --------------------- | ------------------------------------------------------------------------ | ------------------------------------- |
+| --color-mountain-sage | #6B8E6F ![#6B8E6F](https://placehold.co/15x15/6b8e6f/6b8e6f.png)         | Primary brand color                   |
 | --color-fog-mist      | #222724FF ![#222724FF](https://placehold.co/15x15/222724ff/222724ff.png) | Light neutral for backgrounds         |
-| --color-dawn-sky      | #DDE4EA ![#DDE4EA](https://placehold.co/15x15/dde4ea/dde4ea.png)       | Cool neutral for content areas        |
-| --gradient-sage-fog   | linear-gradient(135deg, #6B8E6F, #EBF1EE)                                     | Brand gradient for prominent elements |
+| --color-dawn-sky      | #DDE4EA ![#DDE4EA](https://placehold.co/15x15/dde4ea/dde4ea.png)         | Cool neutral for content areas        |
+| --gradient-sage-fog   | linear-gradient(135deg, #6B8E6F, #EBF1EE)                                | Brand gradient for prominent elements |
 
 ### Sample Tailwind CSS and Variables
 
