@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * ==========================================================================
  * BLUE RIDGE BONSAI SOCIETY - NAVIGATION SYSTEM
@@ -438,13 +439,13 @@ class WixNavigationCore {
     try {
       import("wix-location-frontend").then(
         ({ default: wixLocationFrontend }) => {
-          const currentPath = wixLocationFrontend.path || "";
+          const currentPath = (wixLocationFrontend.path || "") + "";
           const navLinks = $w(".nav-link");
 
           if (navLinks && navLinks.length > 0) {
             navLinks.forEach((link) => {
               if (link && typeof link.link !== "undefined") {
-                const href = link.link;
+                const href = link.link + "";
                 if (href && currentPath.startsWith(href)) {
                   if (typeof link.addClass === "function") {
                     link.addClass("active");
@@ -940,7 +941,9 @@ if (typeof window !== "undefined") {
     }
   }
 } else {
-  console.log("🌐 Non-browser environment detected, skipping navigation initialization");
+  console.log(
+    "🌐 Non-browser environment detected, skipping navigation initialization"
+  );
 }
 
 // Export for module usage

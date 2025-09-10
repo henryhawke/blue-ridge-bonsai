@@ -597,7 +597,7 @@ Drawing from both Japanese *kasumi* (mist) aesthetics and Blue Ridge morning fog
 | Token Name         | Value                       | Description                             |
 |--------------------|-----------------------------|-----------------------------------------|
 | --color-mountain-sage   | #6B8E6F                    | Primary brand color                     |
-| --color-fog-mist   | #EBF1EE                    | Light neutral for backgrounds           |
+| --color-fog-mist   | #222724FF                    | Light neutral for backgrounds           |
 | --color-dawn-sky   | #DDE4EA                    | Cool neutral for content areas          |
 | --gradient-sage-fog| linear-gradient(135deg, #6B8E6F, #EBF1EE) | Brand gradient for prominent elements |
 

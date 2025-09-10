@@ -6,45 +6,48 @@
  */
 
 class AtmosphericGallery {
-    constructor(container, options = {}) {
-        this.container = typeof container === 'string' ? document.querySelector(container) : container;
-        this.options = {
-            autoplay: options.autoplay || false,
-            autoplayDelay: options.autoplayDelay || 5000,
-            showThumbnails: options.showThumbnails !== false,
-            enableKeyboard: options.enableKeyboard !== false,
-            enableTouch: options.enableTouch !== false,
-            enableZoom: options.enableZoom !== false,
-            fadeEffect: options.fadeEffect !== false,
-            atmosphericEffects: options.atmosphericEffects !== false,
-            ...options
-        };
-        
-        this.images = [];
-        this.currentIndex = 0;
-        this.isZoomed = false;
-        this.touchStartX = 0;
-        this.touchEndX = 0;
-        
-        this.init();
+  constructor(container, options = {}) {
+    this.container =
+      typeof container === "string"
+        ? document.querySelector(container)
+        : container;
+    this.options = {
+      autoplay: options.autoplay || false,
+      autoplayDelay: options.autoplayDelay || 5000,
+      showThumbnails: options.showThumbnails !== false,
+      enableKeyboard: options.enableKeyboard !== false,
+      enableTouch: options.enableTouch !== false,
+      enableZoom: options.enableZoom !== false,
+      fadeEffect: options.fadeEffect !== false,
+      atmosphericEffects: options.atmosphericEffects !== false,
+      ...options,
+    };
+
+    this.images = [];
+    this.currentIndex = 0;
+    this.isZoomed = false;
+    this.touchStartX = 0;
+    this.touchEndX = 0;
+
+    this.init();
+  }
+
+  init() {
+    if (!this.container) {
+      console.error("Gallery container not found");
+      return;
     }
-    
-    init() {
-        if (!this.container) {
-            console.error('Gallery container not found');
-            return;
-        }
-        
-        this.createStructure();
-        this.loadImages();
-        this.setupEventListeners();
-        this.initializeAtmosphericEffects();
-        
-        console.log('🎨 Atmospheric Gallery initialized');
-    }
-    
-    createStructure() {
-        this.container.innerHTML = `
+
+    this.createStructure();
+    this.loadImages();
+    this.setupEventListeners();
+    this.initializeAtmosphericEffects();
+
+    console.log("🎨 Atmospheric Gallery initialized");
+  }
+
+  createStructure() {
+    this.container.innerHTML = `
             <div class="atmospheric-gallery">
                 <div class="gallery-main">
                     <div class="gallery-stage">
@@ -88,14 +91,14 @@ class AtmosphericGallery {
                 </div>
             </div>
         `;
-        
-        // Apply atmospheric styling
-        this.applyAtmosphericStyling();
-    }
-    
-    applyAtmosphericStyling() {
-        const styles = document.createElement('style');
-        styles.textContent = `
+
+    // Apply atmospheric styling
+    this.applyAtmosphericStyling();
+  }
+
+  applyAtmosphericStyling() {
+    const styles = document.createElement("style");
+    styles.textContent = `
             .atmospheric-gallery {
                 position: relative;
                 width: 100%;
@@ -397,330 +400,373 @@ class AtmosphericGallery {
                 }
             }
         `;
-        
-        document.head.appendChild(styles);
-    }
-    
-    loadImages() {
-        // Mock image data - replace with actual data loading
-        this.images = [
-            {
-                src: '/images/bonsai-1.jpg',
-                thumb: '/images/bonsai-1-thumb.jpg',
-                title: 'Japanese Maple Bonsai',
-                description: 'A stunning 15-year-old Japanese Maple showcasing the beautiful autumn colors and intricate branch structure.',
-                date: '2024-01-15',
-                species: 'Acer palmatum'
-            },
-            {
-                src: '/images/bonsai-2.jpg',
-                thumb: '/images/bonsai-2-thumb.jpg',
-                title: 'Juniper Cascade Style',
-                description: 'An elegant cascade style Juniper bonsai demonstrating the windswept appearance of trees growing on cliffs.',
-                date: '2024-02-20',
-                species: 'Juniperus procumbens'
-            },
-            {
-                src: '/images/bonsai-3.jpg',
-                thumb: '/images/bonsai-3-thumb.jpg',
-                title: 'Pine Forest Group',
-                description: 'A forest composition of five Pine trees creating the illusion of a miniature forest landscape.',
-                date: '2024-03-10',
-                species: 'Pinus thunbergii'
-            }
-        ];
-        
-        this.renderThumbnails();
-        this.showImage(0);
-        this.hideLoading();
-    }
-    
-    renderThumbnails() {
-        const container = this.container.querySelector('.thumbnails-container');
-        container.innerHTML = this.images.map((image, index) => `
-            <div class="thumbnail ${index === 0 ? 'active' : ''}" data-index="${index}">
+
+    document.head.appendChild(styles);
+  }
+
+  loadImages() {
+    // Mock image data - replace with actual data loading
+    this.images = [
+      {
+        src: "/images/bonsai-1.jpg",
+        thumb: "/images/bonsai-1-thumb.jpg",
+        title: "Japanese Maple Bonsai",
+        description:
+          "A stunning 15-year-old Japanese Maple showcasing the beautiful autumn colors and intricate branch structure.",
+        date: "2024-01-15",
+        species: "Acer palmatum",
+      },
+      {
+        src: "/images/bonsai-2.jpg",
+        thumb: "/images/bonsai-2-thumb.jpg",
+        title: "Juniper Cascade Style",
+        description:
+          "An elegant cascade style Juniper bonsai demonstrating the windswept appearance of trees growing on cliffs.",
+        date: "2024-02-20",
+        species: "Juniperus procumbens",
+      },
+      {
+        src: "/images/bonsai-3.jpg",
+        thumb: "/images/bonsai-3-thumb.jpg",
+        title: "Pine Forest Group",
+        description:
+          "A forest composition of five Pine trees creating the illusion of a miniature forest landscape.",
+        date: "2024-03-10",
+        species: "Pinus thunbergii",
+      },
+    ];
+
+    this.renderThumbnails();
+    this.showImage(0);
+    this.hideLoading();
+  }
+
+  renderThumbnails() {
+    const container = this.container.querySelector(".thumbnails-container");
+    container.innerHTML = this.images
+      .map(
+        (image, index) => `
+            <div class="thumbnail ${
+              index === 0 ? "active" : ""
+            }" data-index="${index}">
                 <img src="${image.thumb}" alt="${image.title}">
             </div>
-        `).join('');
+        `
+      )
+      .join("");
+  }
+
+  showImage(index) {
+    if (index < 0 || index >= this.images.length) return;
+
+    const image = this.images[index];
+    const stageImage = this.container.querySelector(".stage-image");
+    const imageInfo = this.container.querySelector(".image-info");
+
+    // Update active thumbnail
+    this.container.querySelectorAll(".thumbnail").forEach((thumb, i) => {
+      thumb.classList.toggle("active", i === index);
+    });
+
+    // Update stage image with fade effect
+    if (this.options.fadeEffect) {
+      stageImage.style.opacity = "0";
+      setTimeout(() => {
+        stageImage.src = image.src;
+        stageImage.alt = image.title;
+        stageImage.style.opacity = "1";
+      }, 300);
+    } else {
+      stageImage.src = image.src;
+      stageImage.alt = image.title;
     }
-    
-    showImage(index) {
-        if (index < 0 || index >= this.images.length) return;
-        
-        const image = this.images[index];
-        const stageImage = this.container.querySelector('.stage-image');
-        const imageInfo = this.container.querySelector('.image-info');
-        
-        // Update active thumbnail
-        this.container.querySelectorAll('.thumbnail').forEach((thumb, i) => {
-            thumb.classList.toggle('active', i === index);
-        });
-        
-        // Update stage image with fade effect
-        if (this.options.fadeEffect) {
-            stageImage.style.opacity = '0';
-            setTimeout(() => {
-                stageImage.src = image.src;
-                stageImage.alt = image.title;
-                stageImage.style.opacity = '1';
-            }, 300);
-        } else {
-            stageImage.src = image.src;
-            stageImage.alt = image.title;
-        }
-        
-        // Update image info
-        imageInfo.querySelector('.image-title').textContent = image.title;
-        imageInfo.querySelector('.image-description').textContent = image.description;
-        imageInfo.querySelector('.image-date').textContent = new Date(image.date).toLocaleDateString();
-        imageInfo.querySelector('.image-counter').textContent = `${index + 1} / ${this.images.length}`;
-        
-        this.currentIndex = index;
-        
-        // Create atmospheric particles
-        if (this.options.atmosphericEffects) {
-            this.createAtmosphericParticles();
-        }
+
+    // Update image info
+    imageInfo.querySelector(".image-title").textContent = image.title;
+    imageInfo.querySelector(".image-description").textContent =
+      image.description;
+    imageInfo.querySelector(".image-date").textContent = new Date(
+      image.date
+    ).toLocaleDateString();
+    imageInfo.querySelector(".image-counter").textContent = `${index + 1} / ${
+      this.images.length
+    }`;
+
+    this.currentIndex = index;
+
+    // Create atmospheric particles
+    if (this.options.atmosphericEffects) {
+      this.createAtmosphericParticles();
     }
-    
-    nextImage() {
-        const nextIndex = (this.currentIndex + 1) % this.images.length;
-        this.showImage(nextIndex);
+  }
+
+  nextImage() {
+    const nextIndex = (this.currentIndex + 1) % this.images.length;
+    this.showImage(nextIndex);
+  }
+
+  prevImage() {
+    const prevIndex =
+      this.currentIndex === 0 ? this.images.length - 1 : this.currentIndex - 1;
+    this.showImage(prevIndex);
+  }
+
+  toggleZoom() {
+    const stageImage = this.container.querySelector(".stage-image");
+    this.isZoomed = !this.isZoomed;
+    stageImage.classList.toggle("zoomed", this.isZoomed);
+
+    const zoomBtn = this.container.querySelector(".zoom-btn span");
+    zoomBtn.textContent = this.isZoomed ? "🔍⊖" : "🔍";
+  }
+
+  toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      this.container.requestFullscreen().catch((err) => {
+        console.log("Error entering fullscreen:", err);
+      });
+    } else {
+      document.exitFullscreen();
     }
-    
-    prevImage() {
-        const prevIndex = this.currentIndex === 0 ? this.images.length - 1 : this.currentIndex - 1;
-        this.showImage(prevIndex);
-    }
-    
-    toggleZoom() {
-        const stageImage = this.container.querySelector('.stage-image');
-        this.isZoomed = !this.isZoomed;
-        stageImage.classList.toggle('zoomed', this.isZoomed);
-        
-        const zoomBtn = this.container.querySelector('.zoom-btn span');
-        zoomBtn.textContent = this.isZoomed ? '🔍⊖' : '🔍';
-    }
-    
-    toggleFullscreen() {
-        if (!document.fullscreenElement) {
-            this.container.requestFullscreen().catch(err => {
-                console.log('Error entering fullscreen:', err);
-            });
-        } else {
-            document.exitFullscreen();
-        }
-    }
-    
-    setupEventListeners() {
-        // Navigation buttons
-        this.container.querySelector('.prev-btn').addEventListener('click', () => this.prevImage());
-        this.container.querySelector('.next-btn').addEventListener('click', () => this.nextImage());
-        this.container.querySelector('.zoom-btn').addEventListener('click', () => this.toggleZoom());
-        this.container.querySelector('.fullscreen-btn').addEventListener('click', () => this.toggleFullscreen());
-        
-        // Thumbnail clicks
-        this.container.addEventListener('click', (e) => {
-            if (e.target.closest('.thumbnail')) {
-                const index = parseInt(e.target.closest('.thumbnail').dataset.index);
-                this.showImage(index);
-            }
-        });
-        
-        // Stage image click for zoom
-        this.container.querySelector('.stage-image').addEventListener('click', () => {
-            if (this.options.enableZoom) {
-                this.toggleZoom();
-            }
-        });
-        
-        // Keyboard navigation
-        if (this.options.enableKeyboard) {
-            document.addEventListener('keydown', (e) => {
-                if (!this.container.matches(':hover')) return;
-                
-                switch (e.key) {
-                    case 'ArrowLeft':
-                        e.preventDefault();
-                        this.prevImage();
-                        break;
-                    case 'ArrowRight':
-                        e.preventDefault();
-                        this.nextImage();
-                        break;
-                    case ' ':
-                        e.preventDefault();
-                        this.toggleZoom();
-                        break;
-                    case 'f':
-                        e.preventDefault();
-                        this.toggleFullscreen();
-                        break;
-                }
-            });
-        }
-        
-        // Touch gestures
-        if (this.options.enableTouch) {
-            this.setupTouchEvents();
-        }
-        
-        // Autoplay
-        if (this.options.autoplay) {
-            this.startAutoplay();
-        }
-    }
-    
-    setupTouchEvents() {
-        const stage = this.container.querySelector('.gallery-stage');
-        
-        stage.addEventListener('touchstart', (e) => {
-            this.touchStartX = e.touches[0].clientX;
-        }, { passive: true });
-        
-        stage.addEventListener('touchend', (e) => {
-            this.touchEndX = e.changedTouches[0].clientX;
-            this.handleSwipe();
-        }, { passive: true });
-    }
-    
-    handleSwipe() {
-        const swipeThreshold = 50;
-        const swipeDistance = this.touchStartX - this.touchEndX;
-        
-        if (Math.abs(swipeDistance) > swipeThreshold) {
-            if (swipeDistance > 0) {
-                this.nextImage();
-            } else {
-                this.prevImage();
-            }
-        }
-    }
-    
-    startAutoplay() {
-        if (this.autoplayInterval) {
-            clearInterval(this.autoplayInterval);
-        }
-        
-        this.autoplayInterval = setInterval(() => {
-            this.nextImage();
-        }, this.options.autoplayDelay);
-        
-        // Pause autoplay on hover
-        this.container.addEventListener('mouseenter', () => {
-            if (this.autoplayInterval) {
-                clearInterval(this.autoplayInterval);
-            }
-        });
-        
-        this.container.addEventListener('mouseleave', () => {
-            this.startAutoplay();
-        });
-    }
-    
-    createAtmosphericParticles() {
-        const particlesContainer = this.container.querySelector('.atmospheric-particles');
-        
-        // Clear existing particles
-        particlesContainer.innerHTML = '';
-        
-        // Create new particles
-        for (let i = 0; i < 8; i++) {
-            setTimeout(() => {
-                const particle = document.createElement('div');
-                particle.className = 'floating-particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 8 + 's';
-                particle.style.animationDuration = (8 + Math.random() * 4) + 's';
-                
-                particlesContainer.appendChild(particle);
-                
-                // Remove particle after animation
-                setTimeout(() => {
-                    if (particle.parentElement) {
-                        particle.remove();
-                    }
-                }, 12000);
-            }, i * 1000);
-        }
-    }
-    
-    initializeAtmosphericEffects() {
-        if (!this.options.atmosphericEffects) return;
-        
-        // Create background atmospheric effect
-        const overlay = this.container.querySelector('.atmospheric-overlay');
-        if (overlay) {
-            // Add subtle color shifting
-            let hue = 0;
-            setInterval(() => {
-                hue = (hue + 1) % 360;
-                overlay.style.background = `radial-gradient(circle at center, transparent 40%, hsla(${hue}, 30%, 50%, 0.05) 100%)`;
-            }, 100);
-        }
-    }
-    
-    hideLoading() {
-        const loading = this.container.querySelector('.gallery-loading');
-        if (loading) {
-            loading.style.opacity = '0';
-            setTimeout(() => {
-                loading.style.display = 'none';
-            }, 500);
-        }
-    }
-    
-    // Public API methods
-    goToImage(index) {
+  }
+
+  setupEventListeners() {
+    // Navigation buttons
+    this.container
+      .querySelector(".prev-btn")
+      .addEventListener("click", () => this.prevImage());
+    this.container
+      .querySelector(".next-btn")
+      .addEventListener("click", () => this.nextImage());
+    this.container
+      .querySelector(".zoom-btn")
+      .addEventListener("click", () => this.toggleZoom());
+    this.container
+      .querySelector(".fullscreen-btn")
+      .addEventListener("click", () => this.toggleFullscreen());
+
+    // Thumbnail clicks
+    this.container.addEventListener("click", (e) => {
+      if (e.target.closest(".thumbnail")) {
+        const index = parseInt(e.target.closest(".thumbnail").dataset.index);
         this.showImage(index);
-    }
-    
-    addImage(imageData) {
-        this.images.push(imageData);
-        this.renderThumbnails();
-    }
-    
-    removeImage(index) {
-        if (index >= 0 && index < this.images.length) {
-            this.images.splice(index, 1);
-            this.renderThumbnails();
-            if (this.currentIndex >= this.images.length) {
-                this.showImage(this.images.length - 1);
-            }
+      }
+    });
+
+    // Stage image click for zoom
+    this.container
+      .querySelector(".stage-image")
+      .addEventListener("click", () => {
+        if (this.options.enableZoom) {
+          this.toggleZoom();
         }
-    }
-    
-    destroy() {
-        if (this.autoplayInterval) {
-            clearInterval(this.autoplayInterval);
+      });
+
+    // Keyboard navigation
+    if (this.options.enableKeyboard) {
+      document.addEventListener("keydown", (e) => {
+        if (!this.container.matches(":hover")) return;
+
+        switch (e.key) {
+          case "ArrowLeft":
+            e.preventDefault();
+            this.prevImage();
+            break;
+          case "ArrowRight":
+            e.preventDefault();
+            this.nextImage();
+            break;
+          case " ":
+            e.preventDefault();
+            this.toggleZoom();
+            break;
+          case "f":
+            e.preventDefault();
+            this.toggleFullscreen();
+            break;
         }
-        
-        this.container.innerHTML = '';
+      });
     }
+
+    // Touch gestures
+    if (this.options.enableTouch) {
+      this.setupTouchEvents();
+    }
+
+    // Autoplay
+    if (this.options.autoplay) {
+      this.startAutoplay();
+    }
+  }
+
+  setupTouchEvents() {
+    const stage = this.container.querySelector(".gallery-stage");
+
+    stage.addEventListener(
+      "touchstart",
+      (e) => {
+        this.touchStartX = e.touches[0].clientX;
+      },
+      { passive: true }
+    );
+
+    stage.addEventListener(
+      "touchend",
+      (e) => {
+        this.touchEndX = e.changedTouches[0].clientX;
+        this.handleSwipe();
+      },
+      { passive: true }
+    );
+  }
+
+  handleSwipe() {
+    const swipeThreshold = 50;
+    const swipeDistance = this.touchStartX - this.touchEndX;
+
+    if (Math.abs(swipeDistance) > swipeThreshold) {
+      if (swipeDistance > 0) {
+        this.nextImage();
+      } else {
+        this.prevImage();
+      }
+    }
+  }
+
+  startAutoplay() {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+    }
+
+    this.autoplayInterval = setInterval(() => {
+      this.nextImage();
+    }, this.options.autoplayDelay);
+
+    // Pause autoplay on hover
+    this.container.addEventListener("mouseenter", () => {
+      if (this.autoplayInterval) {
+        clearInterval(this.autoplayInterval);
+      }
+    });
+
+    this.container.addEventListener("mouseleave", () => {
+      this.startAutoplay();
+    });
+  }
+
+  createAtmosphericParticles() {
+    const particlesContainer = this.container.querySelector(
+      ".atmospheric-particles"
+    );
+
+    // Clear existing particles
+    particlesContainer.innerHTML = "";
+
+    // Create new particles
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => {
+        const particle = document.createElement("div");
+        particle.className = "floating-particle";
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.animationDelay = Math.random() * 8 + "s";
+        particle.style.animationDuration = 8 + Math.random() * 4 + "s";
+
+        particlesContainer.appendChild(particle);
+
+        // Remove particle after animation
+        setTimeout(() => {
+          if (particle.parentElement) {
+            particle.remove();
+          }
+        }, 12000);
+      }, i * 1000);
+    }
+  }
+
+  initializeAtmosphericEffects() {
+    if (!this.options.atmosphericEffects) return;
+
+    // Create background atmospheric effect
+    const overlay = this.container.querySelector(".atmospheric-overlay");
+    if (overlay) {
+      // Add subtle color shifting
+      let hue = 0;
+      setInterval(() => {
+        hue = (hue + 1) % 360;
+        overlay.style.background = `radial-gradient(circle at center, transparent 40%, hsla(${hue}, 30%, 50%, 0.05) 100%)`;
+      }, 100);
+    }
+  }
+
+  hideLoading() {
+    const loading = this.container.querySelector(".gallery-loading");
+    if (loading) {
+      loading.style.opacity = "0";
+      setTimeout(() => {
+        loading.style.display = "none";
+      }, 500);
+    }
+  }
+
+  // Public API methods
+  goToImage(index) {
+    this.showImage(index);
+  }
+
+  addImage(imageData) {
+    this.images.push(imageData);
+    this.renderThumbnails();
+  }
+
+  removeImage(index) {
+    if (index >= 0 && index < this.images.length) {
+      this.images.splice(index, 1);
+      this.renderThumbnails();
+      if (this.currentIndex >= this.images.length) {
+        this.showImage(this.images.length - 1);
+      }
+    }
+  }
+
+  destroy() {
+    if (this.autoplayInterval) {
+      clearInterval(this.autoplayInterval);
+    }
+
+    this.container.innerHTML = "";
+  }
 }
 
 // Auto-initialize galleries with data-atmospheric-gallery attribute
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-atmospheric-gallery]').forEach(container => {
-        const options = {};
-        
-        // Parse options from data attributes
-        if (container.dataset.autoplay) options.autoplay = container.dataset.autoplay === 'true';
-        if (container.dataset.autoplayDelay) options.autoplayDelay = parseInt(container.dataset.autoplayDelay);
-        if (container.dataset.showThumbnails) options.showThumbnails = container.dataset.showThumbnails === 'true';
-        if (container.dataset.enableKeyboard) options.enableKeyboard = container.dataset.enableKeyboard === 'true';
-        if (container.dataset.enableTouch) options.enableTouch = container.dataset.enableTouch === 'true';
-        if (container.dataset.enableZoom) options.enableZoom = container.dataset.enableZoom === 'true';
-        if (container.dataset.fadeEffect) options.fadeEffect = container.dataset.fadeEffect === 'true';
-        if (container.dataset.atmosphericEffects) options.atmosphericEffects = container.dataset.atmosphericEffects === 'true';
-        
-        new AtmosphericGallery(container, options);
+document.addEventListener("DOMContentLoaded", () => {
+  document
+    .querySelectorAll("[data-atmospheric-gallery]")
+    .forEach((container) => {
+      const el = container instanceof HTMLElement ? container : null;
+      if (!el) return;
+      const options = {};
+
+      // Parse options from data attributes
+      const ds = el.dataset || {};
+      if (ds.autoplay) options.autoplay = ds.autoplay === "true";
+      if (ds.autoplayDelay) options.autoplayDelay = parseInt(ds.autoplayDelay);
+      if (ds.showThumbnails)
+        options.showThumbnails = ds.showThumbnails === "true";
+      if (ds.enableKeyboard)
+        options.enableKeyboard = ds.enableKeyboard === "true";
+      if (ds.enableTouch) options.enableTouch = ds.enableTouch === "true";
+      if (ds.enableZoom) options.enableZoom = ds.enableZoom === "true";
+      if (ds.fadeEffect) options.fadeEffect = ds.fadeEffect === "true";
+      if (ds.atmosphericEffects)
+        options.atmosphericEffects = ds.atmosphericEffects === "true";
+
+      new AtmosphericGallery(el, options);
     });
 });
 
 // Export for manual initialization
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = AtmosphericGallery;
-} else if (typeof window !== 'undefined') {
-    window.AtmosphericGallery = AtmosphericGallery;
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = AtmosphericGallery;
+} else if (typeof window !== "undefined") {
+  window["AtmosphericGallery"] = AtmosphericGallery;
 }
