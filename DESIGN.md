@@ -103,17 +103,17 @@ This design system creates a harmonious balance between traditional Japanese bon
 
 #### Primary Dark Colors
 
-- **Dark Mountain Sage**: ![#8FA693](https://via.placeholder.com/15/8FA693/000000?text=+) `#8FA693` - Primary brand color (4.5:1 contrast on dark backgrounds)
-- **Dark Stone**: ![#E8E8E8](https://via.placeholder.com/15/E8E8E8/000000?text=+) `#E8E8E8` - Primary text (14.8:1 contrast on #1A1D1B)
-- **Charcoal Base**: ![#1A1D1B](https://via.placeholder.com/15/1A1D1B/000000?text=+) `#1A1D1B` - Primary dark background
-- **Dark Earth**: ![#A68B6F](https://via.placeholder.com/15/A68B6F/000000?text=+) `#A68B6F` - Accent color for traditional elements
+- **Dark Mountain Sage**: ![#8FA693](https://placehold.co/15x15/8fa693/8fa693.png) `#8FA693` - Primary brand color (4.5:1 contrast on dark backgrounds)
+- **Dark Stone**: ![#E8E8E8](https://placehold.co/15x15/e8e8e8/e8e8e8.png) `#E8E8E8` - Primary text (14.8:1 contrast on #1A1D1B)
+- **Charcoal Base**: ![#1A1D1B](https://placehold.co/15x15/1a1d1b/1a1d1b.png) `#1A1D1B` - Primary dark background
+- **Dark Earth**: ![#A68B6F](https://placehold.co/15x15/a68b6f/a68b6f.png) `#A68B6F` - Accent color for traditional elements
 
 #### Extended Dark Neutrals
 
-- **Shadow Mist**: ![#2A2F2C](https://via.placeholder.com/15/2A2F2C/000000?text=+) `#2A2F2C` - Light dark neutral (12.1:1 contrast for text)
-- **Night Sky**: ![#363B38](https://via.placeholder.com/15/363B38/000000?text=+) `#363B38` - Secondary dark areas (9.8:1 contrast for text)
-- **Deep Haze**: ![#4A524E](https://via.placeholder.com/15/4A524E/000000?text=+) `#4A524E` - Mid-tone dark neutral (6.2:1 contrast for text)
-- **Moonlight**: ![#8B9590](https://via.placeholder.com/15/8B9590/000000?text=+) `#8B9590` - Light neutral text (4.6:1 contrast on dark backgrounds)
+- **Shadow Mist**: ![#2A2F2C](https://placehold.co/15x15/2a2f2c/2a2f2c.png) `#2A2F2C` - Light dark neutral (12.1:1 contrast for text)
+- **Night Sky**: ![#363B38](https://placehold.co/15x15/363b38/363b38.png) `#363B38` - Secondary dark areas (9.8:1 contrast for text)
+- **Deep Haze**: ![#4A524E](https://placehold.co/15x15/4a524e/4a524e.png) `#4A524E` - Mid-tone dark neutral (6.2:1 contrast for text)
+- **Moonlight**: ![#8B9590](https://placehold.co/15x15/8b9590/8b9590.png) `#8B9590` - Light neutral text (4.6:1 contrast on dark backgrounds)
 
 #### Dark Mode Gradients
 
@@ -123,10 +123,10 @@ This design system creates a harmonious balance between traditional Japanese bon
 
 #### Dark Semantic Colors
 
-- **Dark Success**: ![#7BA36C](https://via.placeholder.com/15/7BA36C/000000?text=+) `#7BA36C` - Success state (4.8:1 contrast)
-- **Dark Warning**: ![#E6C088](https://via.placeholder.com/15/E6C088/000000?text=+) `#E6C088` - Warning state (7.2:1 contrast)
-- **Dark Error**: ![#D4847A](https://via.placeholder.com/15/D4847A/000000?text=+) `#D4847A` - Error state (5.1:1 contrast)
-- **Dark Info**: ![#8DB4D8](https://via.placeholder.com/15/8DB4D8/000000?text=+) `#8DB4D8` - Info state (6.8:1 contrast)
+- **Dark Success**: ![#7BA36C](https://placehold.co/15x15/7ba36c/7ba36c.png) `#7BA36C` - Success state (4.8:1 contrast)
+- **Dark Warning**: ![#E6C088](https://placehold.co/15x15/e6c088/e6c088.png) `#E6C088` - Warning state (7.2:1 contrast)
+- **Dark Error**: ![#D4847A](https://placehold.co/15x15/d4847a/d4847a.png) `#D4847A` - Error state (5.1:1 contrast)
+- **Dark Info**: ![#8DB4D8](https://placehold.co/15x15/8db4d8/8db4d8.png) `#8DB4D8` - Info state (6.8:1 contrast)
 
 ### Color Usage Guidelines
 
@@ -144,17 +144,17 @@ This design system creates a harmonious balance between traditional Japanese bon
 **⚠️ Contrast Issues Identified:**
 The following color combinations do not meet WCAG AA standards and require adjustment:
 
-- **Mountain Sage (![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+) #6B8E6F) on white backgrounds** - Consider using ![#5A7A5E](https://via.placeholder.com/15/5A7A5E/000000?text=+) `#5A7A5E` for improved contrast
-- **Earth Brown (![#8B7355](https://via.placeholder.com/15/8B7355/000000?text=+) #8B7355) on white backgrounds** - Consider using ![#7A6248](https://via.placeholder.com/15/7A6248/000000?text=+) `#7A6248` for better readability
-- **Valley Shadow (![#9BA5A1](https://via.placeholder.com/15/9BA5A1/000000?text=+) #9BA5A1) text** - Reserve for decorative elements only, not readable text
-- **Warning Orange (![#D4A574](https://via.placeholder.com/15/D4A574/000000?text=+) #D4A574)** - Consider using ![#C49356](https://via.placeholder.com/15/C49356/000000?text=+) `#C49356` for text on white backgrounds
-- **Info Blue (![#6B8CAE](https://via.placeholder.com/15/6B8CAE/000000?text=+) #6B8CAE)** - Consider using ![#5A7B98](https://via.placeholder.com/15/5A7B98/000000?text=+) `#5A7B98` for better contrast
+- **Mountain Sage (![#6B8E6F](https://placehold.co/15x15/6b8e6f/6b8e6f.png) #6B8E6F) on white backgrounds** - Consider using ![#5A7A5E](https://placehold.co/15x15/5a7a5e/5a7a5e.png) `#5A7A5E` for improved contrast
+- **Earth Brown (![#8B7355](https://placehold.co/15x15/8b7355/8b7355.png) #8B7355) on white backgrounds** - Consider using ![#7A6248](https://placehold.co/15x15/7a6248/7a6248.png) `#7A6248` for better readability
+- **Valley Shadow (![#9BA5A1](https://placehold.co/15x15/9ba5a1/9ba5a1.png) #9BA5A1) text** - Reserve for decorative elements only, not readable text
+- **Warning Orange (![#D4A574](https://placehold.co/15x15/d4a574/d4a574.png) #D4A574)** - Consider using ![#C49356](https://placehold.co/15x15/c49356/c49356.png) `#C49356` for text on white backgrounds
+- **Info Blue (![#6B8CAE](https://placehold.co/15x15/6b8cae/6b8cae.png) #6B8CAE)** - Consider using ![#5A7B98](https://placehold.co/15x15/5a7b98/5a7b98.png) `#5A7B98` for better contrast
 
 **✅ Colors That Pass WCAG AA:**
 
-- Stone Gray ( ![#4A4A4A](https://via.placeholder.com/15/4A4A4A/000000?text=+) `#4A4A4A`) - Excellent for body text
-- Success Green ( ![#4F7942](https://via.placeholder.com/15/4F7942/000000?text=+) `#4F7942`) - Safe for status messages
-- Error Red ( ![#A85A5A](https://via.placeholder.com/15/A85A5A/000000?text=+) `#A85A5A`) - Acceptable for error states
+- Stone Gray ( ![#4A4A4A](https://placehold.co/15x15/4a4a4a/4a4a4a.png) `#4A4A4A`) - Excellent for body text
+- Success Green ( ![#4F7942](https://placehold.co/15x15/4f7942/4f7942.png) `#4F7942`) - Safe for status messages
+- Error Red ( ![#A85A5A](https://placehold.co/15x15/a85a5a/a85a5a.png) `#A85A5A`) - Acceptable for error states
 - All dark mode color combinations pass AA standards
 
 ## Typography
@@ -611,9 +611,9 @@ Drawing from both Japanese _kasumi_ (mist) aesthetics and Blue Ridge morning fog
 
 | Token Name            | Value                                                                         | Description                           |
 | --------------------- | ----------------------------------------------------------------------------- | ------------------------------------- |
-| --color-mountain-sage | #6B8E6F ![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+)       | Primary brand color                   |
-| --color-fog-mist      | #222724FF ![#222724FF](https://via.placeholder.com/15/222724FF/000000?text=+) | Light neutral for backgrounds         |
-| --color-dawn-sky      | #DDE4EA ![#DDE4EA](https://via.placeholder.com/15/DDE4EA/000000?text=+)       | Cool neutral for content areas        |
+| --color-mountain-sage | #6B8E6F ![#6B8E6F](https://placehold.co/15x15/6b8e6f/6b8e6f.png)       | Primary brand color                   |
+| --color-fog-mist      | #222724FF ![#222724FF](https://placehold.co/15x15/222724ff/222724ff.png) | Light neutral for backgrounds         |
+| --color-dawn-sky      | #DDE4EA ![#DDE4EA](https://placehold.co/15x15/dde4ea/dde4ea.png)       | Cool neutral for content areas        |
 | --gradient-sage-fog   | linear-gradient(135deg, #6B8E6F, #EBF1EE)                                     | Brand gradient for prominent elements |
 
 ### Sample Tailwind CSS and Variables
@@ -751,7 +751,7 @@ Inspired by the ensō brush stroke, motion timings should reflect harmony and in
 
 - **Style**: Minimal line icons with 2px stroke weight
 - **Size**: 24px standard, 32px for primary actions
-- **Color**: Stone Gray ( ![#4A4A4A](https://via.placeholder.com/15/4A4A4A/000000?text=+) `#4A4A4A`) with Mountain Sage ( ![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+) `#6B8E6F`) accents
+- **Color**: Stone Gray ( ![#4A4A4A](https://placehold.co/15x15/4a4a4a/4a4a4a.png) `#4A4A4A`) with Mountain Sage ( ![#6B8E6F](https://placehold.co/15x15/6b8e6f/6b8e6f.png) `#6B8E6F`) accents
 - **Library**: Feather Icons or custom SVG set
 
 ### Patterns & Textures
