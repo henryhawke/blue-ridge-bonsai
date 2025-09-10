@@ -66,17 +66,17 @@ This design system creates a harmonious balance between traditional Japanese bon
 
 ### Primary Colors
 
-- **Mountain Sage**: ![#6B8E6F](https://via.placeholder.com/15/6B8E6F/000000?text=+) `#6B8E6F` - Primary brand color, inspired by Blue Ridge mountain foliage
-- **Stone Gray**: ![#4A4A4A](https://via.placeholder.com/15/4A4A4A/000000?text=+) `#4A4A4A` - Secondary text and UI elements
-- **Cloud White**: ![#FEFFFE](https://via.placeholder.com/15/FEFFFE/000000?text=+) `#FEFFFE` - Background and negative space
-- **Earth Brown**: ![#8B7355](https://via.placeholder.com/15/8B7355/000000?text=+) `#8B7355` - Accent color for traditional elements
+- **Mountain Sage**: ![#6b8e6f](https://placehold.co/15x15/6b8e6f/6b8e6f.png) `#6B8E6F` - Primary brand color, inspired by Blue Ridge mountain foliage
+- **Stone Gray**: ![#4a4a4a](https://placehold.co/15x15/4a4a4a/4a4a4a.png) `#4A4A4A` - Secondary text and UI elements
+- **Cloud White**: ![#fefffe](https://placehold.co/15x15/fefffe/fefffe.png) `#FEFFFE` - Background and negative space
+- **Earth Brown**: ![#8b7355](https://placehold.co/15x15/8b7355/8b7355.png) `#8B7355` - Accent color for traditional elements
 
 ### Extended Neutral Palette
 
-- **Fog Mist**: ![#EBF1EE](https://via.placeholder.com/15/EBF1EE/000000?text=+) `#EBF1EE` - Light neutral for subtle backgrounds and gentle separations
-- **Dawn Sky**: ![#DDE4EA](https://via.placeholder.com/15/DDE4EA/000000?text=+) `#DDE4EA` - Cool neutral for secondary content areas and muted borders
-- **Mountain Haze**: ![#C8D2CE](https://via.placeholder.com/15/C8D2CE/000000?text=+) `#C8D2CE` - Mid-tone neutral for inactive states and subtle text
-- **Valley Shadow**: ![#9BA5A1](https://via.placeholder.com/15/9BA5A1/000000?text=+) `#9BA5A1` - Deeper neutral for secondary text and disabled elements
+- **Fog Mist**: ![#ebf1ee](https://placehold.co/15x15/ebf1ee/ebf1ee.png) `#EBF1EE` - Light neutral for subtle backgrounds and gentle separations
+- **Dawn Sky**: ![#dde4ea](https://placehold.co/15x15/dde4ea/dde4ea.png) `#DDE4EA` - Cool neutral for secondary content areas and muted borders
+- **Mountain Haze**: ![#c8d2ce](https://placehold.co/15x15/c8d2ce/c8d2ce.png) `#C8D2CE` - Mid-tone neutral for inactive states and subtle text
+- **Valley Shadow**: ![#9ba5a1](https://placehold.co/15x15/9ba5a1/9ba5a1.png) `#9BA5A1` - Deeper neutral for secondary text and disabled elements
 
 ### Gradient Tokens
 
@@ -87,17 +87,17 @@ This design system creates a harmonious balance between traditional Japanese bon
 
 ### Secondary Colors
 
-- **Moss Green**: ![#7D8471](https://via.placeholder.com/15/7D8471/000000?text=+) `#7D8471` - Subtle highlights and hover states
-- **Slate Blue**: ![#5C6B73](https://via.placeholder.com/15/5C6B73/000000?text=+) `#5C6B73` - Secondary buttons and links
-- **Warm Cream**: ![#F9F7F4](https://via.placeholder.com/15/F9F7F4/000000?text=+) `#F9F7F4` - Alternative background for sections
-- **Copper Accent**: ![#B08D57](https://via.placeholder.com/15/B08D57/000000?text=+) `#B08D57` - Call-to-action elements and pricing
+- **Moss Green**: ![#7d8471](https://placehold.co/15x15/7d8471/7d8471.png) `#7D8471` - Subtle highlights and hover states
+- **Slate Blue**: ![#5c6b73](https://placehold.co/15x15/5c6b73/5c6b73.png) `#5C6B73` - Secondary buttons and links
+- **Warm Cream**: ![#f9f7f4](https://placehold.co/15x15/f9f7f4/f9f7f4.png) `#F9F7F4` - Alternative background for sections
+- **Copper Accent**: ![#b08d57](https://placehold.co/15x15/b08d57/b08d57.png) `#B08D57` - Call-to-action elements and pricing
 
 ### Semantic Colors
 
-- **Success**: ![#4F7942](https://via.placeholder.com/15/4F7942/000000?text=+) `#4F7942` - Confirmations and positive actions
-- **Warning**: ![#D4A574](https://via.placeholder.com/15/D4A574/000000?text=+) `#D4A574` - Alerts and cautionary information
-- **Error**: ![#A85A5A](https://via.placeholder.com/15/A85A5A/000000?text=+) `#A85A5A` - Error states and critical information
-- **Info**: ![#6B8CAE](https://via.placeholder.com/15/6B8CAE/000000?text=+) `#6B8CAE` - Informational content and tips
+- **Success**: ![#4f7942](https://placehold.co/15x15/4f7942/4f7942.png) `#4F7942` - Confirmations and positive actions
+- **Warning**: ![#d4a574](https://placehold.co/15x15/d4a574/d4a574.png) `#D4A574` - Alerts and cautionary information
+- **Error**: ![#a85a5a](https://placehold.co/15x15/a85a5a/a85a5a.png) `#A85A5A` - Error states and critical information
+- **Info**: ![#6b8cae](https://placehold.co/15x15/6b8cae/6b8cae.png) `#6B8CAE` - Informational content and tips
 
 ### Dark Mode Palette (WCAG AA Compliant)
 
