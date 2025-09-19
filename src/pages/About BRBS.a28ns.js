@@ -1,291 +1,159 @@
 // @ts-nocheck
-/**
- * BLUE RIDGE BONSAI SOCIETY - ABOUT US PAGE
- */
-import wixData from "wix-data";
-import wixLocation from "wix-location";
-import wixWindow from "wix-window";
+// Blue Ridge Bonsai Society - About page logic
+// Loads mission, board, FAQ, and partnership information from backend/site-data.
 
-$w.onReady(function () {
-  console.log("🚀 Initializing About Us Page");
-  initializeAboutPage();
+import wixLocation from "wix-location";
+import { fetchAboutContent } from "public/js/data-service.js";
+
+let aboutContent;
+
+$w.onReady(async function () {
+  try {
+    aboutContent = await fetchAboutContent();
+    renderMissionAndVision(aboutContent);
+    renderValues(aboutContent.coreValues);
+    renderBoard(aboutContent.board);
+    renderPartnership(aboutContent.partnership);
+    renderFaq(aboutContent.faq);
+    renderMeetingInfo(aboutContent.meetingInfo, aboutContent.statistics);
+    console.log("✅ About page ready");
+  } catch (error) {
+    console.error("Failed to initialize About page", error);
+    setText("#aboutErrorMessage", "We could not load our society details right now.");
+    const errorBox = getElement("#aboutErrorBox");
+    if (errorBox && typeof errorBox.show === "function") errorBox.show();
+  }
 });
 
-function stripHtml(input) {
-  return String(input)
-    .replace(/<[^>]*>/g, "")
-    .trim();
+function renderMissionAndVision(content) {
+  if (!content) return;
+  setText("#missionTitle", "Our Mission");
+  setText("#missionText", content.mission);
+  setText("#visionTitle", "Our Vision");
+  setText("#visionText", content.vision);
 }
 
-function setContent(selector, htmlString) {
-  try {
-    const el = $w(selector);
-    if (!el) {
-      console.warn(`Element not found: ${selector}`);
-      return false;
+function renderValues(values) {
+  const repeater = getElement("#valuesRepeater");
+  if (!repeater || !values) return;
+
+  repeater.data = values;
+  repeater.onItemReady(($item, itemData) => {
+    setTextOnItem($item, "#valueTitle", itemData.title);
+    setTextOnItem($item, "#valueDescription", itemData.description);
+  });
+}
+
+function renderBoard(boardMembers) {
+  const repeater = getElement("#boardRepeater");
+  if (!repeater || !Array.isArray(boardMembers)) return;
+
+  repeater.data = boardMembers;
+  repeater.onItemReady(($item, member) => {
+    setTextOnItem($item, "#boardName", member.name);
+    setTextOnItem($item, "#boardRole", member.role);
+    setTextOnItem($item, "#boardBio", member.bio);
+
+    const image = $item("#boardImage");
+    if (image && member.photo) {
+      image.src = member.photo;
+      if ("alt" in image) image.alt = `${member.name} portrait`;
     }
-    console.log(`Rendering into ${selector} (type: ${el.type || "unknown"})`);
-    if (typeof el.html === "string" || typeof el.html === "undefined") {
-      if ("html" in el) {
-        el.html = htmlString;
-        return true;
+
+    const contactButton = $item("#boardContactButton");
+    if (contactButton && typeof contactButton.onClick === "function") {
+      const mailto = member.contactInfo ? `mailto:${member.contactInfo}` : "/contact";
+      contactButton.onClick(() => wixLocation.to(mailto));
+    }
+  });
+}
+
+function renderPartnership(partnership) {
+  if (!partnership) return;
+  setText("#partnershipHeading", partnership.partnerName || "Community Partnership");
+  setText("#partnershipDescription", partnership.content);
+
+  const linkRepeater = getElement("#partnershipLinksRepeater");
+  if (linkRepeater && partnership.links) {
+    linkRepeater.data = partnership.links;
+    linkRepeater.onItemReady(($item, link) => {
+      const button = $item("#partnershipLinkButton");
+      if (button) {
+        if ("label" in button) button.label = link.title;
+        if (typeof button.onClick === "function") {
+          button.onClick(() => wixLocation.to(link.url));
+        }
       }
-    }
-    if ("text" in el) {
-      el.text = stripHtml(htmlString);
-      return true;
-    }
-    console.warn(`Element ${selector} does not support html/text. Skipping.`);
-    return false;
-  } catch (e) {
-    console.error(`Failed to set content for ${selector}:`, e);
-    return false;
+    });
+  }
+
+  const gallery = getElement("#partnershipGallery");
+  if (gallery && partnership.images && Array.isArray(partnership.images) && gallery.items !== undefined) {
+    gallery.items = partnership.images.map((src) => ({ src, title: partnership.partnerName }));
   }
 }
 
-function setContentAnywhere(preferredSelectors, htmlString) {
-  for (const selector of preferredSelectors) {
-    if (setContent(selector, htmlString)) return true;
-  }
-  try {
-    const texts = $w("Text");
-    if (texts && texts.length) {
-      const target = texts.find((t) => t.visible && "html" in t) || texts[0];
-      if (target && "html" in target) {
-        target.html = htmlString;
-        console.warn(
-          `Fallback: rendered into first Text element with id ${
-            target.id || "(unknown)"
-          }`
-        );
-        return true;
-      }
-      if (target && "text" in target) {
-        target.text = stripHtml(htmlString);
-        console.warn(
-          `Fallback: rendered text into first Text element with id ${
-            target.id || "(unknown)"
-          }`
-        );
-        return true;
-      }
-    }
-  } catch (e) {
-    console.error("Fallback rendering failed:", e);
-  }
-  console.warn("No writable container found for content.");
-  return false;
+function renderFaq(faqItems) {
+  const repeater = getElement("#faqRepeater");
+  if (!repeater || !faqItems) return;
+
+  repeater.data = faqItems;
+  repeater.onItemReady(($item, itemData) => {
+    setTextOnItem($item, "#faqQuestion", itemData.question);
+    setTextOnItem($item, "#faqAnswer", itemData.answer);
+  });
 }
 
-async function initializeAboutPage() {
-  try {
-    setupEventHandlers();
-    await displayMissionVision();
-    await loadBoardMembers();
-    await displayPartnershipInfo();
-    await loadFAQ();
-    await displayMeetingInfo();
-    await loadDynamicContent();
-    initializeAnimations();
-    if (typeof document !== "undefined") {
-      console.log("BRBS About: code executed");
-    }
-    console.log("✅ About Us Page initialization complete.");
-  } catch (error) {
-    console.error("❌ Error initializing About page:", error);
-  }
-}
-
-function displayMissionVision() {
-  const missionContent = `...`; // Content omitted for brevity
-  setContentAnywhere(["#missionVisionContainer"], missionContent);
-  $w("#missionVisionSection").show();
-}
-
-async function loadBoardMembers() {
-  // This would fetch from a 'BoardMembers' collection in a real app
-  const boardMembers = {
-    items: [
-      /* Mock data */
-    ],
-  };
-  if (boardMembers.items.length > 0) {
-    displayBoardMembers(boardMembers.items);
-  } else {
-    displayDefaultBoard();
-  }
-  $w("#boardMembersSection").show();
-}
-
-function displayBoardMembers(members) {
-  const boardHTML = members.map((member) => `...`).join("");
-  const content = `
-        <html><head><style>...</style></head><body>
-        <div class="board-header">...</div>
-        <div class="board-members-grid" id="board-grid">${boardHTML}</div>
-        <script>
-            document.getElementById('board-grid').addEventListener('click', (event) => {
-                const button = event.target.closest('button[data-action]');
-                if (button) {
-                    window.parent.postMessage({
-                        type: 'boardAction',
-                        action: button.dataset.action,
-                        payload: { email: button.dataset.email, name: button.dataset.name }
-                    }, '*');
-                }
-            });
-        <\/script>
-        </body></html>`;
-  setContentAnywhere(["#boardMembersContainer"], content);
-}
-
-function displayDefaultBoard() {
-  const boardHTML = `...`;
-  const content = `
-        <html><head><style>...</style></head><body>
-        <div class="board-header">...</div>
-        <div class="board-members-grid" id="board-grid">${boardHTML}</div>
-        <script>
-            document.getElementById('board-grid').addEventListener('click', (event) => {
-                const button = event.target.closest('button[data-action]');
-                if (button && button.dataset.action === 'join') {
-                    window.parent.postMessage({ type: 'boardAction', action: 'join' }, '*');
-                }
-            });
-        <\/script>
-        </body></html>`;
-  setContentAnywhere(["#boardMembersContainer"], content);
-}
-
-function displayPartnershipInfo() {
-  const partnershipContent = `...`; // HTML with postMessage script
-  setContentAnywhere(["#partnershipContainer"], partnershipContent);
-  $w("#partnershipSection").show();
-}
-
-async function loadFAQ() {
-  const faqItems = {
-    items: [
-      /* Mock data */
-    ],
-  };
-  if (faqItems.items.length > 0) {
-    displayFAQ(faqItems.items);
-  } else {
-    displayDefaultFAQ();
-  }
-  $w("#faqSection").show();
-}
-
-function displayFAQ(faqItems) {
-  const faqShell = `...`; // HTML with postMessage script
-  const faqContainer = $w("#faqContainer");
-  if (faqContainer && typeof faqContainer.onMessage === "function") {
-    faqContainer.html = faqShell;
-    setTimeout(() => faqContainer.postMessage(faqItems), 100);
-  } else {
-    // Fallback render as plain HTML/text if not an HtmlComponent
-    setContentAnywhere(
-      ["#faqContainer"],
-      `<div>${(faqItems || []).map(() => "...").join("")}</div>`
+function renderMeetingInfo(info, stats) {
+  if (!info) return;
+  setText("#meetingSchedule", info.schedule);
+  setText("#meetingLocation", info.location);
+  if (info.nextMeeting) {
+    const nextDate = new Date(info.nextMeeting);
+    setText(
+      "#meetingNext",
+      `Next meeting: ${nextDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}`
     );
+  } else {
+    setText("#meetingNext", "Check our Events page for the next meeting date.");
+  }
+  setText("#meetingVisitorPolicy", info.visitorPolicy);
+
+  if (stats) {
+    setText("#aboutMemberCount", `${stats.activeMembers || "–"} active members`);
+    setText("#aboutWorkshopCount", `${stats.annualPrograms || "–"} annual workshops`);
+    setText("#aboutFounded", `Founded in ${stats.yearsActive}`);
   }
 }
 
-function displayDefaultFAQ() {
-  const defaultFAQ = [
-    /* Mock data */
-  ];
-  displayFAQ(defaultFAQ);
-}
-
-function displayMeetingInfo() {
-  const meetingContent = `...`; // HTML with postMessage script
-  setContentAnywhere(["#meetingInfoContainer"], meetingContent);
-  $w("#meetingInfoSection").show();
-}
-
-function initializeAnimations() {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) entry.target.classList.add("animate-in");
-      });
-    },
-    { threshold: 0.1 }
-  );
-
-  setTimeout(() => {
-    const cards = document.querySelectorAll(".glass-card");
-    cards.forEach((card) => observer.observe(card));
-  }, 500);
-}
-
-async function loadDynamicContent() {
-  await loadSocietyStats();
-  await loadRecentAchievements();
-}
-
-async function loadSocietyStats() {
-  const memberCount = await wixData
-    .query("Members")
-    .eq("isActive", true)
-    .count();
-  // ... more logic
-  setContentAnywhere(["#societyStatsContainer"], `...`);
-  $w("#societyStatsSection").show();
-}
-
-async function loadRecentAchievements() {
-  // ... logic
-  setContentAnywhere(["#achievementsContainer"], `...`);
-  $w("#achievementsSection").show();
-}
-
-function setupEventHandlers() {
-  const componentMap = {
-    "#boardMembersContainer": handleBoardAction,
-    "#partnershipContainer": handlePartnershipAction,
-    "#meetingInfoContainer": handleMeetingAction,
-  };
-
-  for (const selector in componentMap) {
-    const element = $w(selector);
-    if (element && element.onMessage) {
-      element.onMessage((event) => componentMap[selector](event.data));
-    }
+function setText(selector, value) {
+  const element = getElement(selector);
+  if (!element) return;
+  if ("text" in element) {
+    element.text = value || "";
+  } else if ("html" in element) {
+    element.html = value || "";
   }
 }
 
-function handleBoardAction(data) {
-  if (data && data.type === "boardAction") {
-    if (data.action === "contact" && data.payload) {
-      const { email, name } = data.payload;
-      wixLocation.to(
-        `mailto:${email}?subject=Inquiry from BRBS Website - ${name}`
-      );
-    } else if (data.action === "join") {
-      wixLocation.to("/join-brbs");
+function setTextOnItem($item, selector, value) {
+  try {
+    const element = $item(selector);
+    if (!element) return;
+    if ("text" in element) {
+      element.text = value || "";
+    } else if ("html" in element) {
+      element.html = value || "";
     }
+  } catch (error) {
+    console.log(`Unable to set text for ${selector}`, error);
   }
 }
 
-function handlePartnershipAction(data) {
-  if (data && data.type === "partnershipAction") {
-    if (data.action === "visitArboretum") {
-      wixWindow.openLightbox("arboretum-info");
-    } else if (data.action === "viewUpcomingWorkshops") {
-      wixLocation.to("/events?category=workshop&location=arboretum");
-    }
-  }
-}
-
-function handleMeetingAction(data) {
-  if (data && data.type === "meetingAction") {
-    if (data.action === "viewUpcomingMeetings") {
-      wixLocation.to("/events?category=meeting");
-    } else if (data.action === "getDirections") {
-      wixWindow.openLightbox("directions-modal");
-    }
+function getElement(selector) {
+  try {
+    return $w(selector);
+  } catch (error) {
+    return null;
   }
 }

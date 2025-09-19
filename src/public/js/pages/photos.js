@@ -1,7 +1,6 @@
 // @ts-nocheck
-import { DRIVE_ROOT_FOLDER_ID } from "public/config/gallery.config.js";
-import { listGalleries } from "backend/gdrive-gallery.jsw";
 import wixLocation from "wix-location-frontend";
+import { GallerySystem } from "public/js/gdrive-gallery.js";
 
 export async function initPhotosPage() {
   try {
@@ -18,7 +17,8 @@ export async function initPhotosPage() {
     hideIfExists("#emptyStateBox");
 
     repeater.data = [];
-    const galleries = await listGalleries(DRIVE_ROOT_FOLDER_ID);
+    const gallerySystem = new GallerySystem();
+    const galleries = await gallerySystem.getGalleries();
 
     if (!galleries || galleries.length === 0) {
       hideIfExists("#loadingBox");
