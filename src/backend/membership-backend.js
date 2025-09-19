@@ -6,6 +6,7 @@ import wixData from "wix-data";
 // Use Triggered Emails when available in Velo
 // eslint-disable-next-line import/no-unresolved
 import { triggeredEmails } from "wix-crm-backend";
+import { getMembershipLevelFallbacks } from "backend/site-data";
 
 /**
  * Gets all active membership levels
@@ -20,8 +21,14 @@ export async function getMembershipLevels() {
 
     return levels.items;
   } catch (error) {
-    console.error("Error getting membership levels:", error);
-    throw new Error("Failed to load membership levels");
+    console.warn("Falling back to static membership levels:", error?.message || error);
+    try {
+      const fallback = await getMembershipLevelFallbacks();
+      return fallback;
+    } catch (fallbackError) {
+      console.error("Error loading fallback membership levels:", fallbackError);
+      throw new Error("Failed to load membership levels");
+    }
   }
 }
 

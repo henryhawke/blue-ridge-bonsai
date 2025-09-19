@@ -1,1791 +1,355 @@
-/**
- * BLUE RIDGE BONSAI SOCIETY - EVENTS PAGE
- * 
- * COMPONENTS & IMPLEMENTATIONS:
- * 
- * 1. EVENT SYSTEM INTEGRATION
- *    - Imports EventSystem class from public/js/event-system.js
- *    - Centralized event management and data handling
- *    - Comprehensive event filtering and search capabilities
- *    - Real-time event updates and status management
- * 
- * 2. PAGE INITIALIZATION & STRUCTURE
- *    - initEventsPageCore(): Core initialization with error handling
- *    - initializeEventsPage(): Main orchestration function
- *    - createEventsPageStructure(): Complete HTML layout with all sections
- *    - Safe element handling with fallback for testing environments
- * 
- * 3. FILTERING & SEARCH SYSTEM
- *    - Multi-criteria filtering (category, status, difficulty, search)
- *    - setupFilters(): Configures all filter dropdowns and inputs
- *    - Debounced search input (300ms) for performance
- *    - Combined filter logic with real-time updates
- *    - URL parameter handling for deep linking
- * 
- * 4. EVENT DISPLAY SYSTEM
- *    - loadAndDisplayEvents(): Fetches and renders events based on filters
- *    - displayEventsGrid(): Responsive grid layout for event cards
- *    - Event cards with comprehensive information (dates, times, locations, prices)
- *    - Registration status indicators and capacity tracking
- *    - Featured event highlighting and badges
- * 
- * 5. CALENDAR VIEW SYSTEM
- *    - initializeCalendarView(): Month-based calendar display
- *    - generateCalendarHTML(): Dynamic calendar generation
- *    - Event overlay on calendar dates
- *    - Navigation between months
- *    - Calendar event click handling
- * 
- * 6. VIEW TOGGLE SYSTEM
- *    - setupViewToggles(): Grid and calendar view switching
- *    - View state management and persistence
- *    - Smooth transitions between view modes
- *    - Responsive view adaptation
- * 
- * 7. EVENT STATISTICS & ANALYTICS
- *    - loadEventStats(): Displays event statistics and counts
- *    - Event count by category and status
- *    - Registration statistics and trends
- *    - Performance metrics and insights
- * 
- * 8. EVENT HANDLING & INTERACTIONS
- *    - setupEventHandlers(): Configures all interactive elements
- *    - Event registration and booking functionality
- *    - Event detail navigation and lightbox handling
- *    - Filter change handling with automatic updates
- * 
- * 9. LOADING & ERROR STATES
- *    - showLoadingState() / hideLoadingState(): Loading indicators
- *    - displayErrorMessage(): User-friendly error messages
- *    - Graceful degradation for failed requests
- *    - Retry mechanisms for failed operations
- * 
- * 10. URL PARAMETER HANDLING
- *    - handleURLParameters(): Deep linking support
- *    - Filter state persistence in URL
- *    - Bookmarkable filtered views
- *    - SEO-friendly URL structure
- * 
- * 11. ANIMATION & UX FEATURES
- *    - initializeAnimations(): Page animations and transitions
- *    - Smooth scrolling and micro-interactions
- *    - Hover effects and visual feedback
- *    - Loading animations and transitions
- * 
- * 12. RESPONSIVE DESIGN
- *    - Mobile-first responsive layout
- *    - Adaptive grid and calendar views
- *    - Touch-friendly interactions
- *    - Cross-device compatibility
- * 
- * 13. PERFORMANCE OPTIMIZATION
- *    - Debounced search and filter updates
- *    - Efficient DOM manipulation
- *    - Lazy loading of event content
- *    - Optimized calendar rendering
- * 
- * DEPENDENCIES:
- *    - EventSystem class (public/js/event-system.js)
- *    - Wix Velo framework ($w API)
- *    - Global CSS classes and styling
- *    - Backend event data systems
- * 
- * BROWSER COMPATIBILITY:
- *    - Modern browsers with ES6+ support
- *    - Wix Velo environment
- *    - Mobile and desktop responsive
- * 
- * SEO & ACCESSIBILITY:
- *    - Semantic HTML structure
- *    - Proper heading hierarchy
- *    - ARIA labels and descriptions
- *    - Keyboard navigation support
- */
-
 // @ts-nocheck
-// Blue Ridge Bonsai Society - Events Page - Phase 1 Implementation
-// This page uses the central EventSystem class to manage and display event data.
+// Blue Ridge Bonsai Society - Events page
+// Implements filtering, search, grid/calendar view toggles, and statistics.
 
-import { EventSystem } from 'public/js/event-system.js';
+import wixLocation from "wix-location";
+import {
+  fetchEvents,
+  fetchEventFilters,
+  fetchEventStats,
+} from "public/js/data-service.js";
 
-// Mock Wix APIs for standalone execution
-const wixLocation = {
-    to: (url) => console.log(`Navigating to: ${url}`),
-    url: "https://www.blueridgebonsaisociety.com/events",
-    query: {} // Add a query object to simulate URL params
-};
-const wixWindow = {
-    openLightbox: (name, data) => console.log(`Open lightbox: ${name}`, data),
-};
-
-let eventSystem;
-let currentFilters = {
+let currentEvents = [];
+let activeFilters = {
   category: "all",
-  status: "upcoming", // Changed 'date' to 'status' to match EventSystem
   difficulty: "all",
+  status: "upcoming",
   search: "",
 };
+let calendarMonthOffset = 0;
+let debounceTimer;
 
-// Debounce timer for search input
-let searchTimeoutId;
-
-// Pure JavaScript DOM manipulation functions
-function safeElement(selector) {
+$w.onReady(async function () {
   try {
-    // In Velo, $w is the standard way to select elements.
-    // This function can be replaced with direct $w calls in the final Velo code.
-    return $w(selector);
-  } catch(e) {
-    // Fallback for testing outside of Velo
-    return document.querySelector(selector);
+    await initializeFilters();
+    applyQueryFilters();
+    await loadEvents();
+    await loadStats();
+    setupHandlers();
+    console.log("✅ Events page ready");
+  } catch (error) {
+    console.error("Events page initialization failed", error);
+    showError("We couldn't load the events feed. Please refresh the page.");
   }
-}
-
-function safeShow(selector) {
-  const element = safeElement(selector);
-  if (element) {
-      element.show();
-  }
-}
-
-function safeHide(selector) {
-  const element = safeElement(selector);
-  if (element) {
-      element.hide();
-  }
-}
-
-function safeSetText(selector, text) {
-  const element = safeElement(selector);
-  if (element) {
-      element.text = text;
-  }
-}
-
-function safeSetHtml(selector, html) {
-  const element = safeElement(selector);
-  if (element) {
-      element.html = html;
-  }
-}
-
-function safeSetValue(selector, value) {
-  const element = safeElement(selector);
-  if (element) {
-      element.value = value;
-  }
-}
-
-function safeGetValue(selector) {
-  const element = safeElement(selector);
-  return element ? element.value : "";
-}
-
-function safeOnClick(selector, handler) {
-  const element = safeElement(selector);
-  if (element) {
-      element.onClick(handler);
-  }
-}
-
-function safeOnChange(selector, handler) {
-  const element = safeElement(selector);
-  if (element) {
-      element.onChange(handler);
-  }
-}
-
-function safeOnInput(selector, handler) {
-  const element = safeElement(selector);
-  if (element) {
-      element.onInput(handler);
-  }
-}
-
-$w.onReady(function () {
-    console.log("🚀 Initializing Events Page");
-    initEventsPageCore();
 });
 
-async function initEventsPageCore() {
-  console.log("Running the code for the Events page.");
+async function initializeFilters() {
+  const filters = await fetchEventFilters();
 
-  // Instantiate the central event system
-  eventSystem = new EventSystem();
-  console.log("✅ Event system instantiated successfully");
+  const categoryFilter = getElement("#categoryFilter");
+  if (categoryFilter && filters.categories) {
+    categoryFilter.options = filters.categories.map((value) => ({
+      label: value === "all" ? "All categories" : value,
+      value,
+    }));
+    categoryFilter.value = activeFilters.category;
+  }
 
-  // Initialize events page
-  await initializeEventsPage();
+  const difficultyFilter = getElement("#difficultyFilter");
+  if (difficultyFilter && filters.difficulties) {
+    difficultyFilter.options = filters.difficulties.map((value) => ({
+      label: value === "all" ? "All levels" : value,
+      value,
+    }));
+    difficultyFilter.value = activeFilters.difficulty;
+  }
 
-  // Setup event handlers
-  setupEventHandlers();
-
-  // Handle URL parameters
-  handleURLParameters();
-
-  // Final refresh of events based on any URL params
-  await loadAndDisplayEvents();
-}
-
-async function initializeEventsPage() {
-  try {
-    // Create the main page structure
-    createEventsPageStructure();
-
-    // Setup filters
-    setupFilters();
-
-    // Load and display events
-    await loadAndDisplayEvents();
-
-    // Load event statistics
-    await loadEventStats();
-
-    // Initialize calendar view
-    await initializeCalendarView();
-
-    // Setup view toggles
-    setupViewToggles();
-
-    // Initialize animations
-    initializeAnimations();
-  } catch (error) {
-    console.error("Error initializing events page:", error);
-    displayErrorMessage("Failed to load events. Please try again later.");
+  const statusFilter = getElement("#statusFilter");
+  if (statusFilter && filters.statuses) {
+    statusFilter.options = filters.statuses.map((value) => ({
+      label: value === "all" ? "All events" : value.charAt(0).toUpperCase() + value.slice(1),
+      value,
+    }));
+    statusFilter.value = activeFilters.status;
   }
 }
 
-/**
- * Create the complete HTML structure for the events page
- */
-function createEventsPageStructure() {
-  try {
-    // For Wix environment, try to use $w to find/create containers
-    let mainContainer;
-
-    // Try Wix-specific selectors first
-    try {
-      // eslint-disable-next-line no-undef
-      if (typeof $w !== "undefined") {
-        // Look for common Wix page containers
-        const wixContainers = [
-          "#page1",
-          "#main",
-          "#content",
-          "#pageContainer",
-          "#siteContainer",
-        ];
-        for (const selector of wixContainers) {
-          try {
-            // eslint-disable-next-line no-undef
-            const element = $w(selector);
-            if (element) {
-              mainContainer = element;
-              console.log(`✅ Found Wix container for Events: ${selector}`);
-              break;
-            }
-          } catch (e) {
-            // Container doesn't exist, try next one
-          }
-        }
-
-        // If no existing container found, try to use page element
-        if (!mainContainer) {
-          try {
-            // eslint-disable-next-line no-undef
-            const bodyElements =
-              $w("#page1") ||
-              $w("Page") ||
-              $w("*").filter((el) => el.type === "Page")[0];
-            if (bodyElements) {
-              mainContainer = bodyElements;
-              console.log("✅ Using Wix page element as Events container");
-            }
-          } catch (e) {
-            console.warn("Could not find Wix page container for Events");
-          }
-        }
-      }
-    } catch (e) {
-      console.warn("Wix $w not available for Events, falling back to DOM");
-    }
-
-    // Fallback to regular DOM if Wix methods don't work
-    if (!mainContainer) {
-      mainContainer =
-        safeElement("#main") ||
-        safeElement("#page-content") ||
-        safeElement("#content");
-
-      if (!mainContainer && typeof document !== "undefined") {
-        mainContainer = document.createElement("div");
-        mainContainer.id = "main";
-        document.body.appendChild(mainContainer);
-      }
-    }
-
-    if (!mainContainer) {
-      console.warn(
-        "Cannot create Events page structure - no container available"
-      );
-      return;
-    }
-
-    const eventsPageHTML = `
-      <div class="events-page-container">
-        <!-- Page Header -->
-        <div class="page-header">
-          <h1>Upcoming Events & Workshops</h1>
-          <p class="page-subtitle">Join us for bonsai workshops, meetings, and exhibitions</p>
-        </div>
-
-        <!-- Event Statistics -->
-        <div id="eventStatsSection" class="stats-section">
-          <div id="eventStatsContainer" class="stats-container">
-            <!-- Stats will be loaded here -->
-          </div>
-        </div>
-
-        <!-- Filters and Controls -->
-        <div class="filters-and-controls">
-          <div class="filters-container">
-            <div class="filter-group">
-              <label for="categoryFilter">Category:</label>
-              <select id="categoryFilter" class="filter-select">
-                <!-- Options will be populated by setupFilters() -->
-              </select>
-            </div>
-            
-            <div class="filter-group">
-              <label for="dateFilter">Date Range:</label>
-              <select id="dateFilter" class="filter-select">
-                <!-- Options will be populated by setupFilters() -->
-              </select>
-            </div>
-            
-            <div class="filter-group">
-              <label for="difficultyFilter">Difficulty:</label>
-              <select id="difficultyFilter" class="filter-select">
-                <!-- Options will be populated by setupFilters() -->
-              </select>
-            </div>
-            
-            <div class="filter-group search-group">
-              <label for="searchInput">Search:</label>
-              <input type="text" id="searchInput" class="search-input" placeholder="Search events...">
-            </div>
-          </div>
-          
-          <div class="view-controls">
-            <div class="view-toggles">
-              <button id="gridViewBtn" class="btn view-btn active">Grid View</button>
-              <button id="calendarViewBtn" class="btn view-btn">Calendar</button>
-            </div>
-            
-            <div class="export-buttons">
-              <button id="rssFeedBtn" class="btn btn-outline">RSS Feed</button>
-              <button id="icalExportBtn" class="btn btn-outline">Export Calendar</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Results Info -->
-        <div class="results-info">
-          <div id="resultsCount" class="results-count">Loading events...</div>
-        </div>
-
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" class="loading-spinner" style="display: none;">
-          <div class="spinner"></div>
-          <p>Loading events...</p>
-        </div>
-
-        <!-- Error Message -->
-        <div id="errorMessage" class="error-message" style="display: none;"></div>
-
-        <!-- Events Grid View -->
-        <div id="eventsGrid" class="events-view">
-          <!-- Events will be loaded here -->
-        </div>
-
-        <!-- Calendar View -->
-        <div id="calendarView" class="calendar-view" style="display: none;">
-          <div id="calendarContainer" class="calendar-container">
-            <!-- Calendar will be loaded here -->
-          </div>
-        </div>
-
-        <!-- No Events Message -->
-        <div id="noEventsMessage" class="no-events-message" style="display: none;">
-          <!-- No events content will be generated here -->
-        </div>
-      </div>
-    `;
-
-    // Inject the HTML into the main container
-    // Try multiple methods to set content
-    let contentSet = false;
-
-    // Method 1: Wix element html property
-    if (mainContainer.html !== undefined) {
-      try {
-        mainContainer.html = eventsPageHTML;
-        contentSet = true;
-        console.log("✅ Events content set using Wix .html property");
-      } catch (e) {
-        console.warn("Failed to set Events content using Wix .html:", e);
-      }
-    }
-
-    // Method 2: Standard DOM innerHTML
-    if (!contentSet && mainContainer.innerHTML !== undefined) {
-      try {
-        mainContainer.innerHTML = eventsPageHTML;
-        contentSet = true;
-        console.log("✅ Events content set using DOM .innerHTML");
-      } catch (e) {
-        console.warn("Failed to set Events content using .innerHTML:", e);
-      }
-    }
-
-    // Method 3: Create elements manually and append
-    if (!contentSet && typeof document !== "undefined") {
-      try {
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = eventsPageHTML;
-
-        // Clear existing content
-        while (mainContainer.firstChild) {
-          mainContainer.removeChild(mainContainer.firstChild);
-        }
-
-        // Append new content
-        while (tempDiv.firstChild) {
-          mainContainer.appendChild(tempDiv.firstChild);
-        }
-        contentSet = true;
-        console.log("✅ Events content set using manual DOM manipulation");
-      } catch (e) {
-        console.warn("Failed to set Events content using manual DOM:", e);
-      }
-    }
-
-    if (!contentSet) {
-      console.error("❌ Could not set Events page content using any method");
-      // As a last resort, try to add a simple text indicator
-      try {
-        if (mainContainer.text !== undefined) {
-          mainContainer.text =
-            "Blue Ridge Bonsai Society - Events Page Loading...";
-        }
-      } catch (e) {
-        console.warn("Even basic Events text setting failed");
-      }
-    }
-
-    console.log("✅ Events page structure created successfully");
-  } catch (error) {
-    console.error("Error creating events page structure:", error);
+function applyQueryFilters() {
+  const query = wixLocation.query || {};
+  if (query.category) activeFilters.category = query.category;
+  if (query.status) activeFilters.status = query.status;
+  if (query.difficulty) activeFilters.difficulty = query.difficulty;
+  if (query.search) {
+    activeFilters.search = query.search;
+    const searchInput = getElement("#searchInput");
+    if (searchInput) searchInput.value = activeFilters.search;
   }
 }
 
-function setupFilters() {
-  // Category filter
-  const categoryOptions = [
-    { value: "all", label: "All Categories" },
-    { value: "workshop", label: "Workshops" },
-    { value: "meeting", label: "Meetings" },
-    { value: "demonstration", label: "Demonstrations" },
-    { value: "exhibition", label: "Exhibitions" },
-    { value: "social", label: "Social Events" },
-    { value: "field-trip", label: "Field Trips" },
-    { value: "competition", label: "Competitions" },
-  ];
-
-  const categoryHTML = categoryOptions
-    .map((option) => `<option value="${option.value}">${option.label}</option>`)
-    .join("");
-
-  const categoryFilter = safeElement("#categoryFilter");
-  if (categoryFilter && categoryFilter.html) {
-    categoryFilter.html = categoryHTML;
-  }
-
-  // Date filter
-  const dateOptions = [
-    { value: "upcoming", label: "Upcoming Events" },
-    { value: "this-month", label: "This Month" },
-    { value: "next-month", label: "Next Month" },
-    { value: "past", label: "Past Events" },
-  ];
-
-  const dateHTML = dateOptions
-    .map((option) => `<option value="${option.value}">${option.label}</option>`)
-    .join("");
-
-  const dateFilter = safeElement("#dateFilter");
-  if (dateFilter && dateFilter.html) {
-    dateFilter.html = dateHTML;
-  }
-
-  // Difficulty filter
-  const difficultyOptions = [
-    { value: "all", label: "All Levels" },
-    { value: "beginner", label: "Beginner" },
-    { value: "intermediate", label: "Intermediate" },
-    { value: "advanced", label: "Advanced" },
-    { value: "all-levels", label: "All Levels Welcome" },
-  ];
-
-  const difficultyHTML = difficultyOptions
-    .map((option) => `<option value="${option.value}">${option.label}</option>`)
-    .join("");
-
-  const difficultyFilter = safeElement("#difficultyFilter");
-  if (difficultyFilter && difficultyFilter.html) {
-    difficultyFilter.html = difficultyHTML;
-  }
+async function loadEvents() {
+  showLoading();
+  const response = await fetchEvents(activeFilters);
+  currentEvents = response.items || [];
+  bindEventsRepeater(currentEvents);
+  renderCalendar(currentEvents);
+  updateCounts(currentEvents.length);
+  hideLoading();
 }
 
-async function loadAndDisplayEvents() {
-  try {
-    // Show loading state
-    showLoadingState();
+async function loadStats() {
+  const stats = await fetchEventStats();
+  setText("#statsUpcoming", `${stats.upcomingCount || 0}`);
+  setText("#statsFeatured", `${stats.featuredCount || 0}`);
+  setText("#statsFillRate", stats.averageFillRate ? `${stats.averageFillRate}% avg fill` : "");
+}
 
-    // Apply date range for specific filters
-    const filters = { ...currentFilters };
-    if (filters.date === "this-month") {
-      const now = new Date();
-      filters.dateRange = {
-        start: new Date(now.getFullYear(), now.getMonth(), 1),
-        end: new Date(now.getFullYear(), now.getMonth() + 1, 0),
-      };
-      filters.date = "upcoming";
-    } else if (filters.date === "next-month") {
-      const now = new Date();
-      filters.dateRange = {
-        start: new Date(now.getFullYear(), now.getMonth() + 1, 1),
-        end: new Date(now.getFullYear(), now.getMonth() + 2, 0),
-      };
-      filters.date = "upcoming";
+function bindEventsRepeater(events) {
+  const repeater = getElement("#eventsRepeater");
+  const emptyState = getElement("#eventsEmptyState");
+  if (!repeater) {
+    console.warn("Events page: #eventsRepeater not found");
+    return;
+  }
+
+  if (!events || events.length === 0) {
+    repeater.data = [];
+    if (emptyState && typeof emptyState.show === "function") emptyState.show();
+    return;
+  }
+
+  repeater.data = events.map((event) => ({
+    ...event,
+    formattedDate: formatEventDate(event),
+    availability: event.registrationRequired
+      ? event.maxAttendees
+        ? `${Math.max(0, event.maxAttendees - (event.currentAttendees || 0))} spots left`
+        : "Registration required"
+      : "Open to guests",
+  }));
+
+  repeater.onItemReady(($item, itemData) => {
+    setTextOnItem($item, "#eventTitle", itemData.title);
+    setTextOnItem($item, "#eventDate", itemData.formattedDate);
+    setTextOnItem($item, "#eventLocation", itemData.location);
+    setTextOnItem($item, "#eventCategory", itemData.category);
+    setTextOnItem($item, "#eventDifficulty", itemData.difficulty);
+    setTextOnItem($item, "#eventAvailability", itemData.availability);
+    setTextOnItem($item, "#eventSummary", itemData.description);
+
+    const button = $item("#eventDetailsButton");
+    if (button && typeof button.onClick === "function") {
+      button.onClick(() => wixLocation.to(`/event-details?eventId=${itemData._id}`));
     }
 
-    // Load events
-    const events = await eventSystem.loadEvents(filters);
-
-    // Display events
-    if (events.length > 0) {
-      displayEventsGrid(events);
-      safeShow("#eventsGrid");
-      safeHide("#noEventsMessage");
-    } else {
-      safeHide("#eventsGrid");
-      displayNoEventsMessage();
+    const card = $item("#eventCard");
+    if (card && typeof card.onClick === "function") {
+      card.onClick(() => wixLocation.to(`/event-details?eventId=${itemData._id}`));
     }
-
-    // Update results count
-    updateResultsCount(events.length);
-
-    // Hide loading state
-    hideLoadingState();
-  } catch (error) {
-    console.error("Error loading events:", error);
-    hideLoadingState();
-    displayErrorMessage("Failed to load events. Please try again.");
-  }
-}
-
-function displayEventsGrid(events) {
-  const eventsHTML = events
-    .map((event) => {
-      const isRegistered = false; // Will be checked dynamically
-      const timeUntilEvent = eventSystem.getTimeUntilEvent(event.startDate);
-      const availableSpots = eventSystem.getAvailableSpots(event);
-      const isEventFull = eventSystem.isEventFull(event);
-
-      return `
-            <div class="glass-card event-card" data-event-id="${
-              event._id
-            }" data-aos="fade-up">
-                <div class="event-header">
-                    <div class="event-category ${event.category}">${
-        event.category.charAt(0).toUpperCase() + event.category.slice(1)
-      }</div>
-                    ${
-                      event.featured
-                        ? '<div class="featured-badge">Featured</div>'
-                        : ""
-                    }
-                </div>
-                
-                <div class="event-image-container">
-                    <img src="${event.image || "/images/default-event.jpg"}" 
-                         alt="${event.title}" 
-                         class="event-image" />
-                    <div class="event-date-overlay">
-                        <div class="date-day">${new Date(
-                          event.startDate
-                        ).getDate()}</div>
-                        <div class="date-month">${new Date(
-                          event.startDate
-                        ).toLocaleDateString("en-US", { month: "short" })}</div>
-                    </div>
-                </div>
-                
-                <div class="event-content">
-                    <h3 class="event-title">${event.title}</h3>
-                    <p class="event-description">${event.description.substring(
-                      0,
-                      120
-                    )}...</p>
-                    
-                    <div class="event-meta">
-                        <div class="meta-item">
-                            <span class="meta-icon">🗓️</span>
-                            <span class="meta-text">${eventSystem.formatEventDate(
-                              event.startDate
-                            )}</span>
-                        </div>
-                        <div class="meta-item">
-                            <span class="meta-icon">📍</span>
-                            <span class="meta-text">${
-                              event.location || "TBD"
-                            }</span>
-                        </div>
-                        ${
-                          event.instructor
-                            ? `
-                            <div class="meta-item">
-                                <span class="meta-icon">👨‍🏫</span>
-                                <span class="meta-text">${event.instructor}</span>
-                            </div>
-                        `
-                            : ""
-                        }
-                        <div class="meta-item">
-                            <span class="meta-icon">🎯</span>
-                            <span class="meta-text">${
-                              event.difficulty || "All Levels"
-                            }</span>
-                        </div>
-                    </div>
-                    
-                    <div class="event-status">
-                        <div class="time-until">${timeUntilEvent}</div>
-                        <div class="availability">
-                            ${
-                              availableSpots === "Unlimited"
-                                ? '<span class="spots-unlimited">Open Registration</span>'
-                                : `<span class="spots-count ${
-                                    isEventFull ? "full" : ""
-                                  }">${availableSpots} spots left</span>`
-                            }
-                        </div>
-                    </div>
-                    
-                    ${
-                      event.price && event.price > 0
-                        ? `
-                        <div class="event-price">
-                            <span class="price-label">Price:</span>
-                            <span class="price-amount">$${event.price}</span>
-                        </div>
-                    `
-                        : ""
-                    }
-                </div>
-                
-                <div class="event-actions">
-                    <button class="btn btn-primary" onclick="viewEventDetails('${
-                      event._id
-                    }')">
-                        Learn More
-                    </button>
-                    ${
-                      !isEventFull
-                        ? `
-                        <button class="btn btn-outline" onclick="quickRegister('${
-                          event._id
-                        }')">
-                            ${isRegistered ? "Registered" : "Register"}
-                        </button>
-                    `
-                        : `
-                        <button class="btn btn-disabled" disabled>
-                            Event Full
-                        </button>
-                    `
-                    }
-                </div>
-            </div>
-        `;
-    })
-    .join("");
-
-  safeSetHtml(
-    "#eventsGrid",
-    `
-        <div class="events-grid">
-            ${eventsHTML}
-        </div>
-    `
-  );
-}
-
-function displayNoEventsMessage() {
-  const message =
-    currentFilters.date === "past"
-      ? "No past events found with the current filters."
-      : "No upcoming events found with the current filters.";
-
-  safeSetHtml(
-    "#noEventsMessage",
-    `
-        <div class="glass-card no-events-card">
-            <div class="no-events-icon">📅</div>
-            <h3>No Events Found</h3>
-            <p>${message}</p>
-            <div class="no-events-actions">
-                <button class="btn btn-primary" onclick="clearFilters()">
-                    Clear Filters
-                </button>
-                <button class="btn btn-outline" onclick="suggestEvent()">
-                    Suggest an Event
-                </button>
-            </div>
-        </div>
-    `
-  );
-  safeShow("#noEventsMessage");
-}
-
-async function loadEventStats() {
-  try {
-    const stats = await eventSystem.getEventStats();
-
-    safeSetHtml(
-      "#eventStatsContainer",
-      `
-            <div class="stats-grid">
-                <div class="stat-item glass-card">
-                    <div class="stat-number">${stats.upcoming}</div>
-                    <div class="stat-label">Upcoming Events</div>
-                </div>
-                <div class="stat-item glass-card">
-                    <div class="stat-number">${stats.total}</div>
-                    <div class="stat-label">Total Events</div>
-                </div>
-                <div class="stat-item glass-card">
-                    <div class="stat-number">${stats.totalRegistrations}</div>
-                    <div class="stat-label">Total Registrations</div>
-                </div>
-                <div class="stat-item glass-card">
-                    <div class="stat-number">${new Date().getFullYear()}</div>
-                    <div class="stat-label">Current Year</div>
-                </div>
-            </div>
-        `
-    );
-
-    safeShow("#eventStatsSection");
-  } catch (error) {
-    console.error("Error loading event stats:", error);
-    safeHide("#eventStatsSection");
-  }
-}
-
-async function initializeCalendarView() {
-  try {
-    // This would integrate with a calendar widget
-    // For now, we'll create a simple month view
-    const currentDate = new Date();
-    const firstDay = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth(),
-      1
-    );
-    const lastDay = new Date(
-      currentDate.getFullYear(),
-      currentDate.getMonth() + 1,
-      0
-    );
-
-    const calendarEvents = await eventSystem.getCalendarEvents(
-      firstDay,
-      lastDay
-    );
-
-    // Simple calendar HTML generation
-    const calendarHTML = generateCalendarHTML(currentDate, calendarEvents);
-
-    safeSetHtml("#calendarContainer", calendarHTML);
-  } catch (error) {
-    console.error("Error initializing calendar:", error);
-    safeHide("#calendarContainer");
-  }
-}
-
-function generateCalendarHTML(currentDate, events) {
-  const year = currentDate.getFullYear();
-  const month = currentDate.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const startDate = new Date(firstDay);
-  startDate.setDate(startDate.getDate() - firstDay.getDay());
-
-  const monthName = currentDate.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
   });
 
-  let calendarHTML = `
-        <div class="calendar-header">
-            <h3>${monthName}</h3>
-            <div class="calendar-nav">
-                <button class="btn btn-sm" onclick="changeMonth(-1)">‹</button>
-                <button class="btn btn-sm" onclick="changeMonth(1)">›</button>
-            </div>
-        </div>
-        <div class="calendar-grid">
-            <div class="calendar-days-header">
-                <div class="day-header">Sun</div>
-                <div class="day-header">Mon</div>
-                <div class="day-header">Tue</div>
-                <div class="day-header">Wed</div>
-                <div class="day-header">Thu</div>
-                <div class="day-header">Fri</div>
-                <div class="day-header">Sat</div>
-            </div>
-            <div class="calendar-days">
-    `;
+  if (emptyState && typeof emptyState.hide === "function") emptyState.hide();
+}
+
+function setupHandlers() {
+  const categoryFilter = getElement("#categoryFilter");
+  if (categoryFilter && typeof categoryFilter.onChange === "function") {
+    categoryFilter.onChange(() => {
+      activeFilters.category = categoryFilter.value || "all";
+      refreshEvents();
+    });
+  }
+
+  const difficultyFilter = getElement("#difficultyFilter");
+  if (difficultyFilter && typeof difficultyFilter.onChange === "function") {
+    difficultyFilter.onChange(() => {
+      activeFilters.difficulty = difficultyFilter.value || "all";
+      refreshEvents();
+    });
+  }
+
+  const statusFilter = getElement("#statusFilter");
+  if (statusFilter && typeof statusFilter.onChange === "function") {
+    statusFilter.onChange(() => {
+      activeFilters.status = statusFilter.value || "upcoming";
+      refreshEvents();
+    });
+  }
+
+  const searchInput = getElement("#searchInput");
+  if (searchInput && typeof searchInput.onInput === "function") {
+    searchInput.onInput(() => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        activeFilters.search = searchInput.value || "";
+        refreshEvents();
+      }, 300);
+    });
+  }
+
+  const gridBtn = getElement("#gridViewBtn");
+  const calendarBtn = getElement("#calendarViewBtn");
+  if (gridBtn && typeof gridBtn.onClick === "function") {
+    gridBtn.onClick(() => switchView("grid"));
+  }
+  if (calendarBtn && typeof calendarBtn.onClick === "function") {
+    calendarBtn.onClick(() => switchView("calendar"));
+  }
+
+  const prevMonth = getElement("#calendarPrevBtn");
+  const nextMonth = getElement("#calendarNextBtn");
+  if (prevMonth && typeof prevMonth.onClick === "function") {
+    prevMonth.onClick(() => {
+      calendarMonthOffset -= 1;
+      renderCalendar(currentEvents);
+    });
+  }
+  if (nextMonth && typeof nextMonth.onClick === "function") {
+    nextMonth.onClick(() => {
+      calendarMonthOffset += 1;
+      renderCalendar(currentEvents);
+    });
+  }
+}
+
+async function refreshEvents() {
+  await loadEvents();
+}
+
+function renderCalendar(events) {
+  const calendarComponent = getElement("#calendarHtml");
+  const monthLabel = getElement("#calendarMonthLabel");
+  if (!calendarComponent || !("html" in calendarComponent)) return;
 
   const today = new Date();
-  const currentMonth = month;
+  const displayDate = new Date(today.getFullYear(), today.getMonth() + calendarMonthOffset, 1);
+  const year = displayDate.getFullYear();
+  const month = displayDate.getMonth();
 
-  for (let i = 0; i < 42; i++) {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + i);
-
-    const isCurrentMonth = date.getMonth() === currentMonth;
-    const isToday = date.toDateString() === today.toDateString();
-    const dayEvents = events.filter(
-      (event) => new Date(event.start).toDateString() === date.toDateString()
-    );
-
-    calendarHTML += `
-            <div class="calendar-day ${
-              isCurrentMonth ? "current-month" : "other-month"
-            } ${isToday ? "today" : ""}" 
-                 data-date="${date.toISOString().split("T")[0]}">
-                <div class="day-number">${date.getDate()}</div>
-                ${
-                  dayEvents.length > 0
-                    ? `
-                    <div class="day-events">
-                        ${dayEvents
-                          .slice(0, 2)
-                          .map(
-                            (event) => `
-                            <div class="day-event" style="background-color: ${
-                              event.backgroundColor
-                            }" 
-                                 onclick="viewEventDetails('${event.id}')">
-                                ${event.title.substring(0, 10)}${
-                              event.title.length > 10 ? "..." : ""
-                            }
-                            </div>
-                        `
-                          )
-                          .join("")}
-                        ${
-                          dayEvents.length > 2
-                            ? `<div class="more-events">+${
-                                dayEvents.length - 2
-                              } more</div>`
-                            : ""
-                        }
-                    </div>
-                `
-                    : ""
-                }
-            </div>
-        `;
+  if (monthLabel && "text" in monthLabel) {
+    monthLabel.text = displayDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   }
 
-  calendarHTML += `
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const cells = [];
+  for (let i = 0; i < firstDay; i++) {
+    cells.push({ day: "", events: [] });
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const current = new Date(year, month, day);
+    const dayEvents = (events || []).filter((event) => {
+      const start = new Date(event.startDate);
+      return start.getFullYear() === year && start.getMonth() === month && start.getDate() === day;
+    });
+    cells.push({ day, events: dayEvents });
+  }
+
+  const html = `
+    <style>
+      .brbs-calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; font-family: 'Inter', sans-serif; }
+      .brbs-calendar-day { min-height: 120px; padding: 0.75rem; background: rgba(255,255,255,0.65); backdrop-filter: blur(10px); border-radius: 12px; box-shadow: 0 8px 24px rgba(44,62,80,0.08); display: flex; flex-direction: column; }
+      .brbs-calendar-day h4 { margin: 0 0 0.5rem; font-size: 0.9rem; color: #2a3b2e; }
+      .brbs-calendar-event { font-size: 0.75rem; margin-bottom: 0.4rem; padding: 0.4rem 0.5rem; border-radius: 8px; background: rgba(111, 143, 113, 0.15); color: #2a3b2e; }
+      .brbs-calendar-event strong { display: block; font-weight: 600; }
+    </style>
+    <div class="brbs-calendar">
+      ${cells
+        .map((cell) => {
+          if (!cell.day) {
+            return '<div class="brbs-calendar-day"></div>';
+          }
+          const eventsHtml = cell.events
+            .map(
+              (event) => `
+                <div class="brbs-calendar-event">
+                  <strong>${event.title}</strong>
+                  <span>${formatTime(event.startDate)}</span>
+                </div>
+              `,
+            )
+            .join("") || '<div class="brbs-calendar-event" style="background:rgba(107,142,111,0.08); color:#4d5b4f;">No events</div>';
+          return `
+            <div class="brbs-calendar-day">
+              <h4>${cell.day}</h4>
+              ${eventsHtml}
             </div>
-        </div>
-    `;
+          `;
+        })
+        .join("")}
+    </div>
+  `;
 
-  return calendarHTML;
+  calendarComponent.html = html;
 }
 
-function setupViewToggles() {
-  // Setup grid/calendar view toggle using safe wrappers
-  safeOnClick("#gridViewBtn", () => {
-    safeShow("#eventsGrid");
-    safeHide("#calendarView");
-
-    // Update button states
-    const gridBtn = safeElement("#gridViewBtn");
-    const calendarBtn = safeElement("#calendarViewBtn");
-
-    if (gridBtn && gridBtn.classList) {
-      gridBtn.classList.add("active");
-    }
-    if (calendarBtn && calendarBtn.classList) {
-      calendarBtn.classList.remove("active");
-    }
-  });
-
-  safeOnClick("#calendarViewBtn", () => {
-    safeHide("#eventsGrid");
-    safeShow("#calendarView");
-
-    // Update button states
-    const gridBtn = safeElement("#gridViewBtn");
-    const calendarBtn = safeElement("#calendarViewBtn");
-
-    if (calendarBtn && calendarBtn.classList) {
-      calendarBtn.classList.add("active");
-    }
-    if (gridBtn && gridBtn.classList) {
-      gridBtn.classList.remove("active");
-    }
-  });
+function switchView(view) {
+  const gridSection = getElement("#eventsGridSection");
+  const calendarSection = getElement("#calendarSection");
+  if (view === "calendar") {
+    if (gridSection && typeof gridSection.hide === "function") gridSection.hide();
+    if (calendarSection && typeof calendarSection.show === "function") calendarSection.show();
+  } else {
+    if (gridSection && typeof gridSection.show === "function") gridSection.show();
+    if (calendarSection && typeof calendarSection.hide === "function") calendarSection.hide();
+  }
 }
 
-function setupEventHandlers() {
-  // Filter change handlers using safe wrappers
-  safeOnChange("#categoryFilter", async () => {
-    currentFilters.category = safeGetValue("#categoryFilter");
-    await loadAndDisplayEvents();
-  });
-
-  safeOnChange("#dateFilter", async () => {
-    currentFilters.date = safeGetValue("#dateFilter");
-    await loadAndDisplayEvents();
-  });
-
-  safeOnChange("#difficultyFilter", async () => {
-    currentFilters.difficulty = safeGetValue("#difficultyFilter");
-    await loadAndDisplayEvents();
-  });
-
-  // Search handler using safe wrapper
-  safeOnInput("#searchInput", async () => {
-    currentFilters.search = safeGetValue("#searchInput");
-    // Debounce search
-    if (typeof window !== "undefined") {
-      // eslint-disable-next-line no-undef
-      clearTimeout(searchTimeoutId);
-      // eslint-disable-next-line no-undef
-      searchTimeoutId = setTimeout(async () => {
-        await loadAndDisplayEvents();
-      }, 500);
-    } else {
-      // Immediate search if window not available
-      await loadAndDisplayEvents();
-    }
-  });
-
-  // RSS feed button using safe wrapper
-  safeOnClick("#rssFeedBtn", async () => {
-    try {
-      const rssData = await eventSystem.generateRSSFeed();
-      if (typeof mockWixAPIs.wixWindow !== "undefined") {
-        mockWixAPIs.wixWindow.openLightbox("rss-feed-modal", rssData);
-      } else {
-        console.log("RSS Feed Data:", rssData);
-      }
-    } catch (error) {
-      console.error("Error generating RSS feed:", error);
-    }
-  });
-
-  // iCal export button using safe wrapper
-  safeOnClick("#icalExportBtn", async () => {
-    try {
-      const events = await eventSystem.loadEvents({ status: "upcoming" });
-      const icalData = eventSystem.generateICalFeed(events);
-
-      // Create download link if in browser environment
-      if (typeof window !== "undefined" && typeof document !== "undefined") {
-        const blob = new Blob([icalData], { type: "text/calendar" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "brbs-events.ics";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      } else {
-        console.log("iCal Data:", icalData);
-      }
-    } catch (error) {
-      console.error("Error exporting iCal:", error);
-    }
-  });
+function updateCounts(count) {
+  setText("#eventsCountText", count ? `${count} events` : "No events match your filters yet.");
 }
 
-function handleURLParameters() {
+function showLoading() {
+  const loading = getElement("#eventsLoading");
+  if (loading && typeof loading.show === "function") loading.show();
+}
+
+function hideLoading() {
+  const loading = getElement("#eventsLoading");
+  if (loading && typeof loading.hide === "function") loading.hide();
+}
+
+function showError(message) {
+  setText("#eventsErrorMessage", message);
+  const errorBox = getElement("#eventsErrorBox");
+  if (errorBox && typeof errorBox.show === "function") errorBox.show();
+}
+
+function setText(selector, value) {
+  const element = getElement(selector);
+  if (!element) return;
+  if ("text" in element) {
+    element.text = value || "";
+  } else if ("html" in element) {
+    element.html = value || "";
+  }
+}
+
+function setTextOnItem($item, selector, value) {
   try {
-    const url = new URL(mockWixAPIs.wixLocation.url);
-    const params = url.searchParams;
-
-    // Apply URL parameters to filters
-    if (params.get("category")) {
-      currentFilters.category = params.get("category");
-      safeSetValue("#categoryFilter", currentFilters.category);
-    }
-
-    if (params.get("date")) {
-      currentFilters.date = params.get("date");
-      safeSetValue("#dateFilter", currentFilters.date);
-    }
-
-    if (params.get("difficulty")) {
-      currentFilters.difficulty = params.get("difficulty");
-      safeSetValue("#difficultyFilter", currentFilters.difficulty);
-    }
-
-    if (params.get("search")) {
-      currentFilters.search = params.get("search");
-      safeSetValue("#searchInput", currentFilters.search);
+    const element = $item(selector);
+    if (!element) return;
+    if ("text" in element) {
+      element.text = value || "";
+    } else if ("html" in element) {
+      element.html = value || "";
     }
   } catch (error) {
-    console.warn("Error handling URL parameters:", error);
+    console.log(`Unable to set text for ${selector}`, error);
   }
 }
 
-function updateResultsCount(count) {
-  const filterText = getFilterDescription();
-  safeSetText(
-    "#resultsCount",
-    `Showing ${count} event${count !== 1 ? "s" : ""} ${filterText}`
-  );
-}
-
-function getFilterDescription() {
-  const parts = [];
-
-  if (currentFilters.category !== "all") {
-    parts.push(`in ${currentFilters.category}`);
+function getElement(selector) {
+  try {
+    return $w(selector);
+  } catch (error) {
+    return null;
   }
-
-  if (currentFilters.difficulty !== "all") {
-    parts.push(`for ${currentFilters.difficulty} level`);
-  }
-
-  if (currentFilters.date !== "upcoming") {
-    parts.push(`for ${currentFilters.date.replace("-", " ")}`);
-  }
-
-  if (currentFilters.search) {
-    parts.push(`matching "${currentFilters.search}"`);
-  }
-
-  return parts.length > 0 ? parts.join(" ") : "";
 }
 
-function showLoadingState() {
-  safeShow("#loadingSpinner");
-  safeHide("#eventsGrid");
-  safeHide("#noEventsMessage");
+function formatEventDate(event) {
+  const start = new Date(event.startDate);
+  if (Number.isNaN(start.getTime())) return "Date TBA";
+  const end = event.endDate ? new Date(event.endDate) : null;
+  const date = start.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const startTime = formatTime(start);
+  const endTime = end ? formatTime(end) : null;
+  return endTime ? `${date} · ${startTime} – ${endTime}` : `${date} · ${startTime}`;
 }
 
-function hideLoadingState() {
-  safeHide("#loadingSpinner");
-}
-
-function displayErrorMessage(message) {
-  safeSetText("#errorMessage", message);
-  safeShow("#errorMessage");
-  setTimeout(() => {
-    safeHide("#errorMessage");
-  }, 5000);
-}
-
-function initializeAnimations() {
-  // AOS (Animate On Scroll) initialization would go here
-  // For now, we'll use basic intersection observer
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("animate-in");
-      }
-    });
-  }, observerOptions);
-
-  // Observe all event cards
-  setTimeout(() => {
-    const cards = document.querySelectorAll(".event-card");
-    cards.forEach((card) => observer.observe(card));
-  }, 500);
-}
-
-// Global functions for dynamic interactions
-if (IS_BROWSER) {
-  /** @type {any} */ const globalAny = window;
-  globalAny.viewEventDetails = function (eventId) {
-    mockWixAPIs.wixLocation.to(`/event-details?eventId=${eventId}`);
-  };
-
-  globalAny.quickRegister = async function (eventId) {
-    try {
-      const member = await mockWixAPIs.currentMember.getMember();
-      if (!member) {
-        mockWixAPIs.wixWindow.openLightbox("login-modal");
-        return;
-      }
-
-      const result = await eventSystem.registerForEvent(eventId);
-      if (result) {
-        mockWixAPIs.wixWindow.openLightbox("registration-success-modal", {
-          eventId,
-        });
-        await loadAndDisplayEvents(); // Refresh to show updated registration status
-      }
-    } catch (error) {
-      console.error("Error with quick registration:", error);
-      mockWixAPIs.wixWindow.openLightbox("error-modal", {
-        message: error.message,
-      });
-    }
-  };
-
-  globalAny.clearFilters = async function () {
-    currentFilters = {
-      category: "all",
-      date: "upcoming",
-      difficulty: "all",
-      search: "",
-      dateRange: null,
-    };
-
-    safeSetValue("#categoryFilter", "all");
-    safeSetValue("#dateFilter", "upcoming");
-    safeSetValue("#difficultyFilter", "all");
-    safeSetValue("#searchInput", "");
-
-    await loadAndDisplayEvents();
-  };
-
-  globalAny.suggestEvent = function () {
-    mockWixAPIs.wixWindow.openLightbox("suggest-event-modal");
-  };
-
-  globalAny.changeMonth = async function (direction) {
-    // Calendar navigation logic would go here
-    console.log("Change month:", direction);
-  };
-}
-
-// Add CSS for Events page styling
-if (typeof window !== "undefined") {
-  const eventsPageStyles = `
-        <style id="events-page-styles">
-      /* Page Layout */
-      .events-page-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem 1rem;
-        font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      }
-      
-      .page-header {
-        text-align: center;
-        margin-bottom: 3rem;
-      }
-      
-      .page-header h1 {
-        color: #4A4A4A;
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin: 0 0 1rem 0;
-      }
-      
-      .page-subtitle {
-        color: #6B8E6F;
-        font-size: 1.1rem;
-        margin: 0;
-      }
-      
-      /* Filters and Controls */
-      .filters-and-controls {
-        background: rgba(254, 255, 254, 0.9);
-        backdrop-filter: blur(10px);
-        border-radius: 12px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 16px rgba(107, 142, 111, 0.1);
-      }
-      
-      .filters-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-      }
-      
-      .filter-group {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-      
-      .filter-group label {
-        font-weight: 600;
-        color: #4A4A4A;
-        font-size: 0.9rem;
-      }
-      
-      .filter-select, .search-input {
-        padding: 0.75rem;
-        border: 1px solid #DDE4EA;
-        border-radius: 8px;
-        background: #FEFFFE;
-        color: #4A4A4A;
-        font-family: inherit;
-        transition: border-color 0.2s ease;
-      }
-      
-      .filter-select:focus, .search-input:focus {
-        outline: none;
-        border-color: #6B8E6F;
-        box-shadow: 0 0 0 3px rgba(107, 142, 111, 0.1);
-      }
-      
-      .view-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-      }
-      
-      .view-toggles {
-        display: flex;
-        gap: 0.5rem;
-      }
-      
-      .view-btn {
-        padding: 0.5rem 1rem;
-        border: 2px solid #6B8E6F;
-        background: transparent;
-        color: #6B8E6F;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-weight: 500;
-      }
-      
-      .view-btn.active, .view-btn:hover {
-        background: #6B8E6F;
-        color: #FEFFFE;
-      }
-      
-      .export-buttons {
-        display: flex;
-        gap: 0.5rem;
-      }
-      
-      .btn {
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 500;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.2s ease;
-        border: none;
-        font-family: inherit;
-      }
-      
-      .btn-outline {
-        background: transparent;
-        border: 1px solid #6B8E6F;
-        color: #6B8E6F;
-      }
-      
-      .btn-outline:hover {
-        background: #6B8E6F;
-        color: #FEFFFE;
-      }
-      
-      /* Results Info */
-      .results-info {
-        margin-bottom: 1rem;
-      }
-      
-      .results-count {
-        color: #4A4A4A;
-        font-size: 0.9rem;
-      }
-      
-      /* Loading and Error States */
-      .loading-spinner {
-        text-align: center;
-        padding: 3rem;
-        color: #6B8E6F;
-      }
-      
-      .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #DDE4EA;
-        border-top: 4px solid #6B8E6F;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 1rem auto;
-      }
-      
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      
-      .error-message {
-        background: #f8d7da;
-        color: #721c24;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 1rem 0;
-        text-align: center;
-        border: 1px solid #f5c6cb;
-      }
-      
-      /* Events Grid */
-            .events-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-                gap: 2rem;
-                margin: 2rem 0;
-            }
-            
-            .event-card {
-                position: relative;
-                overflow: hidden;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            
-            .event-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 15px 35px rgba(107, 142, 111, 0.2);
-            }
-            
-            .event-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 1rem;
-            }
-            
-            .event-category {
-                padding: 0.25rem 0.75rem;
-                border-radius: 15px;
-                font-size: 0.8rem;
-                font-weight: 600;
-                text-transform: capitalize;
-            }
-            
-            .event-category.workshop { background: #6B8E6F; color: white; }
-            .event-category.meeting { background: #4A4A4A; color: white; }
-            .event-category.demonstration { background: #8B7355; color: white; }
-            .event-category.exhibition { background: #D4A574; color: white; }
-            .event-category.social { background: #5CB85C; color: white; }
-            .event-category.field-trip { background: #5BC0DE; color: white; }
-            .event-category.competition { background: #F0AD4E; color: white; }
-            
-            .featured-badge {
-                background: linear-gradient(45deg, #FFD700, #FFA500);
-                color: #333;
-                padding: 0.25rem 0.5rem;
-                border-radius: 12px;
-                font-size: 0.7rem;
-                font-weight: 700;
-                text-transform: uppercase;
-            }
-            
-            .event-image-container {
-                position: relative;
-                margin: -1rem -1rem 1rem -1rem;
-                height: 200px;
-                overflow: hidden;
-            }
-            
-            .event-image {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                transition: transform 0.3s ease;
-            }
-            
-            .event-card:hover .event-image {
-                transform: scale(1.05);
-            }
-            
-            .event-date-overlay {
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-                background: rgba(254, 255, 254, 0.95);
-                padding: 0.5rem;
-                border-radius: var(--radius-md);
-                text-align: center;
-                min-width: 60px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            }
-            
-            .date-day {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: var(--mountain-sage);
-                line-height: 1;
-            }
-            
-            .date-month {
-                font-size: 0.8rem;
-                color: var(--stone-gray);
-                text-transform: uppercase;
-            }
-            
-            .event-title {
-                color: var(--stone-gray);
-                margin-bottom: 0.5rem;
-                font-size: 1.25rem;
-            }
-            
-            .event-description {
-                color: var(--stone-gray);
-                line-height: 1.6;
-                margin-bottom: 1rem;
-            }
-            
-            .event-meta {
-                margin: 1rem 0;
-            }
-            
-            .meta-item {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                margin: 0.5rem 0;
-                font-size: 0.9rem;
-            }
-            
-            .meta-icon {
-                font-size: 1rem;
-                width: 20px;
-                text-align: center;
-            }
-            
-            .meta-text {
-                color: var(--stone-gray);
-            }
-            
-            .event-status {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin: 1rem 0;
-                padding: 0.5rem;
-                background: var(--mountain-haze);
-                border-radius: var(--radius-md);
-            }
-            
-            .time-until {
-                font-size: 0.9rem;
-                color: var(--earth-brown);
-                font-weight: 600;
-            }
-            
-            .spots-unlimited {
-                color: var(--mountain-sage);
-                font-weight: 600;
-            }
-            
-            .spots-count {
-                font-weight: 600;
-            }
-            
-            .spots-count.full {
-                color: #D9534F;
-            }
-            
-            .event-price {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin: 1rem 0;
-                font-weight: 600;
-            }
-            
-            .price-amount {
-                color: var(--mountain-sage);
-                font-size: 1.1rem;
-            }
-            
-            .event-actions {
-                display: flex;
-                gap: 0.5rem;
-                margin-top: 1rem;
-            }
-            
-            .event-actions .btn {
-                flex: 1;
-            }
-            
-            .btn-disabled {
-                background: #ccc !important;
-                color: #666 !important;
-                cursor: not-allowed !important;
-            }
-            
-            .stats-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 1rem;
-                margin: 2rem 0;
-            }
-            
-            .stat-item {
-                text-align: center;
-                padding: 1.5rem 1rem;
-            }
-            
-            .stat-number {
-                font-size: 2.5rem;
-                font-weight: 700;
-                color: var(--mountain-sage);
-                margin-bottom: 0.5rem;
-            }
-            
-            .stat-label {
-                font-size: 0.9rem;
-                color: var(--stone-gray);
-                text-transform: uppercase;
-                letter-spacing: 0.05em;
-            }
-            
-            .filters-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 1rem;
-                margin: 2rem 0;
-                padding: 1.5rem;
-                background: var(--glass-white);
-                border-radius: var(--radius-lg);
-            }
-            
-            .view-toggles {
-                display: flex;
-                gap: 0.5rem;
-                margin: 1rem 0;
-            }
-            
-            .view-toggles .btn {
-                flex: 1;
-            }
-            
-            .view-toggles .btn.active {
-                background: var(--mountain-sage);
-                color: var(--cloud-white);
-            }
-            
-            .calendar-grid {
-                background: var(--glass-white);
-                border-radius: var(--radius-lg);
-                padding: 1rem;
-                margin: 2rem 0;
-            }
-            
-            .calendar-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 1rem;
-                padding-bottom: 1rem;
-                border-bottom: 1px solid var(--mountain-haze);
-            }
-            
-            .calendar-nav {
-                display: flex;
-                gap: 0.5rem;
-            }
-            
-            .calendar-days-header {
-                display: grid;
-                grid-template-columns: repeat(7, 1fr);
-                gap: 1px;
-                margin-bottom: 1rem;
-            }
-            
-            .day-header {
-                text-align: center;
-                font-weight: 600;
-                padding: 0.5rem;
-                color: var(--mountain-sage);
-                font-size: 0.9rem;
-            }
-            
-            .calendar-days {
-                display: grid;
-                grid-template-columns: repeat(7, 1fr);
-                gap: 1px;
-                background: var(--mountain-haze);
-            }
-            
-            .calendar-day {
-                background: var(--cloud-white);
-                min-height: 100px;
-                padding: 0.5rem;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-            }
-            
-            .calendar-day:hover {
-                background: var(--mountain-haze);
-            }
-            
-            .calendar-day.other-month {
-                opacity: 0.5;
-            }
-            
-            .calendar-day.today {
-                background: var(--mountain-sage);
-                color: var(--cloud-white);
-            }
-            
-            .day-number {
-                font-weight: 600;
-                margin-bottom: 0.25rem;
-            }
-            
-            .day-events {
-                display: flex;
-                flex-direction: column;
-                gap: 2px;
-            }
-            
-            .day-event {
-                background: var(--mountain-sage);
-                color: white;
-                padding: 2px 4px;
-                border-radius: 3px;
-                font-size: 0.7rem;
-                cursor: pointer;
-                transition: opacity 0.2s ease;
-            }
-            
-            .day-event:hover {
-                opacity: 0.8;
-            }
-            
-            .more-events {
-                font-size: 0.7rem;
-                color: var(--earth-brown);
-                font-weight: 600;
-                margin-top: 2px;
-            }
-            
-            .no-events-card {
-                text-align: center;
-                padding: 3rem 2rem;
-            }
-            
-            .no-events-icon {
-                font-size: 4rem;
-                margin-bottom: 1rem;
-            }
-            
-            .no-events-actions {
-                display: flex;
-                gap: 1rem;
-                justify-content: center;
-                margin-top: 2rem;
-            }
-            
-            .export-buttons {
-                display: flex;
-                gap: 0.5rem;
-                margin: 1rem 0;
-            }
-            
-            .loading-spinner {
-                text-align: center;
-                padding: 3rem;
-                font-size: 1.5rem;
-                color: var(--mountain-sage);
-            }
-            
-            .error-message {
-                background: #f8d7da;
-                color: #721c24;
-                padding: 1rem;
-                border-radius: var(--radius-md);
-                margin: 1rem 0;
-                text-align: center;
-            }
-            
-            .animate-in {
-                animation: slideInUp 0.6s ease-out;
-            }
-            
-            @keyframes slideInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(30px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            
-            @media (max-width: 768px) {
-                .events-grid {
-                    grid-template-columns: 1fr;
-                    gap: 1rem;
-                }
-                
-                .filters-container {
-                    grid-template-columns: 1fr;
-                    gap: 0.5rem;
-                }
-                
-                .stats-grid {
-                    grid-template-columns: repeat(2, 1fr);
-                }
-                
-                .event-actions {
-                    flex-direction: column;
-                }
-                
-                .calendar-days {
-                    gap: 0;
-                }
-                
-                .calendar-day {
-                    min-height: 80px;
-                    padding: 0.25rem;
-                }
-                
-                .no-events-actions {
-                    flex-direction: column;
-                    align-items: center;
-                }
-            }
-        </style>
-    `;
-
-  if (!document.getElementById("events-page-styles")) {
-    document.head.insertAdjacentHTML("beforeend", eventsPageStyles);
-  }
+function formatTime(value) {
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 }

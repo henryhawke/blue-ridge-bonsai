@@ -1,0 +1,408 @@
+// @ts-nocheck
+// Centralized data access layer for the Blue Ridge Bonsai Society site.
+// Provides asynchronous helpers that front-end code can call without needing
+// to touch wix-data directly. All functions return Promises so they can be
+// consumed from page code via import from 'backend/site-data'.
+
+import eventsData from 'backend/data/Events.json';
+import eventCategoriesData from 'backend/data/EventCategories.json';
+import eventRegistrationsData from 'backend/data/EventRegistrations.json';
+import articlesData from 'backend/data/Articles.json';
+import boardMembersData from 'backend/data/BoardMembers.json';
+import faqItemsData from 'backend/data/FAQItems.json';
+import membersData from 'backend/data/Members.json';
+import membershipLevelsData from 'backend/data/MembershipLevels.json';
+import partnershipInfoData from 'backend/data/PartnershipInfo.json';
+import resourcesData from 'backend/data/Resources.json';
+import vendorListData from 'backend/data/VendorList.json';
+
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+function parseDate(value) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function normalizeEvent(event) {
+  const start = parseDate(event.startDate);
+  const end = parseDate(event.endDate) || start;
+  const createdDate = parseDate(event.createdDate) || start;
+  const currentAttendees = typeof event.currentAttendees === 'number' ? event.currentAttendees : (eventRegistrationsData || [])
+    .filter((reg) => reg.eventId === event._id).length;
+
+  return {
+    ...event,
+    startDate: start ? start.toISOString() : event.startDate,
+    endDate: end ? end.toISOString() : event.endDate,
+    createdDate: createdDate ? createdDate.toISOString() : event.createdDate,
+    currentAttendees,
+  };
+}
+
+const normalizedEvents = eventsData.map(normalizeEvent);
+
+function filterEvents(filters = {}) {
+  const {
+    category = 'all',
+    difficulty = 'all',
+    status = 'upcoming',
+    search = '',
+    startDate,
+    endDate,
+    featured,
+  } = filters || {};
+
+  const startBoundary = parseDate(startDate);
+  const endBoundary = parseDate(endDate);
+  const now = new Date();
+
+  return normalizedEvents.filter((event) => {
+    if (category && category !== 'all' && event.category !== category) {
+      return false;
+    }
+    if (difficulty && difficulty !== 'all' && event.difficulty !== difficulty) {
+      return false;
+    }
+    if (typeof featured === 'boolean' && event.featured !== featured) {
+      return false;
+    }
+
+    const eventStart = parseDate(event.startDate) || now;
+    const eventEnd = parseDate(event.endDate) || eventStart;
+
+    if (status === 'upcoming' && eventEnd < now) {
+      return false;
+    }
+    if (status === 'past' && eventEnd >= now) {
+      return false;
+    }
+
+    if (startBoundary && eventEnd < startBoundary) {
+      return false;
+    }
+    if (endBoundary && eventStart > endBoundary) {
+      return false;
+    }
+
+    if (search) {
+      const haystack = [
+        event.title,
+        event.description,
+        event.richDescription,
+        ...(event.tags || []),
+        event.location,
+        event.instructor,
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      if (!haystack.includes(String(search).toLowerCase())) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+function sortEvents(list, status) {
+  const copy = [...list];
+  if (status === 'past') {
+    return copy.sort((a, b) => {
+      const dateA = parseDate(a.startDate) || new Date(0);
+      const dateB = parseDate(b.startDate) || new Date(0);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }
+  return copy.sort((a, b) => {
+    const dateA = parseDate(a.startDate) || new Date();
+    const dateB = parseDate(b.startDate) || new Date();
+    return dateA.getTime() - dateB.getTime();
+  });
+}
+
+function estimateReadTime(text) {
+  if (!text) return 0;
+  const WORDS_PER_MINUTE = 230;
+  const words = String(text).split(/\s+/).filter(Boolean);
+  return Math.max(1, Math.round(words.length / WORDS_PER_MINUTE));
+}
+
+function toSpotlight(member) {
+  return {
+    id: member._id,
+    name: `${member.firstName} ${member.lastName}`.trim(),
+    bio: member.bio || member.notes || '',
+    profileImage: member.profileImage || '',
+    specialties: member.specialties || '',
+    yearsExperience: member.yearsExperience || 0,
+    membershipLevel: member.membershipLevel || 'Member',
+  };
+}
+
+export async function getHomepageContent() {
+  const hero = {
+    guestHeading: 'Cultivate your artistry in the Blue Ridge Mountains',
+    memberHeading: 'Welcome back to your bonsai community',
+    subtitle: 'Workshops, exhibitions, and a thriving membership dedicated to the living art of bonsai.',
+    description:
+      'The Blue Ridge Bonsai Society is a volunteer-run organization serving Western North Carolina. Join us for monthly meetings, hands-on workshops, and access to curated learning resources.',
+  };
+
+  const activeMembers = membersData.filter((member) => member.isActive !== false);
+  const upcoming = sortEvents(filterEvents({ status: 'upcoming' }), 'upcoming');
+  const workshops = upcoming.filter((event) => event.category === 'Workshop');
+
+  const spotlights = activeMembers
+    .filter((member) => member.profileImage || member.bio)
+    .map(toSpotlight)
+    .sort((a, b) => (b.yearsExperience || 0) - (a.yearsExperience || 0))
+    .slice(0, 3);
+
+  return {
+    hero,
+    stats: {
+      memberCount: activeMembers.length,
+      upcomingEventCount: upcoming.length,
+      activeWorkshops: workshops.length,
+    },
+    upcomingEvents: upcoming.slice(0, 3),
+    spotlights,
+  };
+}
+
+export async function getEvents(filters = {}) {
+  const filtered = sortEvents(filterEvents(filters), filters.status);
+  return {
+    items: filtered,
+    total: filtered.length,
+    filters,
+  };
+}
+
+export async function getEventById(eventId) {
+  if (!eventId) return null;
+  return normalizedEvents.find((event) => event._id === eventId) || null;
+}
+
+export async function getEventFilters() {
+  const categoriesFromCollection = eventCategoriesData.map((category) => category.name).filter(Boolean);
+  const categoriesFromEvents = normalizedEvents.map((event) => event.category).filter(Boolean);
+  const categorySet = new Set(['all', ...categoriesFromCollection, ...categoriesFromEvents]);
+
+  const difficulties = new Set(['all']);
+  normalizedEvents.forEach((event) => {
+    if (event.difficulty) {
+      difficulties.add(event.difficulty);
+    }
+  });
+
+  return {
+    categories: Array.from(categorySet).filter(Boolean),
+    difficulties: Array.from(difficulties).filter(Boolean),
+    statuses: ['upcoming', 'all', 'past'],
+  };
+}
+
+export async function getEventStats() {
+  const upcoming = filterEvents({ status: 'upcoming' });
+  const past = filterEvents({ status: 'past' });
+  const featured = upcoming.filter((event) => event.featured);
+
+  const totalCapacity = upcoming.reduce((total, event) => total + (event.maxAttendees || 0), 0);
+  const totalRegistered = upcoming.reduce((total, event) => total + (event.currentAttendees || 0), 0);
+
+  return {
+    upcomingCount: upcoming.length,
+    pastCount: past.length,
+    featuredCount: featured.length,
+    averageFillRate: totalCapacity > 0 ? Math.round((totalRegistered / totalCapacity) * 100) : 0,
+    totalRegistered,
+  };
+}
+
+export async function getAboutContent() {
+  const mission = 'We cultivate the art, science, and camaraderie of bonsai in the Blue Ridge Mountains through education, exhibitions, and stewardship of living trees.';
+  const vision = 'Create an inclusive Appalachian bonsai community where every member—from curious beginner to master artist—has support to grow their practice.';
+
+  const coreValues = [
+    {
+      id: 'community',
+      title: 'Community First',
+      description: 'A welcoming environment that helps new enthusiasts get started and gives experienced artists a place to share their knowledge.',
+    },
+    {
+      id: 'education',
+      title: 'Hands-on Learning',
+      description: 'Workshops, demonstrations, and study groups that translate theory into confident tree care.',
+    },
+    {
+      id: 'stewardship',
+      title: 'Stewardship & Sustainability',
+      description: 'Responsible sourcing, regional species education, and long-term planning for our club collections.',
+    },
+    {
+      id: 'partnerships',
+      title: 'Regional Partnerships',
+      description: 'Collaboration with the North Carolina Arboretum and local horticulture organizations to expand bonsai awareness.',
+    },
+  ];
+
+  const board = boardMembersData.map((member) => ({
+    ...member,
+    photo: member.photo || '',
+  }));
+
+  const faq = faqItemsData;
+  const partnership = partnershipInfoData;
+
+  const firstMeeting = sortEvents(
+    normalizedEvents.filter((event) => event.category === 'Meeting'),
+    'upcoming',
+  )[0];
+
+  const meetingInfo = firstMeeting
+    ? {
+        schedule: 'Monthly on the first Saturday',
+        nextMeeting: parseDate(firstMeeting.startDate)?.toISOString() || firstMeeting.startDate,
+        location: firstMeeting.location || 'Community Center, Asheville',
+        visitorPolicy:
+          'Guests are welcome to attend one regular meeting free of charge. RSVP is appreciated so we can plan seating and demo materials.',
+      }
+    : {
+        schedule: 'Monthly on the first Saturday',
+        nextMeeting: null,
+        location: 'Community Center, Asheville',
+        visitorPolicy:
+          'Guests are welcome to attend one regular meeting free of charge. RSVP is appreciated so we can plan seating and demo materials.',
+      };
+
+  const statistics = {
+    yearsActive: 1987,
+    activeMembers: membersData.filter((member) => member.isActive !== false).length,
+    annualPrograms: normalizedEvents.filter((event) => event.category === 'Workshop').length,
+  };
+
+  return {
+    mission,
+    vision,
+    coreValues,
+    board,
+    faq,
+    partnership,
+    meetingInfo,
+    statistics,
+  };
+}
+
+const beginnerPathway = [
+  {
+    id: 'step-1',
+    title: 'Choose a resilient starter tree',
+    summary: 'Learn which species thrive in Western North Carolina and how to evaluate nursery stock for bonsai potential.',
+    focus: 'Selection',
+    resources: ['Choosing Your First Bonsai Tree', 'Beginner-friendly nurseries and vendors'],
+  },
+  {
+    id: 'step-2',
+    title: 'Master watering & daily observation',
+    summary: 'Understand soil moisture, seasonal adjustments, and how microclimates on your bench affect watering cadence.',
+    focus: 'Care Fundamentals',
+    resources: ['The Basics of Bonsai Watering', 'Seasonal care checklists'],
+  },
+  {
+    id: 'step-3',
+    title: 'Repot with confidence',
+    summary: 'Learn repotting timelines, root pruning strategy, and how to build soil mixes tailored to Appalachian humidity.',
+    focus: 'Repotting',
+    resources: ['Repotting Essentials for Appalachian Bonsai', 'Club soil recipe handouts'],
+  },
+  {
+    id: 'step-4',
+    title: 'Wire and prune for structure',
+    summary: 'Build structural primary branches, protect cambium, and know when to stop to preserve tree health.',
+    focus: 'Styling',
+    resources: ['Understanding Bonsai Wiring Basics', 'Recommended tool lists for new artists'],
+  },
+  {
+    id: 'step-5',
+    title: 'Document progress & ask for feedback',
+    summary: 'Use the members forum, monthly critique table, and seasonal photo log to track development.',
+    focus: 'Community',
+    resources: ['Members Forum access', 'Monthly critique checklist'],
+  },
+];
+
+export async function getLearningContent() {
+  const articles = articlesData.map((article) => ({
+    ...article,
+    excerpt: article.excerpt || article.content.slice(0, 220),
+    readTime: article.readTime || estimateReadTime(article.content),
+  }));
+
+  const resources = resourcesData.map((resource) => ({
+    ...resource,
+    verified: Boolean(resource.verified),
+  }));
+
+  const vendors = vendorListData.map((vendor) => ({
+    ...vendor,
+    verified: Boolean(vendor.verified),
+  }));
+
+  const categories = Array.from(new Set(articles.map((article) => article.category))).filter(Boolean);
+
+  return {
+    beginnersGuide: beginnerPathway,
+    articles,
+    categories,
+    resources,
+    vendors,
+  };
+}
+
+export async function getMembershipLevelFallbacks() {
+  return membershipLevelsData.filter((level) => level.isActive !== false);
+}
+
+export async function listEventRegistrations(eventId) {
+  if (!eventId) return [];
+  return eventRegistrationsData.filter((registration) => registration.eventId === eventId);
+}
+
+export async function registerMemberForEvent(eventId, payload) {
+  // Placeholder implementation used during local development. Replace with wix-data insert
+  // when collections are created in Wix Studio.
+  return {
+    success: true,
+    message: 'Registration recorded in development environment.',
+    eventId,
+    payload,
+  };
+}
+
+export async function searchContent(query) {
+  if (!query) {
+    return { events: [], articles: [], resources: [] };
+  }
+  const lower = String(query).toLowerCase();
+
+  const events = filterEvents({ status: 'all', search: lower });
+  const articles = articlesData.filter((article) =>
+    [article.title, article.content, ...(article.tags || [])]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+      .includes(lower),
+  );
+  const resources = resourcesData.filter((resource) =>
+    [resource.name, resource.description]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+      .includes(lower),
+  );
+
+  return { events, articles, resources };
+}

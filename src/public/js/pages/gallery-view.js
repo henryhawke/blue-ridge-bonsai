@@ -1,6 +1,6 @@
 // @ts-nocheck
 import wixLocation from 'wix-location-frontend';
-import { listPhotos } from 'backend/gdrive-gallery.jsw';
+import { GallerySystem } from 'public/js/gdrive-gallery.js';
 
 export async function initGalleryViewPage() {
   try {
@@ -15,7 +15,8 @@ export async function initGalleryViewPage() {
     showIfExists('#loadingBox');
     hideIfExists('#emptyStateBox');
 
-    const items = await listPhotos(folderId);
+    const gallerySystem = new GallerySystem();
+    const items = await gallerySystem.getPhotosForGallery(folderId);
 
     const pro = $w('#proGallery1');
     if (!pro) {
