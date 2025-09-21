@@ -6,8 +6,8 @@ This checklist covers the manual work required inside Wix Studio after deploying
 
 ## 1. Secrets Manager
 
-| Secret Key | Value | Notes |
-|------------|-------|-------|
+| Secret Key             | Value                                 | Notes                                                                                                                                                                         |
+| ---------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `GOOGLE_DRIVE_API_KEY` | Google API key with Drive API enabled | Required for the Google Drive photo gallery integration. Create the key in Google Cloud, enable the Drive API, and add it under **Settings → Secrets Manager** in Wix Studio. |
 
 ---
@@ -17,6 +17,7 @@ This checklist covers the manual work required inside Wix Studio after deploying
 Create the following collections (dynamic datasets) in Wix Data. Field names must match exactly; use the suggested types.
 
 ### 2.1 `Events`
+
 - `_id` (Text) – unique event ID (e.g. `evt001`)
 - `title` (Text)
 - `description` (Rich Text or Text)
@@ -38,6 +39,7 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
 - `createdDate` (Date & Time)
 
 ### 2.2 `EventRegistrations`
+
 - `_id` (Text)
 - `eventId` (Reference → Events or Text)
 - `memberEmail` (Text)
@@ -47,7 +49,8 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
 - `paymentMethod` (Text)
 - `notes` (Rich Text)
 
-### 2.3 `EventComments` *(optional – only if using comments section)*
+### 2.3 `EventComments` _(optional – only if using comments section)_
+
 - `_id` (Text)
 - `eventId` (Reference → Events)
 - `memberId` (Reference → Members)
@@ -57,6 +60,7 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
 - `isApproved` (Boolean)
 
 ### 2.4 `BoardMembers`
+
 - `_id` (Text)
 - `name` (Text)
 - `role` (Text)
@@ -65,12 +69,14 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
 - `contactInfo` (Text, email or URL)
 
 ### 2.5 `FAQItems`
+
 - `_id` (Text)
 - `question` (Text)
 - `answer` (Rich Text)
 - `category` (Text)
 
 ### 2.6 `PartnershipInfo`
+
 - `_id` (Text)
 - `partnerName` (Text)
 - `content` (Rich Text)
@@ -78,6 +84,7 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
 - `links` (Rich Text or JSON – store as multi-reference or dataset for buttons)
 
 ### 2.7 `Members`
+
 - Standard Wix Members collection extended with:
   - `membershipLevel` (Text)
   - `profileImage` (Image)
@@ -87,6 +94,7 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
   - `isActive` (Boolean)
 
 ### 2.8 `Articles`
+
 - `_id` (Text)
 - `title` (Text)
 - `content` (Rich Text)
@@ -97,9 +105,10 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
 - `publishDate` (Date)
 - `readTime` (Number)
 - `tags` (Tags)
-- `link` (Text/URL) *(optional – for external resources)*
+- `link` (Text/URL) _(optional – for external resources)_
 
 ### 2.9 `Resources`
+
 - `_id` (Text)
 - `name` (Text)
 - `description` (Rich Text)
@@ -108,6 +117,7 @@ Create the following collections (dynamic datasets) in Wix Data. Field names mus
 - `url` (Text/URL)
 
 ### 2.10 `VendorList`
+
 - `_id` (Text)
 - `name` (Text)
 - `location` (Text)
@@ -124,108 +134,168 @@ Populate the collections with the sample JSON provided in `src/backend/data/` to
 
 All IDs are case-sensitive. Add the specified elements to each page in the Wix Editor, then set the **ID** in the properties panel.
 
+> Quick scaffolding option (Custom Element): If you just want to paste a single element to render placeholders for the required IDs, add a Custom Element and set its source to the `brbs-scaffold` script. Use the examples below per page. This renders HTML placeholders, not native $w elements.
+
 ### 3.1 Homepage (`Home` page)
-| Element Type | ID | Purpose |
-|--------------|----|---------|
-| Text | `heroTitle` | Heading showing dynamic greeting |
-| Text | `heroSubtitle` | Subheading summary |
-| Text (Rich text OK) | `heroDescription` | Body copy under hero |
-| Button | `ctaJoinButton` | Join link |
-| Button | `ctaEventsButton` | Events link |
-| Button | `ctaLearningButton` | Learning center link |
-| Button | `ctaAboutButton` | About page link |
-| Text | `statMembers` | Member count |
-| Text | `statEvents` | Upcoming event count |
-| Text | `statWorkshops` | Workshop count |
-| Repeater | `eventsRepeater` | Container for featured events |
-| Text (inside repeater) | `eventTitle`, `eventDate`, `eventCategory`, `eventDescription`, `eventAvailability` | Event card data |
-| Button (inside repeater) | `eventActionButton` | Event detail navigation |
-| Box (optional) | `eventsEmptyState` | Shown when no upcoming events |
-| Repeater | `spotlightRepeater` | Member spotlight cards |
-| Text/Image inside repeater | `spotlightName`, `spotlightBio`, `spotlightSpecialties`, `spotlightImage` | Spotlight details |
-| Box (optional) | `spotlightEmptyState` | Spotlight fallback |
-| Text | `announcementText` | Featured message |
-| Button | `viewAllEventsButton` | Link to Events page |
-| Text | `homeErrorMessage` | Error copy |
-| Box | `homeErrorBox` | Error container (hidden by default) |
+
+| Element Type               | ID                                                                                  | Purpose                             |
+| -------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------- |
+| Text                       | `heroTitle`                                                                         | Heading showing dynamic greeting    |
+| Text                       | `heroSubtitle`                                                                      | Subheading summary                  |
+| Text (Rich text OK)        | `heroDescription`                                                                   | Body copy under hero                |
+| Button                     | `ctaJoinButton`                                                                     | Join link                           |
+| Button                     | `ctaEventsButton`                                                                   | Events link                         |
+| Button                     | `ctaLearningButton`                                                                 | Learning center link                |
+| Button                     | `ctaAboutButton`                                                                    | About page link                     |
+| Text                       | `statMembers`                                                                       | Member count                        |
+| Text                       | `statEvents`                                                                        | Upcoming event count                |
+| Text                       | `statWorkshops`                                                                     | Workshop count                      |
+| Repeater                   | `eventsRepeater`                                                                    | Container for featured events       |
+| Text (inside repeater)     | `eventTitle`, `eventDate`, `eventCategory`, `eventDescription`, `eventAvailability` | Event card data                     |
+| Button (inside repeater)   | `eventActionButton`                                                                 | Event detail navigation             |
+| Box (optional)             | `eventsEmptyState`                                                                  | Shown when no upcoming events       |
+| Repeater                   | `spotlightRepeater`                                                                 | Member spotlight cards              |
+| Text/Image inside repeater | `spotlightName`, `spotlightBio`, `spotlightSpecialties`, `spotlightImage`           | Spotlight details                   |
+| Box (optional)             | `spotlightEmptyState`                                                               | Spotlight fallback                  |
+| Text                       | `announcementText`                                                                  | Featured message                    |
+| Button                     | `viewAllEventsButton`                                                               | Link to Events page                 |
+| Text                       | `homeErrorMessage`                                                                  | Error copy                          |
+| Box                        | `homeErrorBox`                                                                      | Error container (hidden by default) |
+
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="home"></brbs-scaffold>
+```
 
 ### 3.2 About Page (`About BRBS`)
-| Element Type | ID | Purpose |
-|--------------|----|---------|
-| Text | `missionTitle`, `missionText`, `visionTitle`, `visionText` | Mission & vision copy |
-| Repeater | `valuesRepeater` | Core values cards |
-| Text inside repeater | `valueTitle`, `valueDescription` | Value content |
-| Repeater | `boardRepeater` | Board member cards |
-| Text/Image inside repeater | `boardName`, `boardRole`, `boardBio`, `boardImage` | Board details |
-| Button inside repeater | `boardContactButton` | `mailto:` or contact navigation |
-| Text | `partnershipHeading`, `partnershipDescription` | Partnership summary |
-| Repeater (or List) | `partnershipLinksRepeater` with button `partnershipLinkButton` | Partnership CTA buttons |
-| Pro Gallery / Gallery | `partnershipGallery` | Partnership imagery |
-| Repeater | `faqRepeater` | FAQ list |
-| Text inside repeater | `faqQuestion`, `faqAnswer` | FAQ content |
-| Text | `meetingSchedule`, `meetingLocation`, `meetingNext`, `meetingVisitorPolicy` | Meeting details |
-| Text | `aboutMemberCount`, `aboutWorkshopCount`, `aboutFounded` | Stats cards |
-| Text & Box | `aboutErrorMessage`, `aboutErrorBox` | Error display |
+
+| Element Type               | ID                                                                          | Purpose                         |
+| -------------------------- | --------------------------------------------------------------------------- | ------------------------------- |
+| Text                       | `missionTitle`, `missionText`, `visionTitle`, `visionText`                  | Mission & vision copy           |
+| Repeater                   | `valuesRepeater`                                                            | Core values cards               |
+| Text inside repeater       | `valueTitle`, `valueDescription`                                            | Value content                   |
+| Repeater                   | `boardRepeater`                                                             | Board member cards              |
+| Text/Image inside repeater | `boardName`, `boardRole`, `boardBio`, `boardImage`                          | Board details                   |
+| Button inside repeater     | `boardContactButton`                                                        | `mailto:` or contact navigation |
+| Text                       | `partnershipHeading`, `partnershipDescription`                              | Partnership summary             |
+| Repeater (or List)         | `partnershipLinksRepeater` with button `partnershipLinkButton`              | Partnership CTA buttons         |
+| Pro Gallery / Gallery      | `partnershipGallery`                                                        | Partnership imagery             |
+| Repeater                   | `faqRepeater`                                                               | FAQ list                        |
+| Text inside repeater       | `faqQuestion`, `faqAnswer`                                                  | FAQ content                     |
+| Text                       | `meetingSchedule`, `meetingLocation`, `meetingNext`, `meetingVisitorPolicy` | Meeting details                 |
+| Text                       | `aboutMemberCount`, `aboutWorkshopCount`, `aboutFounded`                    | Stats cards                     |
+| Text & Box                 | `aboutErrorMessage`, `aboutErrorBox`                                        | Error display                   |
+
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="about"></brbs-scaffold>
+```
 
 ### 3.3 Events Page (`Events`)
-| Element Type | ID | Purpose |
-|--------------|----|---------|
-| Dropdown | `categoryFilter`, `difficultyFilter`, `statusFilter` | Filter controls |
-| Text Input | `searchInput` | Search field |
-| Button | `gridViewBtn`, `calendarViewBtn` | View toggles |
-| Box/Section | `eventsGridSection`, `calendarSection` | Containers toggled by view |
-| Box | `eventsLoading` | Loading skeleton |
-| Text/Box | `eventsErrorMessage`, `eventsErrorBox` | Error state |
-| Text | `eventsCountText` | Summary count |
-| Text | `statsUpcoming`, `statsFeatured`, `statsFillRate` | Event statistics |
-| Repeater | `eventsRepeater` | Event cards |
-| Inside repeater | `eventTitle`, `eventDate`, `eventLocation`, `eventCategory`, `eventDifficulty`, `eventAvailability`, `eventSummary` | Event fields |
-| Button inside repeater | `eventDetailsButton` | Navigates to event details |
-| Container inside repeater | `eventCard` | Optional clickable card |
-| Box | `eventsEmptyState` | Empty results state |
-| HTML Component | `calendarHtml` | Calendar markup target |
-| Text | `calendarMonthLabel` | Calendar header |
-| Button | `calendarPrevBtn`, `calendarNextBtn` | Month navigation |
+
+| Element Type              | ID                                                                                                                  | Purpose                    |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| Dropdown                  | `categoryFilter`, `difficultyFilter`, `statusFilter`                                                                | Filter controls            |
+| Text Input                | `searchInput`                                                                                                       | Search field               |
+| Button                    | `gridViewBtn`, `calendarViewBtn`                                                                                    | View toggles               |
+| Box/Section               | `eventsGridSection`, `calendarSection`                                                                              | Containers toggled by view |
+| Box                       | `eventsLoading`                                                                                                     | Loading skeleton           |
+| Text/Box                  | `eventsErrorMessage`, `eventsErrorBox`                                                                              | Error state                |
+| Text                      | `eventsCountText`                                                                                                   | Summary count              |
+| Text                      | `statsUpcoming`, `statsFeatured`, `statsFillRate`                                                                   | Event statistics           |
+| Repeater                  | `eventsRepeater`                                                                                                    | Event cards                |
+| Inside repeater           | `eventTitle`, `eventDate`, `eventLocation`, `eventCategory`, `eventDifficulty`, `eventAvailability`, `eventSummary` | Event fields               |
+| Button inside repeater    | `eventDetailsButton`                                                                                                | Navigates to event details |
+| Container inside repeater | `eventCard`                                                                                                         | Optional clickable card    |
+| Box                       | `eventsEmptyState`                                                                                                  | Empty results state        |
+| HTML Component            | `calendarHtml`                                                                                                      | Calendar markup target     |
+| Text                      | `calendarMonthLabel`                                                                                                | Calendar header            |
+| Button                    | `calendarPrevBtn`, `calendarNextBtn`                                                                                | Month navigation           |
+
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="events"></brbs-scaffold>
+```
 
 ### 3.4 Learning Center (`Beginner's Guide`)
-| Element Type | ID | Purpose |
-|--------------|----|---------|
-| Button | `tabBeginner`, `tabKnowledge`, `tabResources`, `tabVendors` | Tab navigation |
-| Text Input | `learningSearch` | Global search |
-| Dropdown | `learningCategory`, `learningDifficulty` | Filter controls |
-| Section/Box | `beginnersSection`, `knowledgeSection`, `resourcesSection`, `vendorsSection` | Toggleable sections |
-| Repeater | `beginnerRepeater` with fields `stepTitle`, `stepSummary`, `stepFocus`, `stepResources` | Beginner pathway |
-| Repeater | `knowledgeRepeater` with fields `articleTitle`, `articleExcerpt`, `articleMeta`, button `articleReadButton` | Article list |
-| Repeater | `resourcesRepeater` with fields `resourceName`, `resourceDescription`, `resourceMeta`, button `resourceLinkButton` | Resource cards |
-| Repeater | `vendorsRepeater` with fields `vendorName`, `vendorLocation`, `vendorNotes`, button `vendorContactButton` | Vendor directory |
-| Text & Box | `learningErrorMessage`, `learningErrorBox` | Error display |
+
+| Element Type | ID                                                                                                                 | Purpose             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| Button       | `tabBeginner`, `tabKnowledge`, `tabResources`, `tabVendors`                                                        | Tab navigation      |
+| Text Input   | `learningSearch`                                                                                                   | Global search       |
+| Dropdown     | `learningCategory`, `learningDifficulty`                                                                           | Filter controls     |
+| Section/Box  | `beginnersSection`, `knowledgeSection`, `resourcesSection`, `vendorsSection`                                       | Toggleable sections |
+| Repeater     | `beginnerRepeater` with fields `stepTitle`, `stepSummary`, `stepFocus`, `stepResources`                            | Beginner pathway    |
+| Repeater     | `knowledgeRepeater` with fields `articleTitle`, `articleExcerpt`, `articleMeta`, button `articleReadButton`        | Article list        |
+| Repeater     | `resourcesRepeater` with fields `resourceName`, `resourceDescription`, `resourceMeta`, button `resourceLinkButton` | Resource cards      |
+| Repeater     | `vendorsRepeater` with fields `vendorName`, `vendorLocation`, `vendorNotes`, button `vendorContactButton`          | Vendor directory    |
+| Text & Box   | `learningErrorMessage`, `learningErrorBox`                                                                         | Error display       |
+
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="learning"></brbs-scaffold>
+```
 
 ### 3.5 Photos Page (`Photos`)
+
 | Repeater | `galleriesRepeater` | Gallery cards |
 | Image/Text inside | `coverImage`, `galleryName`, `galleryDescription`, `photoCount` |
 | Button | `viewGalleryBtn` | Navigates to gallery view |
 | Box | `loadingBox` | Loading state |
 | Box | `emptyStateBox` | Empty galleries state |
 
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="photos"></brbs-scaffold>
+```
+
 ### 3.6 Gallery View (`Gallery View` page)
-| Element Type | ID | Purpose |
-|--------------|----|---------|
-| Wix Pro Gallery | `proGallery1` | Displays gallery images |
-| Box | `loadingBox` | Loading state |
-| Box | `emptyStateBox` | Empty state |
+
+| Element Type    | ID              | Purpose                 |
+| --------------- | --------------- | ----------------------- |
+| Wix Pro Gallery | `proGallery1`   | Displays gallery images |
+| Box             | `loadingBox`    | Loading state           |
+| Box             | `emptyStateBox` | Empty state             |
+
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="gallery-view"></brbs-scaffold>
+```
 
 ### 3.7 Join Page (`Join BRBS`)
+
 Ensure the existing form uses:
+
 - Form | `applicationForm`
 - Input | `firstNameField`, `lastNameField`, `emailField`, `phoneField`
 - Dropdown | `membershipLevelSelect`
 - Text | `formFeedback`
 
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="join"></brbs-scaffold>
+```
+
 ### 3.8 Event Details & Registration
+
 Confirm elements referenced in the existing script remain:
+
 - Text IDs for headers, descriptions, meta sections
 - Boxes for `commentsSection`, `commentsContainer`, `relatedEventsSection`
 - Buttons for `registerButton`, `cancelRegistrationButton`, etc.
+
+Paste-in scaffold (optional):
+
+```html
+<brbs-scaffold page="event-details"></brbs-scaffold>
+```
 
 ---
 
