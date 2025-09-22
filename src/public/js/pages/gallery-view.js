@@ -26,9 +26,12 @@ export async function initGalleryViewPage() {
 
     // Map Drive items to Pro Gallery items
     const galleryItems = (items || []).map((p) => ({
-      src: p.src,
+      src: p.src || p.originalUrl,
       title: p.title,
-      description: p.description || ''
+      description: p.description || '',
+      altText: p.altText || p.title || '',
+      thumbnailSrc: p.thumbnailSrc || p.thumbnailUrl || p.src || p.originalUrl,
+      type: p.type || 'image'
     }));
 
     if (typeof pro.items !== 'undefined') {

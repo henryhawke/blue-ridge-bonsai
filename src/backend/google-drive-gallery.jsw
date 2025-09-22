@@ -48,6 +48,11 @@ function fileToImageItem(file) {
     description: file.description || '',
     originalUrl,
     thumbnailUrl,
+    // Wix Pro Gallery expects a `src` property for each item. Supplying it directly keeps the
+    // gallery component fully native while still sourcing content from Google Drive.
+    src: originalUrl,
+    thumbnailSrc: thumbnailUrl,
+    type: file.mimeType && file.mimeType.startsWith('video/') ? 'video' : 'image',
     altText: file.name,
     mimeType: file.mimeType,
     shootDate: file.modifiedTime || null
