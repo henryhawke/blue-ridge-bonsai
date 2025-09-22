@@ -1,96 +1,60 @@
-### Required HtmlComponent instances for Wix
+# Wix Element Reference
 
-This site uses postMessage-based communication and inline scripts inside embedded HTML. To make all interactive features work under Wix Studio and `wix dev`, add the following HtmlComponents in the Wix Editor with the exact IDs.
+The Blue Ridge Bonsai Society site now renders most content with native Wix elements addressed through `$w('#elementId')`. HtmlComponents are no longer required for the core pages—only the calendar embed on the Events page still uses one. Use this quick reference while working in the Wix Studio Editor to confirm the correct element types and IDs are present.
 
-Notes
+## General Guidance
 
-- Only the elements in the “Required” lists below must be HtmlComponents.
-- Elements listed as “Text OK” can remain regular Text elements (they don’t use postMessage or inline scripts).
+- **Text vs. Html**: If the page code assigns to `.text`, the element must be a Text element. Only elements that intentionally receive HTML strings (for example the calendar container on the Events page or certain legacy member pages) should expose the `.html` property.
+- **Repeaters**: Create the repeater, add the child elements inside one item, then assign the IDs listed below. The page code binds data in the `onItemReady` handlers.
+- **Buttons/Links**: Buttons referenced in code expect the standard Wix Button element so the `.onClick` handler is available.
+- **HtmlComponent usage**: The only HtmlComponent still in play is `#calendarHtml` on the Events page. All other interactive content uses native Wix elements.
 
-### Home page (`src/pages/Home.c1dmp.js`)
+## Page-by-Page Summary
 
-- Required: `#mainContainer`
+### Home (`Home`)
+- Text: `heroTitle`, `heroSubtitle`, `heroDescription`, `announcementText`, `statMembers`, `statEvents`, `statWorkshops`
+- Buttons: `ctaJoinButton`, `ctaEventsButton`, `ctaLearningButton`, `ctaAboutButton`, `viewAllEventsButton`
+- Repeater `eventsRepeater` with child IDs `eventTitle`, `eventDate`, `eventCategory`, `eventDescription`, `eventAvailability`, `eventActionButton` (Button), optional box `eventsEmptyState`
+- Repeater `spotlightRepeater` with child IDs `spotlightName`, `spotlightBio`, `spotlightSpecialties`, `spotlightImage`, optional box `spotlightEmptyState`
 
-  - Type: HtmlComponent
-  - Purpose: Hosts the homepage UI built via injected HTML. Buttons inside the HTML use `window.parent.postMessage({ type: 'homeAction', action })`.
-  - Page listens with: `$w('#mainContainer').onMessage(...)`
-  - Messages expected: `{ type: 'homeAction', action: 'join' | 'events' | 'about' }`
+### About (`About BRBS`)
+- Text: `missionTitle`, `missionText`, `visionTitle`, `visionText`
+- Repeaters: `valuesRepeater`, `boardRepeater`, `faqRepeater`
+- Partnership section elements: `partnershipHeading`, `partnershipDescription`, `partnershipLinksRepeater` (button inside: `partnershipLinkButton`), `partnershipGallery`
+- Meeting details: `meetingSchedule`, `meetingLocation`, `meetingNext`, `meetingVisitorPolicy`
+- Stats: `aboutMemberCount`, `aboutWorkshopCount`, `aboutFounded`
 
-- Required: `#eventsPreviewContainer`
-  - Type: HtmlComponent
-  - Purpose: Receives click messages from event cards rendered inside injected HTML.
-  - Page listens with: `$w('#eventsPreviewContainer').onMessage(...)`
-  - Messages expected: `{ type: 'eventClick', eventId: string }`
+### Events (`Events`)
+- Filters: `categoryFilter`, `difficultyFilter`, `statusFilter`, `searchInput`
+- Buttons: `gridViewBtn`, `calendarViewBtn`, `calendarPrevBtn`, `calendarNextBtn`
+- State containers: `eventsGridSection`, `calendarSection`, `eventsLoading`, `eventsEmptyState`, `eventsErrorBox`, `eventsErrorMessage`
+- Repeater `eventsRepeater` with child IDs `eventTitle`, `eventDate`, `eventLocation`, `eventCategory`, `eventDifficulty`, `eventAvailability`, `eventSummary`, `eventDetailsButton`
+- HtmlComponent `calendarHtml` for the custom calendar markup
 
-### About page (`src/pages/About BRBS.a28ns.js`)
+### Learning Center (`Beginner's Guide`)
+- Tabs/Buttons: `tabBeginner`, `tabKnowledge`, `tabResources`, `tabVendors`
+- Filters: `learningSearch`, `learningCategory`, `learningDifficulty`
+- Sections: `beginnersSection`, `knowledgeSection`, `resourcesSection`, `vendorsSection`
+- Repeaters: `beginnerRepeater` (`stepTitle`, `stepSummary`, `stepFocus`, `stepResources`), `knowledgeRepeater` (`articleTitle`, `articleExcerpt`, `articleMeta`, `articleReadButton`), `resourcesRepeater` (`resourceName`, `resourceDescription`, `resourceMeta`, `resourceLinkButton`), `vendorsRepeater` (`vendorName`, `vendorLocation`, `vendorNotes`, `vendorContactButton`)
 
-- Required: `#boardMembersContainer`
+### Photos (`Photos`)
+- Repeater `galleriesRepeater` with child IDs `coverImage`, `galleryName`, `galleryDescription`, `photoCount`, `viewGalleryBtn`
+- Boxes: `loadingBox`, `emptyStateBox`
 
-  - Type: HtmlComponent
-  - Purpose: Hosts board members HTML with inline `<script>` that posts messages up to the page.
-  - Messages sent from iframe: `{ type: 'boardAction', action: 'contact' | 'join', payload?: { email, name } }`
-  - Page listens with: `$w('#boardMembersContainer').onMessage(...)`
+### Gallery View (`Gallery View`)
+- Wix Pro Gallery `proGallery1`
+- Boxes: `loadingBox`, `emptyStateBox`
 
-- Required: `#partnershipContainer`
+### Join (`Join BRBS`)
+- Form container `applicationForm`
+- Inputs: `firstNameField`, `lastNameField`, `emailField`, `phoneField`, `membershipLevelSelect`
+- Text: `formFeedback`
 
-  - Type: HtmlComponent
-  - Messages sent from iframe: `{ type: 'partnershipAction', action: 'visitArboretum' | 'viewUpcomingWorkshops' }`
-  - Page listens with: `$w('#partnershipContainer').onMessage(...)`
+### Event Details (`Event Details & Registration`)
+- Buttons: `registerButton`, `cancelRegistrationButton`, `shareButton`
+- Sections: `commentsSection`, `commentsContainer`, `relatedEventsSection`, `registrationFormSection`
+- Ensure any text boxes referenced in the page code use Text elements or Rich Text elements so `.text`/`.html` assignments succeed
 
-- Required: `#meetingInfoContainer`
+---
 
-  - Type: HtmlComponent
-  - Messages sent from iframe: `{ type: 'meetingAction', action: 'viewUpcomingMeetings' | 'getDirections' }`
-  - Page listens with: `$w('#meetingInfoContainer').onMessage(...)`
-
-- Required: `#faqContainer`
-
-  - Type: HtmlComponent
-  - Purpose: The page injects an HTML “shell” and then sends FAQ data into it.
-  - Page → iframe: `faqContainer.postMessage(faqItems)` (after the shell loads)
-  - Iframe should listen via `window.onmessage` and render the FAQ list.
-
-- Text OK (do not need HtmlComponent):
-  - `#missionVisionContainer`, `#missionVisionSection`
-  - `#boardMembersSection`
-  - `#partnershipSection`
-  - `#faqSection`
-  - `#meetingInfoSection`
-  - `#societyStatsContainer`, `#societyStatsSection`
-  - `#achievementsContainer`, `#achievementsSection`
-
-### Photos page (`src/pages/Photos.uutsy.js`)
-
-- Required: `#mainContainer`
-  - Type: HtmlComponent
-  - Purpose: Hosts page structure and gallery cards built via injected HTML. Cards include inline `onclick` handlers (e.g., `onclick="wixLocation.to(...)"`), which require an HtmlComponent to execute.
-
-### Optional/advanced components
-
-- Optional: `css-injection` HtmlComponent (if you choose to use `src/pages/components/css-injection.html`)
-  - Type: HtmlComponent
-  - `src`: Hosted URL of `css-injection.html` (must be HTTPS). The file posts messages such as `CSS_COMPONENT_READY`, `CSS_INJECTION_SUCCESS`, `CSS_INJECTION_ERROR` to the parent.
-  - Use only if you plan to manage CSS injection via an HtmlComponent; otherwise rely on Wix Studio’s CSS panel.
-
-### How to add these in Wix Studio
-
-1. In the Editor, add an HTML Embed element (HtmlComponent) where needed.
-2. Set the element ID to match the names above (e.g., `mainContainer`).
-3. Leave `src` empty if the page code injects HTML and only needs `onMessage`/`postMessage`. If you are loading a standalone HTML file, set `src` to an HTTPS URL hosting that file.
-4. Ensure “Show on this page” is enabled and the element is visible.
-5. Publish. Then run `wix dev` to verify postMessage events appear in the console and the UI is interactive.
-
-### Messaging reference (quick)
-
-- Home → Page receives
-  - `{ type: 'homeAction', action: 'join' | 'events' | 'about' }`
-- Events preview → Page receives
-  - `{ type: 'eventClick', eventId }`
-- Board members → Page receives
-  - `{ type: 'boardAction', action: 'contact' | 'join', payload?: { email, name } }`
-- Partnerships → Page receives
-  - `{ type: 'partnershipAction', action: 'visitArboretum' | 'viewUpcomingWorkshops' }`
-- Meetings → Page receives
-  - `{ type: 'meetingAction', action: 'viewUpcomingMeetings' | 'getDirections' }`
-- FAQ → Iframe receives from page
-  - `faqItems` array via `postMessage`
+For the exhaustive deployment checklist—including collection definitions, secrets, and Google Drive setup—refer to [docs/MANUAL_SETUP.md](docs/MANUAL_SETUP.md).

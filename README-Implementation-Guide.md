@@ -1,179 +1,74 @@
-# Blue Ridge Bonsai Society - Implementation Guide
+# Blue Ridge Bonsai Society – Implementation Guide
 
-## 🚨 Important: Making Code Changes Visible on Website
+This guide is for the Wix Studio editor who needs to make sure the published site reflects the functionality in this repository. The code already handles data fetching, rendering, and fallbacks; your job in the Editor is to line up the Wix-native components, IDs, and collections so those scripts can run without further tweaks.
 
-The JavaScript code we've implemented provides the **functionality and logic**, but to see changes on the actual Wix website, you need to:
+---
 
-### 1. **Use Wix Editor for Page Elements**
-The JavaScript code expects certain HTML elements to exist on the pages. You need to add these through the Wix Editor:
+## 1. Before You Begin
 
-#### Homepage Elements Needed:
-- Container with ID: `#main`, `#page-content`, or `#content`
-- Hero section with:
-  - `#heroTitle` - Main title text
-  - `#heroSubtitle` - Subtitle text  
-  - `#ctaJoinButton` - Primary call-to-action button
-  - `#ctaEventsButton` - Events button
-  - `#ctaLearningButton` - Learning button
-  - `#ctaAboutButton` - About button
+- **Install Wix Events** and add your real events. Categories such as “Workshop”, “Meeting”, and “Exhibition” should match the filters shown on the Events page.
+- **Enable Wix Members & Wix Groups**. Decide which group represents active members—you will reference its ID or slug in `backend/config/user-management.config.js`.
+- **Prepare a shared Google Drive folder** for the photo galleries. Set “Anyone with the link” to **Viewer** and note the folder ID.
+- Collect a **Google API key** (Drive API enabled) and store it in Wix Secrets Manager as `GOOGLE_DRIVE_API_KEY`.
 
-#### Events Page Elements Needed:
-- Main container
-- Filter controls: `#categoryFilter`, `#dateFilter`, `#difficultyFilter`
-- Search input: `#searchInput`
-- View toggle buttons: `#gridViewBtn`, `#calendarViewBtn`
-- Content containers: `#eventsGrid`, `#calendarView`
+If you are staging in a sandbox or do not have production data yet, the backend will automatically use the JSON fixtures stored under `src/backend/data/` so the pages still render meaningful examples.
 
-#### Learning Center Elements Needed:
-- Navigation tabs with `data-section` attributes
-- Section containers: `#beginners-guide`, `#knowledge-base`, `#resources`, `#vendors`
-- Search and filter elements
+---
 
-### 2. **CSS Styling Integration**
-Our code includes comprehensive CSS that should be added to your Wix site:
+## 2. Align Page Elements in the Wix Editor
 
-#### Option A: Add to Site-Wide CSS
-Copy the CSS from each page file (the large `<style>` blocks) into your Wix site's custom CSS section.
+The front-end files rely on native Wix elements with specific IDs. Add or rename the following elements in the corresponding pages. (See [docs/MANUAL_SETUP.md](docs/MANUAL_SETUP.md#4-wix-element-id-reference) for the full list.)
 
-#### Option B: Use Wix Design System
-Recreate the glass morphism and atmospheric design using Wix's design tools:
-- **Colors**: Mountain Sage (#6B8E6F), Stone Gray (#4A4A4A), Cloud White (#FEFFFE)
-- **Typography**: Inter font family, proper hierarchy
-- **Effects**: Glass morphism with backdrop blur, subtle shadows
+| Page | Key elements |
+| --- | --- |
+| **Home** | Text: `heroTitle`, `heroSubtitle`, `heroDescription`, `announcementText`, `statMembers`, `statEvents`, `statWorkshops`; Buttons: `ctaJoinButton`, `ctaEventsButton`, `ctaLearningButton`, `ctaAboutButton`, `viewAllEventsButton`; Repeater: `eventsRepeater` (items `eventTitle`, `eventDate`, `eventCategory`, `eventDescription`, `eventAvailability`, button `eventActionButton`, optional `eventsEmptyState`); Repeater: `spotlightRepeater` (items `spotlightName`, `spotlightBio`, `spotlightSpecialties`, `spotlightImage`, optional `spotlightEmptyState`). |
+| **About BRBS** | Text: `missionTitle`, `missionText`, `visionTitle`, `visionText`; Repeaters: `valuesRepeater`, `boardRepeater`, `faqRepeater`; Partnership section: `partnershipHeading`, `partnershipDescription`, `partnershipLinksRepeater`, `partnershipGallery`; Meeting info: `meetingSchedule`, `meetingLocation`, `meetingNext`, `meetingVisitorPolicy`. |
+| **Events** | Filters: `categoryFilter`, `difficultyFilter`, `statusFilter`, `searchInput`; Buttons: `gridViewBtn`, `calendarViewBtn`, `calendarPrevBtn`, `calendarNextBtn`; Sections: `eventsGridSection`, `calendarSection`, `eventsLoading`, `eventsEmptyState`, `eventsErrorBox`; Repeater: `eventsRepeater` with text elements `eventTitle`, `eventDate`, `eventLocation`, `eventCategory`, `eventDifficulty`, `eventAvailability`, `eventSummary`, button `eventDetailsButton`; HTML Component `calendarHtml` for the calendar markup. |
+| **Photos** | Repeater `galleriesRepeater` with `coverImage`, `galleryName`, `galleryDescription`, `photoCount`, `viewGalleryBtn`; state boxes `loadingBox`, `emptyStateBox`. |
+| **Gallery View** | Wix **Pro Gallery** with ID `proGallery1`; loading/empty boxes `loadingBox`, `emptyStateBox`. |
+| **Join BRBS** | Form container `applicationForm`; inputs `firstNameField`, `lastNameField`, `emailField`, `phoneField`, `membershipLevelSelect`; text `formFeedback`. |
 
-### 3. **Database Collections Setup**
-Create these collections in your Wix database:
+> 💡 If an element exposes both `text` and `html` properties, ensure it is a Text element. For repeaters, create the child elements first, then assign IDs to match the list above.
 
-#### Events Collection:
-```javascript
-{
-  title: "Text",
-  description: "Rich Text", 
-  startDate: "Date",
-  endDate: "Date",
-  category: "Text",
-  difficulty: "Text",
-  location: "Text",
-  maxAttendees: "Number",
-  currentAttendees: "Number",
-  price: "Number",
-  featured: "Boolean",
-  instructor: "Text",
-  image: "Image"
-}
-```
+---
 
-#### Articles Collection:
-```javascript
-{
-  title: "Text",
-  excerpt: "Text",
-  content: "Rich Text",
-  category: "Text", 
-  difficulty: "Text",
-  tags: "Tags",
-  author: "Text",
-  publishDate: "Date",
-  views: "Number",
-  featured: "Boolean",
-  readTime: "Number"
-}
-```
+## 3. Configure Data Sources
 
-#### Members Collection:
-```javascript
-{
-  firstName: "Text",
-  lastName: "Text", 
-  email: "Text",
-  membershipLevel: "Text",
-  joinDate: "Date",
-  isActive: "Boolean",
-  bio: "Rich Text",
-  yearsExperience: "Number"
-}
-```
+### 3.1 Wix Events
 
-### 4. **Testing the Implementation**
+- Manage all real events in the Wix Events dashboard. The front end reads from Wix Events v2 via `backend/site-data.jsw`.
+- Registrations are forwarded to Wix Events. Configure your registration form fields inside Wix Events (name, email, phone, custom questions) to match what the site displays.
+- For testing in environments without events access, the static data in `src/backend/data/Events.json` and `EventRegistrations.json` is returned automatically.
 
-#### Local Testing with `wix dev`:
-1. Run `wix dev` to start the Local Editor
-2. Add the required HTML elements through the Wix Editor
-3. Test the JavaScript functionality in the browser
-4. Check browser console for our logged messages
+### 3.2 Membership & Groups
 
-#### Production Deployment:
-1. Commit changes to Git repository
-2. Wix will automatically deploy from the main branch
-3. Verify functionality on the live site
+- Update `backend/config/user-management.config.js` with your Wix Group ID or slug. Publish so the backend can resolve the group when approving members.
+- Collections required in Wix Data:
+  - `Members` – Extended profile information linked to Wix Members (fields for bio, expiration date, specialties, etc.).
+  - `MembershipLevels` – Level name, price, description, `isActive`, and `sortOrder`.
+  - `MemberApplications` – Stores submissions from the Join page (`status`, `applicationDate`, `approvalDate`, notes, etc.).
+- Optional collections used by specialized pages: `EventComments`, `MemberInteractions`, and any static content collections if you prefer not to rely on the JSON fixtures.
+- When an application is approved the backend will create the Wix Member, add them to the configured group, store extended profile details in `Members`, and update the application record.
 
-### 5. **What Each Implementation Provides**
+### 3.3 Google Drive Galleries
 
-#### ✅ Homepage (`Home.c1dmp.js`):
-- **Dynamic welcome messages** based on login status
-- **Events preview** with latest 3 upcoming events
-- **Member spotlight** rotation
-- **Call-to-action button** logic and navigation
-- **Statistics display** (member count, upcoming events)
-- **Responsive animations** and interactions
+1. Share the parent folder (and every subfolder) so “Anyone with the link” can view.
+2. Set the folder ID in `src/public/config/gallery.config.js` (`DRIVE_ROOT_FOLDER_ID`).
+3. Store the API key as `GOOGLE_DRIVE_API_KEY` in Secrets Manager.
+4. Add a Wix Pro Gallery to the Gallery View page with ID `proGallery1`; no dataset binding is required.
+5. Each immediate subfolder under the root becomes a gallery card. Files whose names start with `cover` or `thumbnail` are treated as preferred cover images.
 
-#### ✅ About Us (`About BRBS.a28ns.js`):
-- **Mission/vision display** with core values
-- **Board member profiles** (dynamic or fallback)
-- **NC Arboretum partnership** information
-- **Interactive FAQ** system with toggle functionality
-- **Meeting information** with visitor guidance
-- **Society statistics** and achievements
+---
 
-#### ✅ Events System (`Events.yyqhk.js` + `event-system.js`):
-- **Advanced event filtering** by category, date, difficulty
-- **Search functionality** across events
-- **Calendar and grid views** with smooth transitions
-- **Event registration** system with capacity tracking
-- **RSS feed generation** for external calendar apps
-- **iCal export** functionality
-- **Real-time availability** updates
+## 4. Testing & Verification
 
-#### ✅ Learning Center (`Beginner's Guide.vpald.js`):
-- **4-section navigation**: Beginner's Guide, Knowledge Base, Resources, Vendors
-- **Interactive guide cards** with step-by-step progression
-- **Article search and filtering** by category and difficulty
-- **Resource library** with downloads and tools
-- **Vendor directory** with ratings and contact info
-- **Quick reference guides** for care schedules
+Work through these checks after publishing changes:
 
-### 6. **Current Status**
+1. **Homepage** – Confirm hero copy personalizes for logged-in members, stats populate, and the events/spotlight repeaters display content.
+2. **Events** – Verify the repeater loads real Wix Events data, filters work, and the calendar view renders in the `calendarHtml` component.
+3. **Event Details** – Visit `/event-details?eventId=<your-event-id>`; verify registration buttons, comments, and related events populate. Ensure registrations reach Wix Events if you submit a test entry.
+4. **Photos & Gallery View** – Confirm the Photos page lists Google Drive folders and the Gallery View page displays those items in the Wix Pro Gallery.
+5. **Join BRBS** – Submit an application. Check that `MemberApplications` contains the new record and, when approved via the backend function, that the Wix Member is created and added to the configured group.
+6. **Member directory** – On a members-only page, verify the directory loads from the Wix Group when present.
 
-#### Completed (Phase 1):
-- ✅ Homepage redesign with dynamic content
-- ✅ About Us with comprehensive information  
-- ✅ Events system with advanced functionality
-- ✅ Learning Center with 4 main sections
-- ✅ Consistent design system and styling
-- ✅ Mobile responsive layouts
-- ✅ Environment detection and error handling
-
-#### Next Steps:
-- 🔄 **Membership System** (in progress)
-- ⏳ **Database collections setup**
-- ⏳ **NPM packages installation**
-- ⏳ **Mobile responsive testing**
-
-### 7. **Technical Architecture**
-
-Our implementation uses:
-- **Environment Detection**: Works in both browser and server environments
-- **Mock APIs**: Provides fallback data for testing
-- **Safe DOM Manipulation**: Handles missing elements gracefully
-- **Progressive Enhancement**: Core functionality works even if some features fail
-- **Modular Design**: Each page is self-contained with its own styling
-
-### 8. **Getting Support**
-
-If you need help implementing these changes in the Wix Editor:
-1. Check the browser console for detailed logging from our code
-2. Verify that required HTML elements exist on each page
-3. Ensure database collections are properly configured
-4. Test with `wix dev` before deploying to production
-
-The code we've written provides a solid foundation - now it needs to be connected to the actual Wix page elements through the Editor interface.
+Refer to [docs/MANUAL_SETUP.md](docs/MANUAL_SETUP.md) for deeper configuration details and the full element ID list.

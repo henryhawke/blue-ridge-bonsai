@@ -2,6 +2,190 @@ import { webMethod, Permissions } from "wix-web-module";
 import { members } from "wix-members-backend";
 import { authorization } from "wix-members-backend";
 import wixData from "wix-data";
+import { groups } from "wix-groups-backend";
+import wixUsers from "wix-users-backend";
+
+import { PRIMARY_GROUP_ID, PRIMARY_GROUP_SLUG } from "backend/config/user-management.config";
+
+let cachedGroupId = PRIMARY_GROUP_ID || null;
+let resolvingGroupPromise = null;
+
+async function resolvePrimaryGroupId() {
+  if (cachedGroupId) {
+    return cachedGroupId;
+  }
+
+  if (!groups) {
+    return null;
+  }
+
+  if (resolvingGroupPromise) {
+    return resolvingGroupPromise;
+  }
+
+  resolvingGroupPromise = (async () => {
+    try {
+      if (PRIMARY_GROUP_SLUG && typeof groups.getGroup === "function") {
+        const group = await groups.getGroup({ slug: PRIMARY_GROUP_SLUG });
+        if (group?._id) {
+          cachedGroupId = group._id;
+          return cachedGroupId;
+        }
+      }
+
+      if (typeof groups.queryGroups === "function") {
+        const query = groups.queryGroups();
+        if (PRIMARY_GROUP_SLUG) {
+          query.eq("slug", PRIMARY_GROUP_SLUG);
+        }
+        const result = await query.limit(1).find();
+        const match = result?.items?.[0];
+        if (match?._id) {
+          cachedGroupId = match._id;
+          return cachedGroupId;
+        }
+      }
+
+      if (typeof groups.listGroups === "function") {
+        const result = await groups.listGroups();
+        const items = Array.isArray(result?.items)
+          ? result.items
+          : Array.isArray(result?.groups)
+          ? result.groups
+          : [];
+        const match = PRIMARY_GROUP_SLUG
+          ? items.find((group) => group?.slug === PRIMARY_GROUP_SLUG)
+          : items[0];
+        if (match?._id) {
+          cachedGroupId = match._id;
+          return cachedGroupId;
+        }
+      }
+    } catch (error) {
+      console.warn("Unable to resolve primary Wix Group ID", error);
+    } finally {
+      resolvingGroupPromise = null;
+    }
+
+    return null;
+  })();
+
+  return resolvingGroupPromise;
+}
+
+async function ensureMemberInPrimaryGroup(memberId) {
+  if (!memberId || !groups) {
+    return;
+  }
+
+  try {
+    const groupId = await resolvePrimaryGroupId();
+    if (!groupId) {
+      return;
+    }
+
+    if (typeof groups.addMemberToGroup === "function") {
+      await groups.addMemberToGroup({ groupId, memberId });
+      return;
+    }
+
+    if (typeof groups.inviteMemberToGroup === "function") {
+      await groups.inviteMemberToGroup({ groupId, memberId, suppressEmail: true });
+      return;
+    }
+
+    if (typeof groups.assignMemberToGroup === "function") {
+      await groups.assignMemberToGroup({ groupId, memberId });
+    }
+  } catch (error) {
+    console.warn("Failed to synchronize member with Wix Group", error);
+  }
+}
+
+function mapGroupMemberToDirectory(member) {
+  if (!member) {
+    return null;
+  }
+
+  const profile = member.profile || member.contact || {};
+  const firstName = member.firstName || profile.firstName || "";
+  const lastName = member.lastName || profile.lastName || "";
+  const email = member.email || profile.email || "";
+  const phone = member.phone || profile.phone || null;
+
+  return {
+    _id: member._id || member.memberId || member.id,
+    name: `${firstName} ${lastName}`.trim(),
+    email,
+    phone,
+    membershipLevel: member.role?.name || member.membershipLevel || "Member",
+    joinDate: member.joinDate || member.createdDate || member.createdAt || null,
+  };
+}
+
+async function memberExistsByEmail(email) {
+  if (!email) {
+    return false;
+  }
+
+  try {
+    if (members && typeof members.queryMembers === "function") {
+      const result = await members
+        .queryMembers()
+        .eq("loginEmail", email)
+        .limit(1)
+        .find();
+      if (result?.items?.length) {
+        return true;
+      }
+    }
+  } catch (error) {
+    console.warn("Wix Members email lookup failed, checking custom data collection.", error);
+  }
+
+  try {
+    const [direct, login] = await Promise.all([
+      wixData.query("Members").eq("email", email).limit(1).find(),
+      wixData.query("Members").eq("loginEmail", email).limit(1).find(),
+    ]);
+    return direct.items.length > 0 || login.items.length > 0;
+  } catch (error) {
+    console.warn("Fallback email lookup in Members collection failed.", error);
+    return false;
+  }
+}
+
+async function fetchExtendedMemberRecord(memberId) {
+  if (!memberId) {
+    return null;
+  }
+
+  try {
+    return await wixData.get("Members", memberId);
+  } catch (error) {
+    return null;
+  }
+}
+
+async function getWixMemberById(memberId) {
+  if (!memberId || !members) {
+    return null;
+  }
+
+  try {
+    if (typeof members.getMember === "function") {
+      const result = await members.getMember({ memberId });
+      if (result?.member) {
+        return result.member;
+      }
+      return result || null;
+    }
+  } catch (error) {
+    console.warn("Failed to retrieve Wix member by ID", error);
+  }
+
+  return null;
+}
 
 export const approveMemberApplication = webMethod(
   Permissions.Admin,
@@ -37,6 +221,8 @@ export const approveMemberApplication = webMethod(
 
       await wixData.insert("Members", memberProfile);
 
+      await ensureMemberInPrimaryGroup(newMember.member._id);
+
       // Update application status
       await wixData.update("MemberApplications", {
         _id: applicationId,
@@ -56,14 +242,40 @@ export const approveMemberApplication = webMethod(
 export const getMemberDirectory = webMethod(
   Permissions.SiteMember,
   async () => {
-    // In a real app, you might restrict this further to board members
+    try {
+      const groupId = await resolvePrimaryGroupId();
+      if (groupId && groups && typeof groups.listGroupMembers === "function") {
+        const result = await groups.listGroupMembers({ groupId });
+        const items = Array.isArray(result?.items)
+          ? result.items
+          : Array.isArray(result?.members)
+          ? result.members
+          : [];
+        const mapped = items.map(mapGroupMemberToDirectory).filter(Boolean);
+        if (mapped.length) {
+          return mapped;
+        }
+      }
+
+      if (members && typeof members.queryMembers === "function") {
+        const result = await members.queryMembers().ascending("profile.lastName").find();
+        const mapped = Array.isArray(result?.items)
+          ? result.items.map(mapGroupMemberToDirectory).filter(Boolean)
+          : [];
+        if (mapped.length) {
+          return mapped;
+        }
+      }
+    } catch (error) {
+      console.warn("Primary member directory lookup failed, falling back to custom collection.", error);
+    }
+
     const membersList = await wixData
       .query("Members")
       .eq("isActive", true)
       .ascending("lastName")
       .find();
 
-    // Return limited member info for directory
     return membersList.items.map((member) => ({
       _id: member._id,
       name: `${member.firstName} ${member.lastName}`,
@@ -125,12 +337,7 @@ export async function submitMemberApplication(applicationData) {
     }
 
     // Check if member already exists
-    const existingMember = await wixData
-      .query("Members")
-      .eq("email", applicationData.email)
-      .find();
-
-    if (existingMember.items.length > 0) {
+    if (await memberExistsByEmail(applicationData.email)) {
       throw new Error("A member with this email already exists.");
     }
 
@@ -162,17 +369,65 @@ export async function submitMemberApplication(applicationData) {
  */
 export async function getCurrentMemberProfile() {
   try {
-    const currentUser = wixUsers.currentUser;
-    if (!currentUser || !currentUser.email) {
+    const currentAuthMember = authorization?.currentMember || null;
+    let memberId = currentAuthMember?._id || currentAuthMember?.id || null;
+    let loginEmail = currentAuthMember?.loginEmail || null;
+
+    const currentUser = wixUsers?.currentUser;
+    if (!memberId && currentUser) {
+      memberId = currentUser.id || currentUser._id || null;
+      loginEmail = loginEmail || currentUser.email;
+    }
+
+    if (!memberId && loginEmail && members && typeof members.queryMembers === "function") {
+      try {
+        const lookup = await members
+          .queryMembers()
+          .eq("loginEmail", loginEmail)
+          .limit(1)
+          .find();
+        const wixMember = lookup?.items?.[0];
+        if (wixMember?._id) {
+          memberId = wixMember._id;
+        }
+      } catch (error) {
+        console.warn("Unable to resolve member ID from Wix Members query", error);
+      }
+    }
+
+    if (!memberId && !loginEmail) {
       return null;
     }
 
-    const memberQuery = await wixData
-      .query("Members")
-      .eq("loginEmail", currentUser.email)
-      .find();
+    const [wixMember, extendedProfile] = await Promise.all([
+      getWixMemberById(memberId),
+      fetchExtendedMemberRecord(memberId || null),
+    ]);
 
-    return memberQuery.items.length > 0 ? memberQuery.items[0] : null;
+    if (!wixMember && !extendedProfile) {
+      if (loginEmail) {
+        const fallbackQuery = await wixData
+          .query("Members")
+          .eq("loginEmail", loginEmail)
+          .limit(1)
+          .find();
+        return fallbackQuery.items[0] || null;
+      }
+      return null;
+    }
+
+    const baseProfile = wixMember?.profile || wixMember || {};
+
+    return {
+      _id: memberId || baseProfile._id || extendedProfile?._id || null,
+      loginEmail: loginEmail || baseProfile.loginEmail || extendedProfile?.loginEmail || baseProfile.email,
+      email: extendedProfile?.email || baseProfile.email || loginEmail || '',
+      firstName: extendedProfile?.firstName || baseProfile.firstName || baseProfile.name?.first || '',
+      lastName: extendedProfile?.lastName || baseProfile.lastName || baseProfile.name?.last || '',
+      phone: extendedProfile?.phone || baseProfile.phone || '',
+      ...baseProfile,
+      ...extendedProfile,
+    };
   } catch (error) {
     console.error("Error getting current member profile:", error);
     return null;
@@ -250,9 +505,20 @@ async function sendApplicationConfirmation(email, firstName) {
  */
 export async function getAllMembers() {
   try {
-    const members = await wixData.query("Members").ascending("lastName").find();
+    if (members && typeof members.queryMembers === "function") {
+      const result = await members.queryMembers().ascending("profile.lastName").find();
+      if (Array.isArray(result?.items) && result.items.length) {
+        return result.items.map((item) => ({
+          _id: item._id || item.id,
+          ...item.profile,
+          ...item,
+        }));
+      }
+    }
 
-    return members.items;
+    const legacyMembers = await wixData.query("Members").ascending("lastName").find();
+
+    return legacyMembers.items;
   } catch (error) {
     console.error("Error getting all members:", error);
     return [];

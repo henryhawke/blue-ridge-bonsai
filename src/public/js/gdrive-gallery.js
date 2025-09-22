@@ -73,13 +73,16 @@ export class GallerySystem {
   async getPhotosForGallery(galleryId) {
     if (this.useDrive) {
       try {
-        return await listPhotos({ folderId: galleryId });
+        const photos = await listPhotos({ folderId: galleryId });
+        return photos.map(normalizePhotoItem);
       } catch (e) {
         console.error('Error loading photos from Drive:', e);
         return [];
       }
     }
-    return this.photos.filter(p => p.galleryId === galleryId);
+    return this.photos
+      .filter(p => p.galleryId === galleryId)
+      .map(normalizePhotoItem);
   }
 
   /**
@@ -112,11 +115,23 @@ export class GallerySystem {
       const batches = await Promise.all(
         galleries.map(g => this.getPhotosForGallery(g._id))
       );
-      const all = batches.flat();
+      const all = batches.flat().map(normalizePhotoItem);
       all.sort((a, b) => new Date(b.shootDate || 0) - new Date(a.shootDate || 0));
       return all.slice(0, limit);
     }
     this.photos.sort((a, b) => new Date(b.shootDate) - new Date(a.shootDate));
-    return this.photos.slice(0, limit);
+    return this.photos.slice(0, limit).map(normalizePhotoItem);
   }
+}
+
+function normalizePhotoItem(photo) {
+  if (!photo) return photo;
+  const src = photo.src || photo.originalUrl || photo.imageUrl || photo.url || '';
+  const thumbnailSrc = photo.thumbnailSrc || photo.thumbnailUrl || src;
+  return {
+    ...photo,
+    src,
+    thumbnailSrc,
+    type: photo.type || 'image'
+  };
 }
