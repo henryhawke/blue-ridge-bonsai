@@ -1,0 +1,5 @@
+_id,name,location,specialties,contact,verified,rating,notes
+ven001,Superfly Bonsai,Online (Pennsylvania),"Bonsai tools, wire, soil components, and pots.",https://www.superflybonsai.com/,true,5,Excellent source for high-quality tools and a wide variety of wire sizes.
+ven002,Meehan's Miniatures,Maryland,"Wide selection of pre-bonsai material, especially evergreens and maples.",https://www.meehansminiatures.com/,true,4,A great place to find unique starter trees. Check their open house dates.
+ven003,Jesse's Pottery,"Asheville, NC","Handmade, local bonsai pottery.",jessespottery@example.com,true,5,"A local artist who sometimes sells at our club meetings. Beautiful, one-of-a-kind pots."
+ven004,Stone Lantern Publishing,Online,"Bonsai books, magazines, and some tools.",https://www.stonelantern.com/Bonsai_c/1.htm,false,3,A long-standing online store for bonsai literature.

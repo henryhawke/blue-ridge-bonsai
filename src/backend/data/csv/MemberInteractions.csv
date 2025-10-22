@@ -1,0 +1,6 @@
+_id,memberId,type,date,details
+int001,mem001,workshop_attended,2024-11-15T10:00:00Z,"{""workshopName"":""Basic Styling Workshop"",""instructor"":""John Smith"",""duration"":""3 hours"",""location"":""Arboretum Education Center""}"
+int002,mem001,forum_post,2024-11-10T14:30:00Z,"{""forumCategory"":""General Discussion"",""postTitle"":""My first styling attempt"",""postContent"":""Just tried my first wiring on a juniper..."",""replies"":5}"
+int003,mem001,meeting_attended,2024-11-08T19:00:00Z,"{""meetingType"":""Monthly Meeting"",""topic"":""Winter Care for Bonsai"",""speaker"":""Dr. Emily Wilson"",""attendance"":45}"
+int004,mem002,resource_downloaded,2024-11-12T09:15:00Z,"{""resourceName"":""Beginner's Guide to Bonsai"",""resourceType"":""PDF"",""fileSize"":""2.3 MB""}"
+int005,mem002,workshop_registered,2024-11-13T16:45:00Z,"{""workshopName"":""Watering Techniques"",""date"":""2024-12-05T10:00:00Z"",""instructor"":""Sarah Johnson"",""status"":""confirmed""}"

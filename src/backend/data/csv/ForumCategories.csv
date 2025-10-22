@@ -1,0 +1,5 @@
+_id,name,description,moderators,active,postCount,latestPost
+fcat001,General Discussion,"A place for general chat about bonsai, the club, and anything else on your mind.",mem001,true,2,"{""title"":""Welcome to the new forums!"",""authorName"":""David Anderson"",""timestamp"":""2025-08-10T10:00:00Z""}"
+fcat002,Beginner's Corner,New to bonsai? Ask your questions here! No question is too simple.,mem002,true,1,"{""title"":""Help! My Juniper is turning yellow!"",""authorName"":""Bob Smith"",""timestamp"":""2025-08-12T14:00:00Z""}"
+fcat003,Critique & Advice,Post photos of your trees and get constructive feedback from fellow members.,,true,0,
+fcat004,"Buy, Sell, & Trade","A marketplace for members to exchange trees, pots, tools, and other supplies.",,true,0,

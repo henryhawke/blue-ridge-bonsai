@@ -1,0 +1,5 @@
+_id,memberId,interestType,skillLevel,yearsExperience,wantsToLearn,canTeach
+mint001,mem001,Styling,Intermediate,5,true,false
+mint002,mem001,Maples,Intermediate,4,true,true
+mint003,mem002,Watering,Beginner,1,true,false
+mint004,mem002,Tools,Beginner,1,true,false

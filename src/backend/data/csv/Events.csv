@@ -1,0 +1,17 @@
+_id,title,description,richDescription,startDate,endDate,timezone,location,registrationRequired,maxAttendees,currentAttendees,images,category,price,instructor,difficulty,status,featured,tags,prerequisites,materials,refundPolicy,createdDate,lastModified,createdBy
+evt001,Beginner's Bonsai Workshop,"A comprehensive, hands-on workshop designed for those new to the art of bonsai. Learn about soil, pots, basic wiring, and initial styling.","### What You'll Learn:
+
+*   The history and philosophy of bonsai.
+*   How to select the right tree and pot.
+*   Proper soil composition and repotting techniques.
+*   Basic wiring and pruning for initial styling.
+
+Participants will leave with their own starter tree, a Japanese Juniper, to care for at home.",2025-09-13T10:00:00Z,2025-09-13T13:00:00Z,America/New_York,"NC Arboretum, Education Center Room A",true,20,12,"https://static.wixstatic.com/media/nsplsh_b28663b715a3461287e134a0a27d94b3~mv2.jpg/v1/fill/w_980,h_654,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/nsplsh_b28663b715a3461287e134a0a27d94b3~mv2.jpg",Workshop,75,David Anderson,Beginner,upcoming,true,beginner;workshop;juniper;styling,None,"All materials (tree, pot, soil, wire) are included.",Full refund available up to 7 days before the event.,2025-07-15T14:30:00Z,2025-07-20T10:00:00Z,admin
+evt002,October Monthly Meeting,Join us for our regular monthly meeting. This month's topic is 'Preparing Your Trees for Winter'. All are welcome.,"### Agenda:
+
+1.  **Welcome & Announcements**
+2.  **Show and Tell:** Members showcase their recent work.
+3.  **Main Presentation:** 'Preparing Your Trees for Winter' by Maria Garcia.
+4.  **Q&A Session**
+5.  **Social Time**",2025-10-04T10:00:00Z,2025-10-04T12:00:00Z,America/New_York,"Community Center, Asheville",false,100,45,,Meeting,0,,All Levels,upcoming,false,meeting;winter care;community,,,,2025-07-10T11:00:00Z,2025-07-10T11:00:00Z,admin
+evt003,Advanced Repotting Clinic,An intensive clinic for experienced members focusing on advanced repotting techniques for mature and specimen trees.,"This clinic is for members with several years of experience. We will cover root pruning, correcting structural root issues, and selecting the perfect pot for mature trees. Please bring one of your own trees to work on.",2025-11-08T09:00:00Z,2025-11-08T12:00:00Z,America/New_York,"NC Arboretum, Greenhouse",true,10,7,,Clinic,25,James Chen,Advanced,upcoming,false,repotting;advanced;clinic;root pruning,Minimum 3 years of bonsai experience.,"Bring your own tree, tools, and wire. Potting medium will be provided.",No refunds due to limited space.,2025-08-01T18:00:00Z,2025-08-01T18:00:00Z,admin

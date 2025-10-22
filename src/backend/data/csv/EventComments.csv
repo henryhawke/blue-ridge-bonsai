@@ -1,0 +1,4 @@
+_id,eventId,memberId,memberName,comment,commentDate,isApproved,parentCommentId,likes,isStaff,isDeleted
+com001,evt001,mem123,Bob Smith,I'm really looking forward to this! Is there a specific type of wire we will be using?,2025-07-26T10:00:00Z,true,,3,false,false
+com002,evt001,admin,David Anderson,"Great question, Bob! We will be providing a range of aluminum wire sizes suitable for the junipers we'll be working on.",2025-07-26T11:30:00Z,true,com001,5,true,false
+com003,evt002,mem456,Jane Doe,Winter prep is so important. Glad this is the topic!,2025-07-15T18:00:00Z,true,,10,false,false

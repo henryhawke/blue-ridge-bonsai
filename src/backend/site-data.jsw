@@ -4,18 +4,18 @@
 // to touch wix-data directly. All functions return Promises so they can be
 // consumed from page code via import from 'backend/site-data'.
 
-import { events as wixEvents } from 'wix-events.v2';
-import eventsData from 'backend/data/Events.json';
-import eventCategoriesData from 'backend/data/EventCategories.json';
-import eventRegistrationsData from 'backend/data/EventRegistrations.json';
-import articlesData from 'backend/data/Articles.json';
-import boardMembersData from 'backend/data/BoardMembers.json';
-import faqItemsData from 'backend/data/FAQItems.json';
-import membersData from 'backend/data/Members.json';
-import membershipLevelsData from 'backend/data/MembershipLevels.json';
-import partnershipInfoData from 'backend/data/PartnershipInfo.json';
-import resourcesData from 'backend/data/Resources.json';
-import vendorListData from 'backend/data/VendorList.json';
+import { events as wixEvents } from "wix-events.v2";
+import eventsData from "backend/data/Events.json";
+import eventCategoriesData from "backend/data/EventCategories.json";
+import eventRegistrationsData from "backend/data/EventRegistrations.json";
+import articlesData from "backend/data/Articles.json";
+import boardMembersData from "backend/data/BoardMembers.json";
+import faqItemsData from "backend/data/FAQItems.json";
+import membersData from "backend/data/Members.json";
+import membershipLevelsData from "backend/data/MembershipLevels.json";
+import partnershipInfoData from "backend/data/PartnershipInfo.json";
+import resourcesData from "backend/data/Resources.json";
+import vendorListData from "backend/data/VendorList.json";
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
@@ -29,8 +29,12 @@ function normalizeEvent(event) {
   const start = parseDate(event.startDate);
   const end = parseDate(event.endDate) || start;
   const createdDate = parseDate(event.createdDate) || start;
-  const currentAttendees = typeof event.currentAttendees === 'number' ? event.currentAttendees : (eventRegistrationsData || [])
-    .filter((reg) => reg.eventId === event._id).length;
+  const currentAttendees =
+    typeof event.currentAttendees === "number"
+      ? event.currentAttendees
+      : (eventRegistrationsData || []).filter(
+          (reg) => reg.eventId === event._id
+        ).length;
 
   return {
     ...event,
@@ -47,8 +51,12 @@ function normalizeWixEvent(event) {
   }
 
   const schedule = event.schedule || event.scheduling || {};
-  const start = parseDate(schedule.startDate || schedule.startDateTime || event.startDate);
-  const end = parseDate(schedule.endDate || schedule.endDateTime || event.endDate) || start;
+  const start = parseDate(
+    schedule.startDate || schedule.startDateTime || event.startDate
+  );
+  const end =
+    parseDate(schedule.endDate || schedule.endDateTime || event.endDate) ||
+    start;
   const createdDate = parseDate(event.createdDate || event.createdAt) || start;
 
   const location = event.location || {};
@@ -58,14 +66,30 @@ function normalizeWixEvent(event) {
     location.address?.formatted ||
     location.address?.addressLine1 ||
     location.summary ||
-    '';
+    "";
 
   const categories = Array.isArray(event.categories) ? event.categories : [];
+
+  // Filter out Wix internal component IDs from categories
+  const isValidCategory = (cat) => {
+    if (!cat || typeof cat !== "string") return false;
+    const lower = cat.toLowerCase();
+    return (
+      !lower.startsWith("comp-") &&
+      !lower.startsWith("tpasection_") &&
+      !lower.match(/^[a-z0-9]{10,}$/)
+    );
+  };
+
+  const validCategories = categories.filter(isValidCategory);
+  const rawCategory = event.category ? String(event.category) : "";
+  const hasValidRawCategory = isValidCategory(rawCategory);
+
   const difficultyField = Array.isArray(event.customFields)
     ? event.customFields.find((field) =>
-        String(field?.key || field?.name || '')
+        String(field?.key || field?.name || "")
           .toLowerCase()
-          .includes('difficulty')
+          .includes("difficulty")
       )
     : null;
 
@@ -85,22 +109,24 @@ function normalizeWixEvent(event) {
 
   return {
     _id: event._id,
-    title: event.title || event.name || 'Untitled Event',
+    title: event.title || event.name || "Untitled Event",
     description:
       event.description?.plainText ||
       event.description?.text ||
       event.description?.short ||
       event.description ||
-      '',
-    richDescription: event.description?.html || event.description?.richText || '',
+      "",
+    richDescription:
+      event.description?.html || event.description?.richText || "",
     startDate: start ? start.toISOString() : null,
     endDate: end ? end.toISOString() : null,
     createdDate: createdDate ? createdDate.toISOString() : null,
     location: locationName,
-    locationType: location.type || '',
-    category: categories[0] || (event.category ? String(event.category) : 'General'),
+    locationType: location.type || "",
+    category:
+      validCategories[0] || (hasValidRawCategory ? rawCategory : "General"),
     tags: Array.isArray(event.tags) ? event.tags : categories,
-    difficulty: difficultyField?.value || difficultyField?.text || 'All Levels',
+    difficulty: difficultyField?.value || difficultyField?.text || "All Levels",
     registrationRequired: Boolean(
       registration.isRegistrationRequired ??
         registration.isEnabled ??
@@ -110,19 +136,21 @@ function normalizeWixEvent(event) {
     ),
     maxAttendees: capacity,
     currentAttendees,
-    featured: Boolean(event.isPromoted ?? event.isHighlighted ?? event.featured),
+    featured: Boolean(
+      event.isPromoted ?? event.isHighlighted ?? event.featured
+    ),
     registration,
-    slug: event.slug || '',
-    link: event.url || '',
+    slug: event.slug || "",
+    link: event.url || "",
     instructor:
       event.instructor ||
       (Array.isArray(event.facilitators) && event.facilitators[0]?.name) ||
-      '',
+      "",
     image:
       event.coverImage?.url ||
       event.image?.url ||
-      (Array.isArray(event.media?.images) ? event.media.images[0]?.url : '') ||
-      '',
+      (Array.isArray(event.media?.images) ? event.media.images[0]?.url : "") ||
+      "",
   };
 }
 
@@ -137,17 +165,14 @@ function normalizeRegistration(registration) {
     registration.contact ||
     {};
 
-  const firstName = registration.firstName || participant.firstName || '';
-  const lastName = registration.lastName || participant.lastName || '';
+  const firstName = registration.firstName || participant.firstName || "";
+  const lastName = registration.lastName || participant.lastName || "";
   const email =
-    registration.memberEmail ||
-    registration.email ||
-    participant.email ||
-    '';
-  const phone = registration.phone || participant.phone || '';
+    registration.memberEmail || registration.email || participant.email || "";
+  const phone = registration.phone || participant.phone || "";
 
   const registrationDate =
-    typeof registration.registrationDate === 'string'
+    typeof registration.registrationDate === "string"
       ? registration.registrationDate
       : parseDate(
           registration.registrationDate ||
@@ -156,18 +181,28 @@ function normalizeRegistration(registration) {
         )?.toISOString() || new Date().toISOString();
 
   return {
-    _id: registration._id || registration.id || `${registration.eventId || ''}-${email}`,
-    eventId: registration.eventId || registration.event?.id || '',
-    memberId: registration.memberId || participant.memberId || registration.contactId || '',
+    _id:
+      registration._id ||
+      registration.id ||
+      `${registration.eventId || ""}-${email}`,
+    eventId: registration.eventId || registration.event?.id || "",
+    memberId:
+      registration.memberId ||
+      participant.memberId ||
+      registration.contactId ||
+      "",
     memberName: registration.memberName || `${firstName} ${lastName}`.trim(),
     memberEmail: email,
     phone: phone || null,
     registrationDate,
-    paymentStatus: registration.paymentStatus || registration.payment?.status || 'pending',
-    paymentMethod: registration.paymentMethod || registration.payment?.method || '',
-    notes: registration.notes || '',
-    attendanceStatus: registration.attendanceStatus || registration.status || 'registered',
-    source: registration.source || 'wix',
+    paymentStatus:
+      registration.paymentStatus || registration.payment?.status || "pending",
+    paymentMethod:
+      registration.paymentMethod || registration.payment?.method || "",
+    notes: registration.notes || "",
+    attendanceStatus:
+      registration.attendanceStatus || registration.status || "registered",
+    source: registration.source || "wix",
   };
 }
 
@@ -178,7 +213,7 @@ let cachedWixEvents = null;
 let cachedWixEventsExpiry = 0;
 
 async function loadWixEvents() {
-  if (!wixEvents || typeof wixEvents.queryEvents !== 'function') {
+  if (!wixEvents || typeof wixEvents.queryEvents !== "function") {
     return null;
   }
 
@@ -188,7 +223,10 @@ async function loadWixEvents() {
     const wixItems = Array.isArray(result?.items) ? result.items : [];
     return wixItems.map(normalizeWixEvent).filter(Boolean);
   } catch (error) {
-    console.warn('Falling back to static event data because Wix Events API failed.', error);
+    console.warn(
+      "Falling back to static event data because Wix Events API failed.",
+      error
+    );
     return null;
   }
 }
@@ -214,10 +252,10 @@ async function getEventsDataset() {
 function filterEventsList(eventsList, filters = {}) {
   const list = Array.isArray(eventsList) ? eventsList : [];
   const {
-    category = 'all',
-    difficulty = 'all',
-    status = 'upcoming',
-    search = '',
+    category = "all",
+    difficulty = "all",
+    status = "upcoming",
+    search = "",
     startDate,
     endDate,
     featured,
@@ -228,23 +266,23 @@ function filterEventsList(eventsList, filters = {}) {
   const now = new Date();
 
   return list.filter((event) => {
-    if (category && category !== 'all' && event.category !== category) {
+    if (category && category !== "all" && event.category !== category) {
       return false;
     }
-    if (difficulty && difficulty !== 'all' && event.difficulty !== difficulty) {
+    if (difficulty && difficulty !== "all" && event.difficulty !== difficulty) {
       return false;
     }
-    if (typeof featured === 'boolean' && event.featured !== featured) {
+    if (typeof featured === "boolean" && event.featured !== featured) {
       return false;
     }
 
     const eventStart = parseDate(event.startDate) || now;
     const eventEnd = parseDate(event.endDate) || eventStart;
 
-    if (status === 'upcoming' && eventEnd < now) {
+    if (status === "upcoming" && eventEnd < now) {
       return false;
     }
-    if (status === 'past' && eventEnd >= now) {
+    if (status === "past" && eventEnd >= now) {
       return false;
     }
 
@@ -265,7 +303,7 @@ function filterEventsList(eventsList, filters = {}) {
         event.instructor,
       ]
         .filter(Boolean)
-        .join(' ')
+        .join(" ")
         .toLowerCase();
       if (!haystack.includes(String(search).toLowerCase())) {
         return false;
@@ -278,7 +316,7 @@ function filterEventsList(eventsList, filters = {}) {
 
 function sortEvents(list, status) {
   const copy = [...list];
-  if (status === 'past') {
+  if (status === "past") {
     return copy.sort((a, b) => {
       const dateA = parseDate(a.startDate) || new Date(0);
       const dateB = parseDate(b.startDate) || new Date(0);
@@ -303,30 +341,33 @@ function toSpotlight(member) {
   return {
     id: member._id,
     name: `${member.firstName} ${member.lastName}`.trim(),
-    bio: member.bio || member.notes || '',
-    profileImage: member.profileImage || '',
-    specialties: member.specialties || '',
+    bio: member.bio || member.notes || "",
+    profileImage: member.profileImage || "",
+    specialties: member.specialties || "",
     yearsExperience: member.yearsExperience || 0,
-    membershipLevel: member.membershipLevel || 'Member',
+    membershipLevel: member.membershipLevel || "Member",
   };
 }
 
 export async function getHomepageContent() {
   const hero = {
-    guestHeading: 'Cultivate your artistry in the Blue Ridge Mountains',
-    memberHeading: 'Welcome back to your bonsai community',
-    subtitle: 'Workshops, exhibitions, and a thriving membership dedicated to the living art of bonsai.',
+    guestHeading: "Cultivate your artistry in the Blue Ridge Mountains",
+    memberHeading: "Welcome back to your bonsai community",
+    subtitle:
+      "Workshops, exhibitions, and a thriving membership dedicated to the living art of bonsai.",
     description:
-      'The Blue Ridge Bonsai Society is a volunteer-run organization serving Western North Carolina. Join us for monthly meetings, hands-on workshops, and access to curated learning resources.',
+      "The Blue Ridge Bonsai Society is a volunteer-run organization serving Western North Carolina. Join us for monthly meetings, hands-on workshops, and access to curated learning resources.",
   };
 
-  const activeMembers = membersData.filter((member) => member.isActive !== false);
+  const activeMembers = membersData.filter(
+    (member) => member.isActive !== false
+  );
   const events = await getEventsDataset();
   const upcoming = sortEvents(
-    filterEventsList(events, { status: 'upcoming' }),
-    'upcoming'
+    filterEventsList(events, { status: "upcoming" }),
+    "upcoming"
   );
-  const workshops = upcoming.filter((event) => event.category === 'Workshop');
+  const workshops = upcoming.filter((event) => event.category === "Workshop");
 
   const spotlights = activeMembers
     .filter((member) => member.profileImage || member.bio)
@@ -348,7 +389,10 @@ export async function getHomepageContent() {
 
 export async function getEvents(filters = {}) {
   const events = await getEventsDataset();
-  const filtered = sortEvents(filterEventsList(events, filters), filters.status);
+  const filtered = sortEvents(
+    filterEventsList(events, filters),
+    filters.status
+  );
   return {
     items: filtered,
     total: filtered.length,
@@ -364,11 +408,34 @@ export async function getEventById(eventId) {
 
 export async function getEventFilters() {
   const events = await getEventsDataset();
-  const categoriesFromCollection = eventCategoriesData.map((category) => category.name).filter(Boolean);
-  const categoriesFromEvents = events.map((event) => event.category).filter(Boolean);
-  const categorySet = new Set(['all', ...categoriesFromCollection, ...categoriesFromEvents]);
+  const categoriesFromCollection = eventCategoriesData
+    .map((category) => category.name)
+    .filter(Boolean);
+  const categoriesFromEvents = events
+    .map((event) => event.category)
+    .filter(Boolean);
 
-  const difficulties = new Set(['all']);
+  // Filter out Wix internal component IDs (comp-*), TPASection_*, and other invalid patterns
+  const isValidCategory = (category) => {
+    if (!category || typeof category !== "string") return false;
+    const lower = category.toLowerCase();
+    // Filter out Wix component IDs, TPASection references, and system IDs
+    return (
+      !lower.startsWith("comp-") &&
+      !lower.startsWith("tpasection_") &&
+      !lower.match(/^[a-z0-9]{10,}$/)
+    ); // Filter out random alphanumeric IDs
+  };
+
+  const validCategoriesFromEvents =
+    categoriesFromEvents.filter(isValidCategory);
+  const categorySet = new Set([
+    "all",
+    ...categoriesFromCollection,
+    ...validCategoriesFromEvents,
+  ]);
+
+  const difficulties = new Set(["all"]);
   events.forEach((event) => {
     if (event.difficulty) {
       difficulties.add(event.difficulty);
@@ -378,89 +445,108 @@ export async function getEventFilters() {
   return {
     categories: Array.from(categorySet).filter(Boolean),
     difficulties: Array.from(difficulties).filter(Boolean),
-    statuses: ['upcoming', 'all', 'past'],
+    statuses: ["upcoming", "all", "past"],
   };
 }
 
 export async function getEventStats() {
   const events = await getEventsDataset();
-  const upcoming = filterEventsList(events, { status: 'upcoming' });
-  const past = filterEventsList(events, { status: 'past' });
+  const upcoming = filterEventsList(events, { status: "upcoming" });
+  const past = filterEventsList(events, { status: "past" });
   const featured = upcoming.filter((event) => event.featured);
 
-  const totalCapacity = upcoming.reduce((total, event) => total + (event.maxAttendees || 0), 0);
-  const totalRegistered = upcoming.reduce((total, event) => total + (event.currentAttendees || 0), 0);
+  const totalCapacity = upcoming.reduce(
+    (total, event) => total + (event.maxAttendees || 0),
+    0
+  );
+  const totalRegistered = upcoming.reduce(
+    (total, event) => total + (event.currentAttendees || 0),
+    0
+  );
 
   return {
     upcomingCount: upcoming.length,
     pastCount: past.length,
     featuredCount: featured.length,
-    averageFillRate: totalCapacity > 0 ? Math.round((totalRegistered / totalCapacity) * 100) : 0,
+    averageFillRate:
+      totalCapacity > 0
+        ? Math.round((totalRegistered / totalCapacity) * 100)
+        : 0,
     totalRegistered,
   };
 }
 
 export async function getAboutContent() {
-  const mission = 'We cultivate the art, science, and camaraderie of bonsai in the Blue Ridge Mountains through education, exhibitions, and stewardship of living trees.';
-  const vision = 'Create an inclusive Appalachian bonsai community where every member—from curious beginner to master artist—has support to grow their practice.';
+  const mission =
+    "We cultivate the art, science, and camaraderie of bonsai in the Blue Ridge Mountains through education, exhibitions, and stewardship of living trees.";
+  const vision =
+    "Create an inclusive Appalachian bonsai community where every member—from curious beginner to master artist—has support to grow their practice.";
 
   const events = await getEventsDataset();
   const coreValues = [
     {
-      id: 'community',
-      title: 'Community First',
-      description: 'A welcoming environment that helps new enthusiasts get started and gives experienced artists a place to share their knowledge.',
+      id: "community",
+      title: "Community First",
+      description:
+        "A welcoming environment that helps new enthusiasts get started and gives experienced artists a place to share their knowledge.",
     },
     {
-      id: 'education',
-      title: 'Hands-on Learning',
-      description: 'Workshops, demonstrations, and study groups that translate theory into confident tree care.',
+      id: "education",
+      title: "Hands-on Learning",
+      description:
+        "Workshops, demonstrations, and study groups that translate theory into confident tree care.",
     },
     {
-      id: 'stewardship',
-      title: 'Stewardship & Sustainability',
-      description: 'Responsible sourcing, regional species education, and long-term planning for our club collections.',
+      id: "stewardship",
+      title: "Stewardship & Sustainability",
+      description:
+        "Responsible sourcing, regional species education, and long-term planning for our club collections.",
     },
     {
-      id: 'partnerships',
-      title: 'Regional Partnerships',
-      description: 'Collaboration with the North Carolina Arboretum and local horticulture organizations to expand bonsai awareness.',
+      id: "partnerships",
+      title: "Regional Partnerships",
+      description:
+        "Collaboration with the North Carolina Arboretum and local horticulture organizations to expand bonsai awareness.",
     },
   ];
 
   const board = boardMembersData.map((member) => ({
     ...member,
-    photo: member.photo || '',
+    photo: member.photo || "",
   }));
 
   const faq = faqItemsData;
   const partnership = partnershipInfoData;
 
   const firstMeeting = sortEvents(
-    events.filter((event) => event.category === 'Meeting'),
-    'upcoming',
+    events.filter((event) => event.category === "Meeting"),
+    "upcoming"
   )[0];
 
   const meetingInfo = firstMeeting
     ? {
-        schedule: 'Monthly on the first Saturday',
-        nextMeeting: parseDate(firstMeeting.startDate)?.toISOString() || firstMeeting.startDate,
-        location: firstMeeting.location || 'Community Center, Asheville',
+        schedule: "Monthly on the first Saturday",
+        nextMeeting:
+          parseDate(firstMeeting.startDate)?.toISOString() ||
+          firstMeeting.startDate,
+        location: firstMeeting.location || "Community Center, Asheville",
         visitorPolicy:
-          'Guests are welcome to attend one regular meeting free of charge. RSVP is appreciated so we can plan seating and demo materials.',
+          "Guests are welcome to attend one regular meeting free of charge. RSVP is appreciated so we can plan seating and demo materials.",
       }
     : {
-        schedule: 'Monthly on the first Saturday',
+        schedule: "Monthly on the first Saturday",
         nextMeeting: null,
-        location: 'Community Center, Asheville',
+        location: "Community Center, Asheville",
         visitorPolicy:
-          'Guests are welcome to attend one regular meeting free of charge. RSVP is appreciated so we can plan seating and demo materials.',
+          "Guests are welcome to attend one regular meeting free of charge. RSVP is appreciated so we can plan seating and demo materials.",
       };
 
   const statistics = {
     yearsActive: 1987,
-    activeMembers: membersData.filter((member) => member.isActive !== false).length,
-    annualPrograms: events.filter((event) => event.category === 'Workshop').length,
+    activeMembers: membersData.filter((member) => member.isActive !== false)
+      .length,
+    annualPrograms: events.filter((event) => event.category === "Workshop")
+      .length,
   };
 
   return {
@@ -477,39 +563,53 @@ export async function getAboutContent() {
 
 const beginnerPathway = [
   {
-    id: 'step-1',
-    title: 'Choose a resilient starter tree',
-    summary: 'Learn which species thrive in Western North Carolina and how to evaluate nursery stock for bonsai potential.',
-    focus: 'Selection',
-    resources: ['Choosing Your First Bonsai Tree', 'Beginner-friendly nurseries and vendors'],
+    id: "step-1",
+    title: "Choose a resilient starter tree",
+    summary:
+      "Learn which species thrive in Western North Carolina and how to evaluate nursery stock for bonsai potential.",
+    focus: "Selection",
+    resources: [
+      "Choosing Your First Bonsai Tree",
+      "Beginner-friendly nurseries and vendors",
+    ],
   },
   {
-    id: 'step-2',
-    title: 'Master watering & daily observation',
-    summary: 'Understand soil moisture, seasonal adjustments, and how microclimates on your bench affect watering cadence.',
-    focus: 'Care Fundamentals',
-    resources: ['The Basics of Bonsai Watering', 'Seasonal care checklists'],
+    id: "step-2",
+    title: "Master watering & daily observation",
+    summary:
+      "Understand soil moisture, seasonal adjustments, and how microclimates on your bench affect watering cadence.",
+    focus: "Care Fundamentals",
+    resources: ["The Basics of Bonsai Watering", "Seasonal care checklists"],
   },
   {
-    id: 'step-3',
-    title: 'Repot with confidence',
-    summary: 'Learn repotting timelines, root pruning strategy, and how to build soil mixes tailored to Appalachian humidity.',
-    focus: 'Repotting',
-    resources: ['Repotting Essentials for Appalachian Bonsai', 'Club soil recipe handouts'],
+    id: "step-3",
+    title: "Repot with confidence",
+    summary:
+      "Learn repotting timelines, root pruning strategy, and how to build soil mixes tailored to Appalachian humidity.",
+    focus: "Repotting",
+    resources: [
+      "Repotting Essentials for Appalachian Bonsai",
+      "Club soil recipe handouts",
+    ],
   },
   {
-    id: 'step-4',
-    title: 'Wire and prune for structure',
-    summary: 'Build structural primary branches, protect cambium, and know when to stop to preserve tree health.',
-    focus: 'Styling',
-    resources: ['Understanding Bonsai Wiring Basics', 'Recommended tool lists for new artists'],
+    id: "step-4",
+    title: "Wire and prune for structure",
+    summary:
+      "Build structural primary branches, protect cambium, and know when to stop to preserve tree health.",
+    focus: "Styling",
+    resources: [
+      "Understanding Bonsai Wiring Basics",
+      "Recommended tool lists for new artists",
+    ],
   },
   {
-    id: 'step-5',
-    title: 'Document progress & ask for feedback',
-    summary: 'Use the members forum, monthly critique table, and seasonal photo log to track development.',
-    focus: 'Community',
-    resources: ['Members Forum access', 'Monthly critique checklist'],
+    id: "step-5",
+    title: "Document progress & ask for feedback",
+    summary:
+      "Use the members forum, monthly critique table, and seasonal photo log to track development.",
+    focus: "Community",
+    resources: ["Members Forum access", "Monthly critique checklist"],
   },
 ];
 
@@ -530,7 +630,9 @@ export async function getLearningContent() {
     verified: Boolean(vendor.verified),
   }));
 
-  const categories = Array.from(new Set(articles.map((article) => article.category))).filter(Boolean);
+  const categories = Array.from(
+    new Set(articles.map((article) => article.category))
+  ).filter(Boolean);
 
   return {
     beginnersGuide: beginnerPathway,
@@ -549,8 +651,8 @@ export async function listEventRegistrations(eventId) {
   if (!eventId) return [];
 
   try {
-    if (wixEvents && typeof wixEvents.queryRegistrations === 'function') {
-      const query = wixEvents.queryRegistrations().eq('eventId', eventId);
+    if (wixEvents && typeof wixEvents.queryRegistrations === "function") {
+      const query = wixEvents.queryRegistrations().eq("eventId", eventId);
       const result = await query.find();
       const items = Array.isArray(result?.items) ? result.items : [];
       if (items.length) {
@@ -558,7 +660,10 @@ export async function listEventRegistrations(eventId) {
       }
     }
   } catch (error) {
-    console.warn('Falling back to static registration data due to Wix Events error.', error);
+    console.warn(
+      "Falling back to static registration data due to Wix Events error.",
+      error
+    );
   }
 
   return eventRegistrationsData
@@ -569,11 +674,11 @@ export async function listEventRegistrations(eventId) {
 
 export async function registerMemberForEvent(eventId, payload) {
   if (!eventId) {
-    throw new Error('eventId is required');
+    throw new Error("eventId is required");
   }
 
   try {
-    if (wixEvents && typeof wixEvents.createRegistration === 'function') {
+    if (wixEvents && typeof wixEvents.createRegistration === "function") {
       const wixPayload = {
         eventId,
         participant: {
@@ -587,26 +692,29 @@ export async function registerMemberForEvent(eventId, payload) {
       const result = await wixEvents.createRegistration(wixPayload);
       return {
         success: true,
-        message: 'Registration submitted via Wix Events.',
+        message: "Registration submitted via Wix Events.",
         registrationId: result?._id || result?.id || null,
       };
     }
 
-    if (wixEvents && typeof wixEvents.registerParticipant === 'function') {
+    if (wixEvents && typeof wixEvents.registerParticipant === "function") {
       const result = await wixEvents.registerParticipant(eventId, payload);
       return {
         success: true,
-        message: 'Registration submitted via Wix Events.',
+        message: "Registration submitted via Wix Events.",
         registrationId: result?._id || result?.id || null,
       };
     }
   } catch (error) {
-    console.error('Wix Events registration failed, using fallback implementation.', error);
+    console.error(
+      "Wix Events registration failed, using fallback implementation.",
+      error
+    );
   }
 
   return {
     success: true,
-    message: 'Registration recorded in development environment.',
+    message: "Registration recorded in development environment.",
     eventId,
     payload,
   };
@@ -619,20 +727,23 @@ export async function searchContent(query) {
   const lower = String(query).toLowerCase();
 
   const eventDataset = await getEventsDataset();
-  const events = filterEventsList(eventDataset, { status: 'all', search: lower });
+  const events = filterEventsList(eventDataset, {
+    status: "all",
+    search: lower,
+  });
   const articles = articlesData.filter((article) =>
     [article.title, article.content, ...(article.tags || [])]
       .filter(Boolean)
-      .join(' ')
+      .join(" ")
       .toLowerCase()
-      .includes(lower),
+      .includes(lower)
   );
   const resources = resourcesData.filter((resource) =>
     [resource.name, resource.description]
       .filter(Boolean)
-      .join(' ')
+      .join(" ")
       .toLowerCase()
-      .includes(lower),
+      .includes(lower)
   );
 
   return { events, articles, resources };
