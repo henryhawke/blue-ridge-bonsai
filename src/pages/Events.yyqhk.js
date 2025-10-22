@@ -15,6 +15,7 @@ let activeFilters = {
   difficulty: "all",
   status: "upcoming",
   search: "",
+  tags: [],
 };
 let calendarMonthOffset = 0;
 let debounceTimer;
@@ -57,7 +58,10 @@ async function initializeFilters() {
   const statusFilter = getElement("#statusFilter");
   if (statusFilter && filters.statuses) {
     statusFilter.options = filters.statuses.map((value) => ({
-      label: value === "all" ? "All events" : value.charAt(0).toUpperCase() + value.slice(1),
+      label:
+        value === "all"
+          ? "All events"
+          : value.charAt(0).toUpperCase() + value.slice(1),
       value,
     }));
     statusFilter.value = activeFilters.status;
@@ -73,6 +77,15 @@ function applyQueryFilters() {
     activeFilters.search = query.search;
     const searchInput = getElement("#searchInput");
     if (searchInput) searchInput.value = activeFilters.search;
+  }
+  if (query.tags) {
+    // Handle tags from URL query (comma-separated string)
+    activeFilters.tags = Array.isArray(query.tags)
+      ? query.tags
+      : query.tags
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean);
   }
 }
 
@@ -90,7 +103,10 @@ async function loadStats() {
   const stats = await fetchEventStats();
   setText("#statsUpcoming", `${stats.upcomingCount || 0}`);
   setText("#statsFeatured", `${stats.featuredCount || 0}`);
-  setText("#statsFillRate", stats.averageFillRate ? `${stats.averageFillRate}% avg fill` : "");
+  setText(
+    "#statsFillRate",
+    stats.averageFillRate ? `${stats.averageFillRate}% avg fill` : ""
+  );
 }
 
 function bindEventsRepeater(events) {
@@ -112,7 +128,10 @@ function bindEventsRepeater(events) {
     formattedDate: formatEventDate(event),
     availability: event.registrationRequired
       ? event.maxAttendees
-        ? `${Math.max(0, event.maxAttendees - (event.currentAttendees || 0))} spots left`
+        ? `${Math.max(
+            0,
+            event.maxAttendees - (event.currentAttendees || 0)
+          )} spots left`
         : "Registration required"
       : "Open to guests",
   }));
@@ -128,12 +147,16 @@ function bindEventsRepeater(events) {
 
     const button = $item("#eventDetailsButton");
     if (button && typeof button.onClick === "function") {
-      button.onClick(() => wixLocation.to(`/event-details?eventId=${itemData._id}`));
+      button.onClick(() =>
+        wixLocation.to(`/event-details?eventId=${itemData._id}`)
+      );
     }
 
     const card = $item("#eventCard");
     if (card && typeof card.onClick === "function") {
-      card.onClick(() => wixLocation.to(`/event-details?eventId=${itemData._id}`));
+      card.onClick(() =>
+        wixLocation.to(`/event-details?eventId=${itemData._id}`)
+      );
     }
   });
 
@@ -176,6 +199,21 @@ function setupHandlers() {
     });
   }
 
+  // Handle CMS selection tags component
+  const selectionTags = getElement("#selectionTags1");
+  if (selectionTags && typeof selectionTags.onChange === "function") {
+    selectionTags.onChange(() => {
+      try {
+        // Get selected tags from the component
+        const selectedTags = selectionTags.value || [];
+        activeFilters.tags = Array.isArray(selectedTags) ? selectedTags : [];
+        refreshEvents();
+      } catch (error) {
+        console.error("Error reading selection tags:", error);
+      }
+    });
+  }
+
   const gridBtn = getElement("#gridViewBtn");
   const calendarBtn = getElement("#calendarViewBtn");
   if (gridBtn && typeof gridBtn.onClick === "function") {
@@ -211,12 +249,19 @@ function renderCalendar(events) {
   if (!calendarComponent || !("html" in calendarComponent)) return;
 
   const today = new Date();
-  const displayDate = new Date(today.getFullYear(), today.getMonth() + calendarMonthOffset, 1);
+  const displayDate = new Date(
+    today.getFullYear(),
+    today.getMonth() + calendarMonthOffset,
+    1
+  );
   const year = displayDate.getFullYear();
   const month = displayDate.getMonth();
 
   if (monthLabel && "text" in monthLabel) {
-    monthLabel.text = displayDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    monthLabel.text = displayDate.toLocaleDateString("en-US", {
+      month: "long",
+      year: "numeric",
+    });
   }
 
   const firstDay = new Date(year, month, 1).getDay();
@@ -231,7 +276,11 @@ function renderCalendar(events) {
     const current = new Date(year, month, day);
     const dayEvents = (events || []).filter((event) => {
       const start = new Date(event.startDate);
-      return start.getFullYear() === year && start.getMonth() === month && start.getDate() === day;
+      return (
+        start.getFullYear() === year &&
+        start.getMonth() === month &&
+        start.getDate() === day
+      );
     });
     cells.push({ day, events: dayEvents });
   }
@@ -250,16 +299,18 @@ function renderCalendar(events) {
           if (!cell.day) {
             return '<div class="brbs-calendar-day"></div>';
           }
-          const eventsHtml = cell.events
-            .map(
-              (event) => `
+          const eventsHtml =
+            cell.events
+              .map(
+                (event) => `
                 <div class="brbs-calendar-event">
                   <strong>${event.title}</strong>
                   <span>${formatTime(event.startDate)}</span>
                 </div>
-              `,
-            )
-            .join("") || '<div class="brbs-calendar-event" style="background:rgba(107,142,111,0.08); color:#4d5b4f;">No events</div>';
+              `
+              )
+              .join("") ||
+            '<div class="brbs-calendar-event" style="background:rgba(107,142,111,0.08); color:#4d5b4f;">No events</div>';
           return `
             <div class="brbs-calendar-day">
               <h4>${cell.day}</h4>
@@ -278,16 +329,23 @@ function switchView(view) {
   const gridSection = getElement("#eventsGridSection");
   const calendarSection = getElement("#calendarSection");
   if (view === "calendar") {
-    if (gridSection && typeof gridSection.hide === "function") gridSection.hide();
-    if (calendarSection && typeof calendarSection.show === "function") calendarSection.show();
+    if (gridSection && typeof gridSection.hide === "function")
+      gridSection.hide();
+    if (calendarSection && typeof calendarSection.show === "function")
+      calendarSection.show();
   } else {
-    if (gridSection && typeof gridSection.show === "function") gridSection.show();
-    if (calendarSection && typeof calendarSection.hide === "function") calendarSection.hide();
+    if (gridSection && typeof gridSection.show === "function")
+      gridSection.show();
+    if (calendarSection && typeof calendarSection.hide === "function")
+      calendarSection.hide();
   }
 }
 
 function updateCounts(count) {
-  setText("#eventsCountText", count ? `${count} events` : "No events match your filters yet.");
+  setText(
+    "#eventsCountText",
+    count ? `${count} events` : "No events match your filters yet."
+  );
 }
 
 function showLoading() {
@@ -342,14 +400,22 @@ function formatEventDate(event) {
   const start = new Date(event.startDate);
   if (Number.isNaN(start.getTime())) return "Date TBA";
   const end = event.endDate ? new Date(event.endDate) : null;
-  const date = start.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const date = start.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
   const startTime = formatTime(start);
   const endTime = end ? formatTime(end) : null;
-  return endTime ? `${date} · ${startTime} – ${endTime}` : `${date} · ${startTime}`;
+  return endTime
+    ? `${date} · ${startTime} – ${endTime}`
+    : `${date} · ${startTime}`;
 }
 
 function formatTime(value) {
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }

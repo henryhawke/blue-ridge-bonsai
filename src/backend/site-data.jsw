@@ -259,6 +259,7 @@ function filterEventsList(eventsList, filters = {}) {
     startDate,
     endDate,
     featured,
+    tags = [],
   } = filters || {};
 
   const startBoundary = parseDate(startDate);
@@ -306,6 +307,20 @@ function filterEventsList(eventsList, filters = {}) {
         .join(" ")
         .toLowerCase();
       if (!haystack.includes(String(search).toLowerCase())) {
+        return false;
+      }
+    }
+
+    // Filter by tags if provided
+    if (tags && Array.isArray(tags) && tags.length > 0) {
+      const eventTags = Array.isArray(event.tags) ? event.tags : [];
+      const hasMatchingTag = tags.some((tag) =>
+        eventTags.some(
+          (eventTag) =>
+            String(eventTag).toLowerCase() === String(tag).toLowerCase()
+        )
+      );
+      if (!hasMatchingTag) {
         return false;
       }
     }
