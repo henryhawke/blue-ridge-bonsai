@@ -285,20 +285,19 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 /*
- * Hides the second (duplicate) bell icon in the Wix Login Bar.
+ * Hides the duplicate bell icon in #memberLoginBar1.
  *
- * The Login Bar renders notification icons as sibling elements inside an
- * icon strip. When both "Notifications" and "Inbox" are enabled in the
- * Login Bar settings they both render as an identical bell shape.
- *
- * PREFERRED FIX: In the Wix editor, select the Login Bar → Settings panel
- * → disable the "My Inbox" or "Notifications" icon toggle (whichever is
- * the duplicate). Use this CSS only if the editor toggle is unavailable.
- *
- * If hiding the wrong bell, swap nth-child(2) to nth-child(1).
+ * Two identical bell icons exist because the Login Bar has two notification
+ * sources enabled. They link to /notifications and /notifications-1.
+ * The second one (/notifications-1) is the duplicate — hide its wrapper.
  */
-#memberLoginBar1 [data-hook="notification-icon"]:nth-of-type(2),
-#memberLoginBar1 [class*="notificationIcon"]:nth-of-type(2),
-#memberLoginBar1 [class*="notification-icon"]:nth-of-type(2) {
+.wixui-login-social-bar__icons a[href*="notifications-1"],
+.login-social-bar__icons a[href*="notifications-1"] {
+  display: none !important;
+}
+
+/* Hide the wrapper div too so it leaves no gap in the icon strip */
+.wixui-login-social-bar__icons:has(a[href*="notifications-1"]) a[href*="notifications-1"],
+.login-social-bar__icons ._3sKSe:has(a[href*="notifications-1"]) {
   display: none !important;
 }
