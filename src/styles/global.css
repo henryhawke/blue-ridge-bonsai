@@ -1,0 +1,281 @@
+/*
+ * Blue Ridge Bonsai Society — global.css
+ *
+ * HOW THIS WORKS:
+ *  - Class names like .button, .header, .section, etc. are Wix's BUILT-IN
+ *    classes. They are automatically applied to every element of that type
+ *    across the entire site. No JavaScript required.
+ *
+ *  - var(--wst-*) values pull directly from the site theme you set in the
+ *    Wix Studio editor (your color palette, fonts, button styles). Changing
+ *    your palette in the editor automatically updates every var() here.
+ *
+ *  - Custom classes (.brbs-*) at the bottom require you to either assign
+ *    the class in the Wix editor's "CSS Classes" field on the element, or
+ *    call $w('#el').customClassList.add('brbs-card') in page code.
+ *
+ * REFERENCE:
+ *  https://dev.wix.com/docs/velo/velo-only-apis/$w/styling-elements-with-css
+ */
+
+/* ─── Header ──────────────────────────────────────────────────────────────── */
+
+.header {
+  /* Pulls background from your site palette — edit in editor to change */
+  background-color: var(--wst-color-fill-background-primary);
+  border-bottom: 1px solid var(--wst-color-line);
+}
+
+/* ─── Footer ──────────────────────────────────────────────────────────────── */
+
+.footer {
+  background-color: var(--wst-color-fill-background-secondary);
+  border-top: 1px solid var(--wst-color-line);
+}
+
+/* ─── Sections ────────────────────────────────────────────────────────────── */
+
+.section {
+  /* Default section spacing — adjust as needed */
+}
+
+/* ─── Box / Container ─────────────────────────────────────────────────────── */
+
+.box {
+  /* Base container — most boxes inherit this */
+}
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────── */
+
+/*
+ * .button controls the button shell (background, border, size).
+ * .button__label controls the text inside.
+ * .button__icon controls any icon inside.
+ *
+ * These override the editor's button design globally.
+ * To target a SPECIFIC button only, add a custom class to it in the editor
+ * (e.g. "btn-primary") and target .btn-primary instead.
+ */
+
+.button {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.button__label {
+  font: var(--wst-font-style-body-medium);
+  font-weight: 600;
+}
+
+/* ─── Text ────────────────────────────────────────────────────────────────── */
+
+/*
+ * .rich-text targets ALL text elements site-wide.
+ * .rich-text__text targets the HTML text nodes inside them.
+ *
+ * Most typography is already handled by your editor theme fonts.
+ * Only add overrides here for things the editor doesn't expose.
+ */
+
+.rich-text {
+  /* e.g. line-height: 1.6; */
+}
+
+.rich-text__text {
+  /* e.g. letter-spacing: 0.01em; */
+}
+
+/* ─── Horizontal Navigation Menu ─────────────────────────────────────────── */
+
+/*
+ * These classes target the Menu widget used in the header.
+ * .horizontal-menu        — the nav container
+ * .horizontal-menu__item  — each nav link wrapper
+ * .horizontal-menu__item-label — the link text
+ */
+
+.horizontal-menu {
+  /* e.g. gap between items: already controlled by editor */
+}
+
+.horizontal-menu__item {
+  transition: opacity 0.2s ease;
+}
+
+.horizontal-menu__item:hover {
+  opacity: 0.75;
+}
+
+.horizontal-menu__item-label {
+  font: var(--wst-font-style-body-medium);
+  font-weight: 500;
+  color: var(--wst-color-text-primary);
+}
+
+/* ─── Vertical Menu (mobile / sidebar nav) ───────────────────────────────── */
+
+.vertical-menu {
+  background-color: var(--wst-color-fill-background-primary);
+}
+
+.vertical-menu__item {
+  border-bottom: 1px solid var(--wst-color-line);
+}
+
+.vertical-menu__item-label {
+  font: var(--wst-font-style-body-medium);
+  color: var(--wst-color-text-primary);
+}
+
+/* ─── Images ──────────────────────────────────────────────────────────────── */
+
+.image {
+  /* e.g. border-radius: 8px; */
+}
+
+/* ─── Dividers ────────────────────────────────────────────────────────────── */
+
+.horizontal-line {
+  border-top: 1px solid var(--wst-color-line);
+}
+
+.vertical-line {
+  border-left: 1px solid var(--wst-color-line);
+}
+
+/* ─── Lightbox / Popup ────────────────────────────────────────────────────── */
+
+.lightbox {
+  background-color: var(--wst-color-fill-background-primary);
+  border-radius: 12px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+}
+
+.lightbox__close-button {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.lightbox__close-button:hover {
+  opacity: 1;
+}
+
+/* ─── Search Bar ──────────────────────────────────────────────────────────── */
+
+.search-bar {
+  background-color: var(--wst-color-fill-background-secondary);
+  border-radius: 24px;
+  border: 1px solid var(--wst-color-line);
+}
+
+.search-bar__input {
+  background: transparent;
+  font: var(--wst-font-style-body-medium);
+  color: var(--wst-color-text-primary);
+}
+
+.search-bar__icon {
+  fill: var(--wst-color-text-secondary);
+}
+
+/* ─── Language Menu ───────────────────────────────────────────────────────── */
+
+.language-menu {
+  background-color: var(--wst-color-fill-background-primary);
+  border: 1px solid var(--wst-color-line);
+  border-radius: 6px;
+}
+
+.language-menu__option {
+  color: var(--wst-color-text-primary);
+  font: var(--wst-font-style-body-small);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* CUSTOM CLASSES                                                              */
+/*                                                                             */
+/* These classes must be assigned to elements one of two ways:                */
+/*   1. In the Wix Studio editor: select element → CSS Classes → type name    */
+/*   2. In page code: $w('#el').customClassList.add('brbs-card')              */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/* Card with hover lift */
+.brbs-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  overflow: hidden;
+}
+
+.brbs-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+  transform: translateY(-2px);
+}
+
+/* Featured card variant */
+.brbs-card--featured {
+  border: 2px solid var(--wst-color-fill-accent-1);
+}
+
+/* Subtle section background */
+.brbs-section-alt {
+  background-color: var(--wst-color-fill-background-secondary);
+}
+
+/* Centered stat block */
+.brbs-stat {
+  text-align: center;
+}
+
+.brbs-stat__number {
+  color: var(--wst-color-fill-accent-1);
+  font: var(--wst-font-style-h2);
+  font-weight: 800;
+  line-height: 1;
+  display: block;
+}
+
+.brbs-stat__label {
+  color: var(--wst-color-text-secondary);
+  font: var(--wst-font-style-body-small);
+  margin-top: 4px;
+  display: block;
+}
+
+/* Filter pill (active / inactive state) */
+.brbs-pill {
+  border-radius: 20px;
+  border: 1px solid var(--wst-color-line);
+  padding: 5px 14px;
+  font: var(--wst-font-style-body-small);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--wst-color-fill-background-primary);
+  color: var(--wst-color-text-primary);
+}
+
+.brbs-pill--active {
+  background: var(--wst-color-fill-accent-1);
+  color: var(--wst-color-fill-base-1);
+  border-color: var(--wst-color-fill-accent-1);
+}
+
+/* Status labels */
+.brbs-status-active   { color: var(--wst-color-fill-accent-3); font-weight: 600; }
+.brbs-status-pending  { color: var(--wst-color-fill-accent-4); font-weight: 600; }
+.brbs-status-inactive { color: var(--wst-color-disabled);       font-weight: 600; }
+
+/* Fade-in animation */
+@keyframes brbs-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.brbs-animate-in {
+  animation: brbs-fade-in 0.35s ease forwards;
+}

@@ -2,15 +2,73 @@
   "web-methods": {
     "*": {
       "*": {
-        "siteOwner": {
-          "invoke": true
-        },
-        "siteMember": {
-          "invoke": true
-        },
-        "anonymous": {
-          "invoke": true
-        }
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": false },
+        "anonymous":  { "invoke": false }
+      }
+    },
+    "backend/site-data.jsw": {
+      "getEvents": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "getEventById": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "getEventCategories": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "getHomepageContent": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "getFaqItems": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "getResources": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      }
+    },
+    "backend/membership-backend.jsw": {
+      "getCurrentMemberProfile": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": false }
+      },
+      "checkMembershipStatus": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": false }
+      },
+      "getMemberDirectory": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "getMembershipLevels": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "submitMemberApplication": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": true },
+        "anonymous":  { "invoke": true }
+      },
+      "getPendingApplications": {
+        "siteOwner": { "invoke": true },
+        "siteMember": { "invoke": false },
+        "anonymous":  { "invoke": false }
       }
     }
   }

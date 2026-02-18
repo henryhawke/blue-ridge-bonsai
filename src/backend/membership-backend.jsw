@@ -1,0 +1,285 @@
+/**
+ * membership-backend.jsw
+ *
+ * Membership management for Blue Ridge Bonsai Society.
+ * Uses Wix Members API and a custom "MemberProfiles" CMS collection
+ * for extended member data.
+ *
+ * CMS collection "MemberProfiles" expected fields:
+ *  - memberId        (Text)  — links to Wix member ID
+ *  - displayName     (Text)
+ *  - membershipLevel (Text)  e.g. "Individual", "Family", "Senior"
+ *  - memberSince     (Date)
+ *  - status          (Text)  "active" | "pending" | "expired"
+ *  - bio             (Long Text)
+ *  - interests       (Tags / Text Array)
+ *  - isPublic        (Boolean)
+ *
+ * CMS collection "MemberApplications" expected fields:
+ *  - firstName       (Text)
+ *  - lastName        (Text)
+ *  - email           (Text)
+ *  - phone           (Text)
+ *  - membershipLevel (Text)
+ *  - experience      (Text)
+ *  - howDidYouHear   (Text)
+ *  - status          (Text)  "pending" | "approved" | "rejected"
+ *  - submittedAt     (Date)
+ */
+
+import wixData from 'wix-data';
+import { members } from 'wix-members-backend';
+import { currentMember } from 'wix-members-backend';
+
+// ─── Member Profile ────────────────────────────────────────────────────────────
+
+/**
+ * Returns the current logged-in member's profile, including CMS extension data.
+ *
+ * @returns {Promise<object|null>}
+ */
+export async function getCurrentMemberProfile() {
+  try {
+    const member = await currentMember.getMember({ fieldsets: ['FULL'] });
+    if (!member) return null;
+
+    const profile = await _getMemberProfile(member._id);
+
+    return {
+      id: member._id,
+      email: member.loginEmail,
+      displayName: member.profile?.nickname || member.profile?.name?.full || '',
+      firstName: member.profile?.name?.first || '',
+      lastName: member.profile?.name?.last || '',
+      photo: member.profile?.photo?.url || null,
+      membershipLevel: profile?.membershipLevel || null,
+      memberSince: profile?.memberSince || null,
+      status: profile?.status || 'pending',
+      bio: profile?.bio || '',
+      interests: profile?.interests || [],
+      isPublic: profile?.isPublic !== false,
+    };
+  } catch (err) {
+    console.error('getCurrentMemberProfile failed:', err.message);
+    return null;
+  }
+}
+
+/**
+ * Returns the membership status of the current logged-in member.
+ *
+ * @returns {Promise<{isLoggedIn: boolean, status: string|null, level: string|null}>}
+ */
+export async function checkMembershipStatus() {
+  try {
+    const member = await currentMember.getMember({ fieldsets: ['FULL'] });
+    if (!member) return { isLoggedIn: false, status: null, level: null };
+
+    const profile = await _getMemberProfile(member._id);
+
+    return {
+      isLoggedIn: true,
+      memberId: member._id,
+      status: profile?.status || 'pending',
+      level: profile?.membershipLevel || null,
+      memberSince: profile?.memberSince || null,
+    };
+  } catch (err) {
+    return { isLoggedIn: false, status: null, level: null };
+  }
+}
+
+// ─── Member Directory ─────────────────────────────────────────────────────────
+
+/**
+ * Returns public member profiles for the member directory.
+ * Only returns members who have opted into public listing.
+ *
+ * @param {object} [options]
+ * @param {number} [options.limit=50]
+ * @param {number} [options.skip=0]
+ * @returns {Promise<{members: Array, totalCount: number}>}
+ */
+export async function getMemberDirectory({ limit = 50, skip = 0 } = {}) {
+  try {
+    const result = await wixData
+      .query('MemberProfiles')
+      .eq('isPublic', true)
+      .eq('status', 'active')
+      .skip(skip)
+      .limit(limit)
+      .find();
+
+    return {
+      members: result.items,
+      totalCount: result.totalCount,
+    };
+  } catch (err) {
+    console.warn('getMemberDirectory: MemberProfiles collection may not exist yet', err.message);
+    return { members: [], totalCount: 0 };
+  }
+}
+
+// ─── Membership Levels ────────────────────────────────────────────────────────
+
+/**
+ * Returns available membership tier definitions.
+ * These are stored in the "MembershipLevels" CMS collection.
+ *
+ * CMS collection "MembershipLevels" expected fields:
+ *  - name         (Text)
+ *  - price        (Number)
+ *  - billingCycle (Text)  e.g. "annual"
+ *  - description  (Long Text)
+ *  - benefits     (Long Text)
+ *  - isRecommended (Boolean)
+ *  - sortOrder    (Number)
+ *
+ * @returns {Promise<Array>}
+ */
+export async function getMembershipLevels() {
+  try {
+    const result = await wixData
+      .query('MembershipLevels')
+      .ascending('sortOrder')
+      .find();
+
+    return result.items;
+  } catch (err) {
+    console.warn('getMembershipLevels: returning defaults', err.message);
+    return _defaultMembershipLevels();
+  }
+}
+
+// ─── Member Application ───────────────────────────────────────────────────────
+
+/**
+ * Submits a new membership application.
+ * Inserts a record into the "MemberApplications" CMS collection.
+ *
+ * @param {object} formData
+ * @param {string} formData.firstName
+ * @param {string} formData.lastName
+ * @param {string} formData.email
+ * @param {string} formData.phone
+ * @param {string} formData.membershipLevel
+ * @param {string} [formData.experience]
+ * @param {string} [formData.howDidYouHear]
+ * @returns {Promise<{success: boolean, applicationId?: string, error?: string}>}
+ */
+export async function submitMemberApplication(formData) {
+  const { firstName, lastName, email, membershipLevel } = formData;
+
+  if (!firstName || !lastName || !email || !membershipLevel) {
+    return { success: false, error: 'Required fields missing.' };
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { success: false, error: 'Invalid email address.' };
+  }
+
+  try {
+    const existing = await wixData
+      .query('MemberApplications')
+      .eq('email', email.toLowerCase().trim())
+      .eq('status', 'pending')
+      .find();
+
+    if (existing.totalCount > 0) {
+      return { success: false, error: 'An application with this email is already pending.' };
+    }
+
+    const application = {
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.toLowerCase().trim(),
+      phone: (formData.phone || '').trim(),
+      membershipLevel,
+      experience: (formData.experience || '').trim(),
+      howDidYouHear: (formData.howDidYouHear || '').trim(),
+      status: 'pending',
+      submittedAt: new Date(),
+    };
+
+    const inserted = await wixData.insert('MemberApplications', application);
+
+    return { success: true, applicationId: inserted._id };
+  } catch (err) {
+    console.error('submitMemberApplication failed:', err.message);
+    return { success: false, error: 'Submission failed. Please try again.' };
+  }
+}
+
+// ─── Admin: Applications ──────────────────────────────────────────────────────
+
+/**
+ * Returns pending member applications (site owner only — set in permissions.json).
+ *
+ * @returns {Promise<Array>}
+ */
+export async function getPendingApplications() {
+  try {
+    const result = await wixData
+      .query('MemberApplications')
+      .eq('status', 'pending')
+      .descending('submittedAt')
+      .find({ suppressAuth: true });
+
+    return result.items;
+  } catch (err) {
+    console.error('getPendingApplications failed:', err.message);
+    return [];
+  }
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+async function _getMemberProfile(memberId) {
+  try {
+    const result = await wixData
+      .query('MemberProfiles')
+      .eq('memberId', memberId)
+      .limit(1)
+      .find();
+
+    return result.items[0] || null;
+  } catch {
+    return null;
+  }
+}
+
+function _defaultMembershipLevels() {
+  return [
+    {
+      _id: 'individual',
+      name: 'Individual',
+      price: 30,
+      billingCycle: 'annual',
+      description: 'Perfect for a solo bonsai enthusiast.',
+      benefits: 'Monthly newsletter\nClub meetings\nWorkshop discounts',
+      isRecommended: false,
+      sortOrder: 1,
+    },
+    {
+      _id: 'family',
+      name: 'Family',
+      price: 45,
+      billingCycle: 'annual',
+      description: 'Covers all household members.',
+      benefits: 'Everything in Individual\nFamily members included\nAdditional show entries',
+      isRecommended: true,
+      sortOrder: 2,
+    },
+    {
+      _id: 'senior',
+      name: 'Senior',
+      price: 20,
+      billingCycle: 'annual',
+      description: 'Discounted rate for members 65+.',
+      benefits: 'Same as Individual membership',
+      isRecommended: false,
+      sortOrder: 3,
+    },
+  ];
+}

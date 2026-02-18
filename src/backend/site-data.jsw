@@ -1,0 +1,234 @@
+/**
+ * site-data.jsw
+ *
+ * Central backend data module for the Blue Ridge Bonsai Society.
+ * Exposes functions called from frontend page code.
+ *
+ * Data sources (in priority order):
+ *  1. Wix Events v2 app (for events)
+ *  2. Wix CMS collections (for members, resources, FAQ, etc.)
+ *  3. Graceful empty fallbacks if collections don't exist yet
+ *
+ * Collection names expected in Wix CMS:
+ *  - "Events"           (if not using Wix Events app)
+ *  - "FAQItems"
+ *  - "Resources"
+ *  - "BoardMembers"
+ */
+
+import wixData from 'wix-data';
+import { events } from 'wix-events.v2';
+
+// ─── Events ───────────────────────────────────────────────────────────────────
+
+/**
+ * Returns upcoming events sorted by start date.
+ * Uses Wix Events v2 API; falls back to CMS collection "Events".
+ *
+ * @param {object} [options]
+ * @param {number} [options.limit=20]
+ * @param {string} [options.categoryId]   Filter by event category ID
+ * @returns {Promise<Array>}
+ */
+export async function getEvents({ limit = 20, categoryId } = {}) {
+  try {
+    const queryOptions = {
+      limit,
+      sort: [{ fieldName: 'dateAndTimeSettings.startDate', order: 'asc' }],
+    };
+
+    if (categoryId) {
+      queryOptions.filter = { categoryIds: { $hasSome: [categoryId] } };
+    }
+
+    const response = await events.queryEvents(queryOptions);
+
+    return (response.events || []).map(_normalizeEvent);
+  } catch (err) {
+    console.error('getEvents: Wix Events API failed, trying CMS fallback', err.message);
+    return _getEventsFromCms(limit);
+  }
+}
+
+/**
+ * Returns a single event by ID.
+ *
+ * @param {string} eventId
+ * @returns {Promise<object|null>}
+ */
+export async function getEventById(eventId) {
+  try {
+    const response = await events.getEvent(eventId);
+    return response.event ? _normalizeEvent(response.event) : null;
+  } catch (err) {
+    console.error('getEventById failed:', err.message);
+    return null;
+  }
+}
+
+/**
+ * Returns event categories.
+ *
+ * @returns {Promise<Array<{id: string, name: string}>>}
+ */
+export async function getEventCategories() {
+  try {
+    const response = await events.queryEventCategories({ limit: 50 });
+    return (response.categories || []).map(c => ({ id: c._id, name: c.name }));
+  } catch (err) {
+    console.warn('getEventCategories failed:', err.message);
+    return [];
+  }
+}
+
+// ─── Homepage ─────────────────────────────────────────────────────────────────
+
+/**
+ * Returns data needed to populate the homepage:
+ * upcoming events and board member spotlights.
+ *
+ * @returns {Promise<{upcomingEvents: Array, boardMembers: Array}>}
+ */
+export async function getHomepageContent() {
+  const [upcomingEvents, boardMembers] = await Promise.allSettled([
+    getEvents({ limit: 3 }),
+    _getBoardMembers(),
+  ]);
+
+  return {
+    upcomingEvents: upcomingEvents.status === 'fulfilled' ? upcomingEvents.value : [],
+    boardMembers: boardMembers.status === 'fulfilled' ? boardMembers.value : [],
+  };
+}
+
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
+
+/**
+ * Returns all FAQ items ordered by sortOrder.
+ *
+ * CMS collection "FAQItems" expected fields:
+ *  - question  (Text)
+ *  - answer    (Long Text / Rich Text)
+ *  - category  (Text)
+ *  - sortOrder (Number)
+ *
+ * @returns {Promise<Array>}
+ */
+export async function getFaqItems() {
+  try {
+    const result = await wixData
+      .query('FAQItems')
+      .ascending('sortOrder')
+      .find();
+
+    return result.items;
+  } catch (err) {
+    console.warn('getFaqItems: collection may not exist yet', err.message);
+    return [];
+  }
+}
+
+// ─── Resources ────────────────────────────────────────────────────────────────
+
+/**
+ * Returns learning resources, optionally filtered by category.
+ *
+ * CMS collection "Resources" expected fields:
+ *  - title      (Text)
+ *  - description (Long Text)
+ *  - url        (URL)
+ *  - category   (Text)  e.g. "beginner", "styling", "care"
+ *  - featured   (Boolean)
+ *
+ * @param {object} [options]
+ * @param {string} [options.category]
+ * @param {number} [options.limit=50]
+ * @returns {Promise<Array>}
+ */
+export async function getResources({ category, limit = 50 } = {}) {
+  try {
+    let query = wixData.query('Resources').limit(limit);
+
+    if (category) {
+      query = query.eq('category', category);
+    }
+
+    const result = await query.find();
+    return result.items;
+  } catch (err) {
+    console.warn('getResources: collection may not exist yet', err.message);
+    return [];
+  }
+}
+
+// ─── Board Members ────────────────────────────────────────────────────────────
+
+/**
+ * CMS collection "BoardMembers" expected fields:
+ *  - name        (Text)
+ *  - role        (Text)
+ *  - bio         (Long Text)
+ *  - photo       (Image)
+ *  - sortOrder   (Number)
+ *
+ * @returns {Promise<Array>}
+ */
+async function _getBoardMembers() {
+  try {
+    const result = await wixData
+      .query('BoardMembers')
+      .ascending('sortOrder')
+      .find();
+
+    return result.items;
+  } catch (err) {
+    console.warn('_getBoardMembers: collection may not exist yet', err.message);
+    return [];
+  }
+}
+
+// ─── CMS Fallback ─────────────────────────────────────────────────────────────
+
+async function _getEventsFromCms(limit) {
+  try {
+    const result = await wixData
+      .query('Events')
+      .descending('startDate')
+      .limit(limit)
+      .find();
+
+    return result.items.map(item => ({
+      _id: item._id,
+      title: item.title || 'Event',
+      description: item.description || '',
+      startDate: item.startDate,
+      endDate: item.endDate,
+      location: item.location || '',
+      imageUrl: item.mainImage?.src || null,
+      slug: item.slug || item._id,
+      registrationEnabled: item.registrationEnabled || false,
+    }));
+  } catch (err) {
+    console.warn('_getEventsFromCms: collection may not exist yet', err.message);
+    return [];
+  }
+}
+
+// ─── Normalizers ──────────────────────────────────────────────────────────────
+
+function _normalizeEvent(e) {
+  return {
+    _id: e._id,
+    title: e.title || '',
+    description: e.description?.text || e.summary || '',
+    startDate: e.dateAndTimeSettings?.startDate || null,
+    endDate: e.dateAndTimeSettings?.endDate || null,
+    location: e.location?.address?.formatted || e.location?.name || '',
+    imageUrl: e.mainImage?.src || null,
+    slug: e.slug || e._id,
+    registrationEnabled: e.registration?.type !== 'NO_REGISTRATION',
+    capacity: e.registration?.capacity || null,
+    totalRegistrations: e.registration?.totalRegistrations || 0,
+    categories: (e.categories || []).map(c => c.name),
+  };
+}
