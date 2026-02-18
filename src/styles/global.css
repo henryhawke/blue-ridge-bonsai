@@ -279,3 +279,26 @@
 .brbs-animate-in {
   animation: brbs-fade-in 0.35s ease forwards;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* LOGIN BAR FIXES (#memberLoginBar1)                                          */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/*
+ * Hides the second (duplicate) bell icon in the Wix Login Bar.
+ *
+ * The Login Bar renders notification icons as sibling elements inside an
+ * icon strip. When both "Notifications" and "Inbox" are enabled in the
+ * Login Bar settings they both render as an identical bell shape.
+ *
+ * PREFERRED FIX: In the Wix editor, select the Login Bar → Settings panel
+ * → disable the "My Inbox" or "Notifications" icon toggle (whichever is
+ * the duplicate). Use this CSS only if the editor toggle is unavailable.
+ *
+ * If hiding the wrong bell, swap nth-child(2) to nth-child(1).
+ */
+#memberLoginBar1 [data-hook="notification-icon"]:nth-of-type(2),
+#memberLoginBar1 [class*="notificationIcon"]:nth-of-type(2),
+#memberLoginBar1 [class*="notification-icon"]:nth-of-type(2) {
+  display: none !important;
+}
