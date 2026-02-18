@@ -17,6 +17,7 @@
 
 import wixLocation from 'wix-location';
 import wixUsers from 'wix-users';
+import { currentMember } from 'wix-members-frontend';
 
 $w.onReady(function () {
   _initAuth();
@@ -40,11 +41,10 @@ function _initAuth() {
     wixUsers.promptLogin({ mode: 'login' }).catch(() => {});
   });
 
-  // Logout button
+  // Logout button — logout() returns void; navigate after calling it
   _safeOn('#logoutButton', 'onClick', () => {
-    wixUsers.logout().then(() => {
-      wixLocation.to('/');
-    });
+    wixUsers.logout();
+    wixLocation.to('/');
   });
 }
 
@@ -53,17 +53,15 @@ function _showMemberState() {
   _safeCall('#logoutButton', el => el.show());
   _safeCall('#memberMenu',   el => el.show());
 
-  // Populate member display name and avatar
-  wixUsers.currentUser
+  // Populate member display name and avatar via the current wix-members API
+  currentMember
     .getMember({ fieldsets: ['FULL'] })
     .then(member => {
-      const name = member.profile?.nickname
-        || member.profile?.name?.full
-        || 'Member';
+      const name = member.profile?.nickname || 'Member';
 
       _safeCall('#memberNameText', el => { el.text = name; });
 
-      const photoUrl = member.profile?.photo?.url;
+      const photoUrl = member.profile?.profilePhoto?.url;
       if (photoUrl) {
         _safeCall('#memberAvatar', el => { el.src = photoUrl; });
       }
@@ -83,17 +81,16 @@ function _initScrollHeader() {
   // Adds the brbs-nav--scrolled CSS class when the user scrolls down.
   // Requires #headerContainer to exist on the master page.
   try {
-    const header = $w('#headerContainer');
+    // #headerContainer is not in the auto-generated MasterPageElementsMap, so
+    // we cast $w to bypass the strict selector check while keeping the try/catch
+    // safety net for the case where the element doesn't exist at runtime.
+    // @ts-ignore
+    const header = /** @type {{ customClassList: { add(c: string): void; remove(c: string): void } }} */ ($w('#headerContainer'));
     header.customClassList.add('brbs-nav');
 
-    $w('Document').onViewportEnter(() => {
-      header.customClassList.remove('brbs-nav--scrolled');
-    });
-
-    // Wix doesn't expose a raw scroll event; approximate via intersection
-    // of an off-screen sentinel placed at top of page body.
-    // The user can replicate this by adding an anchor element (#scrollSentinel)
-    // at the top of the page body on the master page.
+    // Approximate scroll position via a sentinel element placed at the top of
+    // the page body (#scrollSentinel). onViewportLeave = scrolled down;
+    // onViewportEnter = back at top. No redundant $w('Document') call needed.
     _safeOn('#scrollSentinel', 'onViewportLeave', () => {
       header.customClassList.add('brbs-nav--scrolled');
     });
