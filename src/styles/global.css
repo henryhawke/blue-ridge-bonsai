@@ -287,17 +287,25 @@
 /*
  * Hides the duplicate bell icon in #memberLoginBar1.
  *
- * Two identical bell icons exist because the Login Bar has two notification
- * sources enabled. They link to /notifications and /notifications-1.
- * The second one (/notifications-1) is the duplicate — hide its wrapper.
+ * The Login Bar renders two identical notification bells — one linking to
+ * /notifications and one to /notifications-1. Both toggle on/off together
+ * because they share the same component config. We hide the /notifications-1
+ * wrapper entirely so only one bell is ever visible.
  */
-.wixui-login-social-bar__icons a[href*="notifications-1"],
-.login-social-bar__icons a[href*="notifications-1"] {
+
+/* Target the duplicate anchor link itself */
+a[href$="/notifications-1"],
+a[href*="/notifications-1"] {
   display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
 }
 
-/* Hide the wrapper div too so it leaves no gap in the icon strip */
-.wixui-login-social-bar__icons:has(a[href*="notifications-1"]) a[href*="notifications-1"],
+/* Also collapse the wrapper div to remove the gap */
+.wixui-login-social-bar__icons ._3sKSe:has(a[href*="notifications-1"]),
 .login-social-bar__icons ._3sKSe:has(a[href*="notifications-1"]) {
   display: none !important;
 }
