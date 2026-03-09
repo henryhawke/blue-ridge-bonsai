@@ -16,8 +16,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import wixLocation from 'wix-location';
-import wixUsers from 'wix-users';
-import { currentMember } from 'wix-members-frontend';
+import { authentication, currentMember } from 'wix-members-frontend';
 
 $w.onReady(function () {
   _initAuth();
@@ -28,7 +27,7 @@ $w.onReady(function () {
 // ─── Auth / Member Menu ───────────────────────────────────────────────────────
 
 function _initAuth() {
-  const isLoggedIn = wixUsers.currentUser.loggedIn;
+  const isLoggedIn = authentication.loggedIn();
 
   if (isLoggedIn) {
     _showMemberState();
@@ -38,12 +37,12 @@ function _initAuth() {
 
   // Login button — opens Wix member login lightbox
   _safeOn('#loginButton', 'onClick', () => {
-    wixUsers.promptLogin({ mode: 'login' }).catch(() => {});
+    authentication.promptLogin({ mode: 'login' }).catch(() => {});
   });
 
   // Logout button — logout() returns void; navigate after calling it
   _safeOn('#logoutButton', 'onClick', () => {
-    wixUsers.logout();
+    authentication.logout();
     wixLocation.to('/');
   });
 }
