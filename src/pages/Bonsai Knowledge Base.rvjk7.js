@@ -6,11 +6,21 @@ $w.onReady(async function () {
   // @ts-ignore - dataset ID is defined in the Wix editor for this page.
   const learningResourcesDataset = $w("#learningResourcesDataset");
 
-  if (!isLoggedIn) {
-    await learningResourcesDataset.setFilter(
-      wixData.filter().eq("membersOnly", false),
+  if (
+    typeof learningResourcesDataset?.onReady !== "function" ||
+    typeof learningResourcesDataset?.setFilter !== "function"
+  ) {
+    console.error(
+      'Expected "#learningResourcesDataset" to be a Wix dataset element.',
     );
-  } else {
-    await learningResourcesDataset.setFilter(wixData.filter());
+    return;
   }
+
+  learningResourcesDataset.onReady(async () => {
+    const filter = isLoggedIn
+      ? wixData.filter()
+      : wixData.filter().eq("membersOnly", false);
+
+    await learningResourcesDataset.setFilter(filter);
+  });
 });
